@@ -14,10 +14,54 @@
                 <div class="card-body">
                     <form action="{{ route('products.index') }}" method="GET">
                         <!-- Search -->
-                        <div class="mb-4">
+                        <div class="mb-4" style="position: relative;">
                             <label class="form-label small text-muted text-uppercase">Search</label>
-                            <input type="text" name="search" class="form-control bg-transparent text-white border-secondary" placeholder="Casting name..." value="{{ request('search') }}">
+                            <input type="text" name="search" id="sidebarSearchInput" autocomplete="off" class="form-control bg-transparent text-white border-secondary" placeholder="Casting name..." value="{{ request('search') }}">
+                            <div id="sidebarSearchSuggestions" class="glass" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); background: var(--bg-darker);"></div>
                         </div>
+
+                        <script>
+                            const sidebarSearchInput = document.getElementById('sidebarSearchInput');
+                            const sidebarSuggestionsBox = document.getElementById('sidebarSearchSuggestions');
+
+                            if (sidebarSearchInput) {
+                                sidebarSearchInput.addEventListener('input', async (e) => {
+                                    const query = e.target.value;
+                                    if (query.length < 2) {
+                                        sidebarSuggestionsBox.style.display = 'none';
+                                        return;
+                                    }
+
+                                    try {
+                                        const response = await fetch(`/api/search-suggestions?query=${encodeURIComponent(query)}`);
+                                        const products = await response.json();
+
+                                        if (products.length > 0) {
+                                            sidebarSuggestionsBox.innerHTML = products.map(p => `
+                                                <a href="/products/${p.id}" style="display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem; text-decoration: none; border-bottom: 1px solid var(--glass-border); transition: 0.3s;" class="suggestion-item">
+                                                    <img src="${p.main_image || '/images/placeholder-car.webp'}" style="width: 40px; height: 30px; object-fit: contain; background: #000; border-radius: 4px;">
+                                                    <div>
+                                                        <div style="color: white; font-weight: 700; font-size: 0.8rem;">${p.name}</div>
+                                                        <div style="color: var(--secondary); font-weight: 800; font-size: 0.75rem;">$${parseFloat(p.price).toFixed(2)}</div>
+                                                    </div>
+                                                </a>
+                                            `).join('');
+                                            sidebarSuggestionsBox.style.display = 'block';
+                                        } else {
+                                            sidebarSuggestionsBox.style.display = 'none';
+                                        }
+                                    } catch (err) {
+                                        console.error('Search error:', err);
+                                    }
+                                });
+
+                                document.addEventListener('click', (e) => {
+                                    if (!sidebarSearchInput.contains(e.target) && !sidebarSuggestionsBox.contains(e.target)) {
+                                        sidebarSuggestionsBox.style.display = 'none';
+                                    }
+                                });
+                            }
+                        </script>
 
                         <!-- Brand Filter -->
                         <div class="mb-4">

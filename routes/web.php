@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/api/search-suggestions', [ProductController::class, 'suggestions'])->name('api.search.suggestions');
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

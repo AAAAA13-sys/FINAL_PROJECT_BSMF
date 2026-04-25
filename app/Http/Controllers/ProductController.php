@@ -103,4 +103,22 @@ final class ProductController extends Controller
 
         return view('products.show', compact('product'));
     }
+
+    /**
+     * Get search suggestions for the dynamic dropdown.
+     */
+    public function suggestions(Request $request)
+    {
+        $query = $request->query('query');
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        $products = Product::where('name', 'like', "%{$query}%")
+            ->active()
+            ->limit(5)
+            ->get(['id', 'name', 'main_image', 'price']);
+
+        return response()->json($products);
+    }
 }
