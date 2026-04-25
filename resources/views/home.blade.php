@@ -66,7 +66,7 @@
 </section>
 
 <!-- Immediate Product Grid (Latest Drops) -->
-<section class="section-padding reveal" style="padding-top: 0; margin-top: -5rem; position: relative; z-index: 10;">
+<section class="section-padding reveal" style="padding-top: 4rem; margin-top: 0; position: relative; z-index: 10;">
     <div style="background: rgba(0,8,20,0.8); backdrop-filter: blur(20px); border-radius: 40px; padding: 4rem; border: 1px solid var(--glass-border); box-shadow: 0 40px 100px rgba(0,0,0,0.6);">
         <div class="section-header">
             <div>
@@ -80,7 +80,7 @@
             @forelse($featuredProducts as $product)
                 <div class="product-card" style="background: var(--bg-darker); border: 1px solid var(--glass-border); color: white;">
                     <div style="position: relative; overflow: hidden; border-radius: 8px;">
-                        <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="aspect-ratio: 1; object-fit: contain; background: #000;">
+                        <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="aspect-ratio: 1; object-fit: contain; background: #000;" loading="lazy">
                         <div style="position: absolute; top: 10px; left: 10px; background: var(--secondary); color: var(--bg-dark); padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 900; letter-spacing: 1px;">NEW ARRIVAL</div>
                     </div>
                     <div class="product-info">

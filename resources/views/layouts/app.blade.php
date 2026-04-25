@@ -328,5 +328,15 @@
             }
         </script>
     @endauth
+    <script>
+        // Global handler to block 'e', 'E', '+', '-' in number inputs
+        document.addEventListener('keydown', function(e) {
+            if (e.target.type === 'number') {
+                if (['e', 'E', '+', '-'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

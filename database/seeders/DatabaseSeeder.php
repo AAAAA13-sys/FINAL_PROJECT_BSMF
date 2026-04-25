@@ -274,6 +274,142 @@ class DatabaseSeeder extends Seeder
             'description' => "Tomica Premium series. Suspension and high detail plastic parts.",
         ]);
 
+        // --- TRACK SETS (Category 2) ---
+        $catTracks = Category::where('name', 'Track Sets')->first();
+        
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catTracks->id,
+            'name' => 'Ultimate T-Rex Garage',
+            'casting_name' => 'Hot Wheels City Ultimate Playset',
+            'slug' => Str::slug('ultimate-t-rex-garage'),
+            'price' => 129.99,
+            'stock_quantity' => 15,
+            'description' => 'Massive multi-level garage with T-Rex robot and elevator.',
+            'main_image' => '/images/products/t-rex-garage.png'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catTracks->id,
+            'name' => 'Bowser\'s Castle Track Set',
+            'casting_name' => 'Mario Kart Special Edition',
+            'slug' => Str::slug('bowsers-castle-track-set'),
+            'price' => 119.99,
+            'stock_quantity' => 8,
+            'description' => 'Interactive Bowser\'s Castle with slam launcher.',
+            'main_image' => '/images/products/bowsers-castle.png'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catTracks->id,
+            'name' => 'F1 Downhill Circuit',
+            'casting_name' => 'Formula 1 Racing Series',
+            'slug' => Str::slug('f1-downhill-circuit'),
+            'price' => 89.99,
+            'stock_quantity' => 12,
+            'description' => 'Gravity-fed circuit featuring elevation changes.',
+            'main_image' => '/images/products/f1-downhill.png'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catTracks->id,
+            'name' => 'City Ultimate Garage',
+            'casting_name' => 'Hot Wheels City Series',
+            'slug' => Str::slug('city-ultimate-garage'),
+            'price' => 120.00,
+            'stock_quantity' => 5,
+            'description' => '4 levels of racing with a car-eating dragon battle feature.',
+            'main_image' => '/images/placeholder-car.webp'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catTracks->id,
+            'name' => 'Mario Kart Nemesis Track Set',
+            'casting_name' => 'Mario Kart Challenge',
+            'slug' => Str::slug('mario-kart-nemesis'),
+            'price' => 108.99,
+            'stock_quantity' => 4,
+            'description' => 'Case of 4 unique Mario Kart obstacles (Thwomp, Piranha, etc).',
+            'main_image' => '/images/placeholder-car.webp'
+        ]);
+
+        // --- DISPLAY CASES (Category 3) ---
+        $catDisplay = Category::where('name', 'Display Cases')->first();
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catDisplay->id,
+            'name' => '2026 Mainline Case (72pcs)',
+            'casting_name' => 'Factory Sealed A-Case',
+            'slug' => Str::slug('2026-mainline-case-72'),
+            'price' => 94.99,
+            'stock_quantity' => 5,
+            'description' => 'Unopened case of 72 standard mainline cars.',
+            'main_image' => '/images/products/72-piece-case.png'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catDisplay->id,
+            'name' => 'Japan Historics 5 Set',
+            'casting_name' => 'Car Culture Premium Set',
+            'slug' => Str::slug('japan-historics-5-set'),
+            'price' => 34.99,
+            'stock_quantity' => 20,
+            'description' => 'Premium set of 5 Japanese historic racing cars.',
+            'main_image' => '/images/products/japan-historics-5.png'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catDisplay->id,
+            'name' => 'Vintage Racing Premium Set',
+            'casting_name' => 'Car Culture Vintage',
+            'slug' => Str::slug('vintage-racing-premium'),
+            'price' => 24.99,
+            'stock_quantity' => 15,
+            'description' => 'Metal/metal bodies with Real Riders tires (Ferrari 250 GTO included).',
+            'main_image' => '/images/placeholder-car.webp'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catDisplay->id,
+            'name' => 'Team Transport Case',
+            'casting_name' => 'Car Culture Transporters',
+            'slug' => Str::slug('team-transport-case'),
+            'price' => 44.99,
+            'stock_quantity' => 6,
+            'description' => 'Premium 4-piece set including car and hauler pairs.',
+            'main_image' => '/images/placeholder-car.webp'
+        ]);
+
+        Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'category_id' => $catDisplay->id,
+            'name' => 'F1 Premium 2026 Assortment',
+            'casting_name' => 'Formula 1 Premium',
+            'slug' => Str::slug('f1-premium-2026'),
+            'price' => 49.99,
+            'stock_quantity' => 10,
+            'description' => 'Premium single cars representing all 20 drivers with special plinth.',
+            'main_image' => '/images/placeholder-car.webp'
+        ]);
+
         // Coupons
         Coupon::create([
             'code' => 'WELCOME10',

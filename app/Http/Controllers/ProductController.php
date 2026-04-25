@@ -72,12 +72,32 @@ final class ProductController extends Controller
         }
 
         // Sorting
-        switch ($request->get('sort')) {
-            case 'price_low': $query->orderBy('price', 'asc'); break;
-            case 'price_high': $query->orderBy('price', 'desc'); break;
-            case 'newest': $query->latest(); break;
-            case 'oldest': $query->oldest(); break;
-            default: $query->latest(); break;
+        $sort = $request->get('sort', 'newest');
+        
+        $query->reorder(); // Clear any existing orders
+        
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('price', 'asc')->orderBy('name', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc')->orderBy('name', 'asc');
+                break;
+            case 'alpha_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'alpha_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc')->orderBy('id', 'asc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+                break;
         }
 
         $products = $query->paginate(24)->withQueryString();
@@ -98,9 +118,7 @@ final class ProductController extends Controller
         $product = Product::with(['category', 'brand', 'scale', 'series', 'reviews.user', 'images'])
             ->findOrFail($id);
             
-        // Increment views
-        $product->increment('views');
-
+        // Product details view
         return view('products.show', compact('product'));
     }
 

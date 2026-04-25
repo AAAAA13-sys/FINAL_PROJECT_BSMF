@@ -19,7 +19,7 @@ final class HomeController extends Controller
         $featuredProducts = Product::with(['category', 'brand', 'scale'])
             ->active()
             ->orderByDesc('is_super_treasure_hunt')
-            ->orderByDesc('views')
+            ->latest()
             ->limit(6)
             ->get();
             

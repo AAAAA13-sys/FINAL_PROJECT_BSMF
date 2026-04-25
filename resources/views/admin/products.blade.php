@@ -8,6 +8,16 @@
     </div>
 
     <div class="admin-table-container">
+        @if($products->hasPages())
+            <div class="admin-pagination-section glass px-4 py-2 d-flex justify-content-between align-items-center" style="border: none; background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid var(--glass-border); border-radius: 0;">
+                <div class="small text-muted italic" style="font-size: 0.65rem;">
+                    Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of {{ $products->total() }} results
+                </div>
+                <div class="admin-pagination-links">
+                    {{ $products->links() }}
+                </div>
+            </div>
+        @endif
         <table class="admin-table">
             <thead>
                 <tr>
@@ -53,19 +63,13 @@
                 @endforeach
             </tbody>
         </table>
-        @if($products->hasPages())
-            <div class="p-4 border-top border-secondary bg-darker bg-opacity-50">
-                {{ $products->links() }}
-            </div>
-        @endif
     </div>
-</div>
 
 <!-- Add Modal -->
-<div id="addModal" class="glass shadow-2xl p-4 overflow-hidden" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; z-index: 2000; border: 2px solid var(--secondary); max-height: 90vh; overflow-y: auto;">
-    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
-        <h2 class="h5 text-white text-uppercase italic mb-0">NEW <span>ACQUISITION</span></h2>
-        <button onclick="document.getElementById('addModal').style.display='none'" class="btn-close btn-close-white" style="font-size: 0.7rem;"></button>
+<div id="addModal" class="modal-glass p-4 overflow-hidden" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; z-index: 2000; max-height: 90vh; overflow-y: auto;">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-50">
+        <h2 class="h5 text-white text-uppercase italic mb-0 fw-black">NEW <span>ACQUISITION</span></h2>
+        <button onclick="document.getElementById('addModal').style.display='none'" class="btn-close btn-close-white" style="font-size: 0.8rem;"></button>
     </div>
     <form action="{{ route('admin.products.store') }}" method="POST">
         @csrf

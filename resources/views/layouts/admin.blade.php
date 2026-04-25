@@ -13,11 +13,14 @@
     <style>
         :root {
             --sidebar-width: 240px;
+            --danger: #ff4d4d;
         }
         body { 
             background: #000814; 
             color: white;
             font-family: 'Outfit', sans-serif;
+            margin: 0 !important;
+            padding: 0 !important;
         }
         .admin-container { display: flex; min-height: 100vh; }
         
@@ -33,6 +36,7 @@
             display: flex;
             flex-direction: column;
             z-index: 1000;
+            overflow-y: auto;
         }
 
         .admin-nav {
@@ -47,7 +51,7 @@
             display: flex; 
             align-items: center; 
             padding: 0.6rem 1rem;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.7rem;
@@ -73,7 +77,7 @@
 
         .admin-main { 
             margin-left: var(--sidebar-width);
-            padding: 2rem; 
+            padding: 3.5rem 2.5rem; 
             width: calc(100% - var(--sidebar-width));
             flex-grow: 1;
             background: radial-gradient(circle at top right, #00122e 0%, #000814 100%); 
@@ -84,7 +88,10 @@
             background: rgba(0, 8, 20, 0.6);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
@@ -135,8 +142,71 @@
             font-family: 'Outfit';
         }
 
-        .card-title-premium span {
-            color: var(--secondary);
+        /* Brighten Muted Text for Admin Visibility */
+        .text-muted {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .form-label.text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 700;
+        }
+
+        /* High Contrast Modal */
+        .modal-glass {
+            background: #000c1d !important;
+            border: 2px solid var(--secondary) !important;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9) !important;
+            border-radius: 24px;
+        }
+
+        /* Pagination Styling */
+        .pagination {
+            margin-bottom: 0;
+            gap: 8px;
+            padding: 0.5rem 0;
+        }
+        .page-link {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+            border-radius: 10px !important;
+            padding: 0.6rem 1.1rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            box-shadow: none !important;
+        }
+        .page-item.active .page-link {
+            background: var(--secondary) !important;
+            border-color: var(--secondary) !important;
+            color: #000 !important;
+        }
+        .page-link:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        .page-item.disabled .page-link {
+            background: rgba(255, 255, 255, 0.02) !important;
+            color: rgba(255, 255, 255, 0.2) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Compact Top Pagination */
+        .admin-pagination-compact .page-link {
+            padding: 0.3rem 0.7rem !important;
+            font-size: 0.7rem !important;
+            border-radius: 6px !important;
+        }
+
+        .admin-pagination-section {
+            padding-top: 1rem !important;
+            padding-bottom: 1.5rem !important; /* Larger bottom buffer */
+            min-height: 91px;
+        }
+
+        .admin-table th {
+            background: rgba(255, 255, 255, 0.08) !important; /* Brighter headers */
         }
     </style>
 </head>
@@ -171,14 +241,14 @@
                     <i class="fas fa-users"></i> Users
                 </a>
                 
-                <div style="margin-top: auto; padding-top: 2rem;">
-                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 2rem;">
-                    <a href="{{ route('home') }}" class="admin-nav-link" style="opacity: 0.6; font-size: 0.75rem;">
+                <div class="mt-auto pt-4">
+                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 1.5rem;">
+                    <a href="{{ route('home') }}" class="admin-nav-link mb-2" style="opacity: 0.6; font-size: 0.75rem;">
                         <i class="fas fa-external-link-alt"></i> Live Garage
                     </a>
-                    <form action="{{ route('logout') }}" method="POST" class="mt-2">
+                    <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); width: 100%; padding: 0.8rem; font-weight: 800; text-transform: uppercase; border-radius: 12px; font-size: 0.75rem;">
+                        <button type="submit" class="btn w-100" style="background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.4); padding: 0.8rem; font-weight: 800; text-transform: uppercase; border-radius: 12px; font-size: 0.75rem;">
                             <i class="fas fa-sign-out-alt me-2"></i> Logout
                         </button>
                     </form>
