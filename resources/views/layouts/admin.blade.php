@@ -29,7 +29,7 @@
             height: 100vh;
             background: #00050a; 
             border-right: 1px solid var(--glass-border); 
-            padding: 1.5rem 1rem;
+            padding: 0.75rem; /* Shrunk from 1.5rem 1rem */
             position: fixed;
             top: 0;
             left: 0;
@@ -42,7 +42,7 @@
         .admin-nav {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.25rem; /* Shrunk from 0.5rem */
             flex-grow: 1;
         }
 
@@ -50,11 +50,11 @@
             text-decoration: none; 
             display: flex; 
             align-items: center; 
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 0.75rem; /* Shrunk from 0.6rem 1rem */
             color: rgba(255, 255, 255, 0.8);
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.7rem;
+            font-size: 0.65rem; /* Slightly smaller font */
             letter-spacing: 0.5px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 8px;
@@ -213,8 +213,8 @@
 <body>
     <div class="admin-container">
         <aside class="admin-sidebar">
-            <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-3 text-decoration-none" style="font-size: 1.4rem;">BSMF ADMIN</a>
-            <div style="margin-top: -1.2rem; margin-bottom: 2rem;">
+            <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-2 text-decoration-none" style="font-size: 1.2rem;">BSMF ADMIN</a>
+            <div style="margin-top: -1.2rem; margin-bottom: 1rem;">
                 <span style="color: var(--secondary); font-weight: 900; letter-spacing: 2px; font-size: 0.6rem; text-transform: uppercase; font-family: 'Outfit';">Control Panel</span>
             </div>
             
@@ -241,14 +241,14 @@
                     <i class="fas fa-users"></i> Users
                 </a>
                 
-                <div class="mt-auto pt-4">
-                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 1.5rem;">
-                    <a href="{{ route('home') }}" class="admin-nav-link mb-2" style="opacity: 0.6; font-size: 0.75rem;">
+                <div class="mt-auto pt-2">
+                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 0.75rem;">
+                    <a href="{{ route('home') }}" class="admin-nav-link mb-1" style="opacity: 0.6; font-size: 0.7rem;">
                         <i class="fas fa-external-link-alt"></i> Live Garage
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn w-100" style="background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.4); padding: 0.8rem; font-weight: 800; text-transform: uppercase; border-radius: 12px; font-size: 0.75rem;">
+                        <button type="submit" class="btn w-100" style="background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 0.5rem; font-weight: 800; text-transform: uppercase; border-radius: 8px; font-size: 0.7rem;">
                             <i class="fas fa-sign-out-alt me-2"></i> Logout
                         </button>
                     </form>
