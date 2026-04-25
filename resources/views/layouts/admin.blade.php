@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --sidebar-width: 280px;
+            --sidebar-width: 240px;
         }
         body { 
             background: #000814; 
@@ -26,7 +26,7 @@
             height: 100vh;
             background: #00050a; 
             border-right: 1px solid var(--glass-border); 
-            padding: 3rem 2rem;
+            padding: 1.5rem 1rem;
             position: fixed;
             top: 0;
             left: 0;
@@ -46,14 +46,14 @@
             text-decoration: none; 
             display: flex; 
             align-items: center; 
-            padding: 1rem 1.5rem;
+            padding: 0.6rem 1rem;
             color: rgba(255, 255, 255, 0.5);
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
+            border-radius: 8px;
         }
 
         .admin-nav-link i { width: 24px; font-size: 1rem; margin-right: 12px; opacity: 0.7; }
@@ -73,7 +73,7 @@
 
         .admin-main { 
             margin-left: var(--sidebar-width);
-            padding: 4rem; 
+            padding: 2rem; 
             width: calc(100% - var(--sidebar-width));
             flex-grow: 1;
             background: radial-gradient(circle at top right, #00122e 0%, #000814 100%); 
@@ -97,20 +97,21 @@
 
         .admin-table th {
             text-align: left;
-            padding: 1.5rem;
+            padding: 0.75rem 1rem;
             background: rgba(255, 255, 255, 0.03);
             color: var(--secondary);
             text-transform: uppercase;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 900;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             border-bottom: 2px solid var(--glass-border);
         }
 
         .admin-table td {
-            padding: 1.5rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--glass-border);
             vertical-align: middle;
+            font-size: 0.85rem;
         }
 
         .admin-table tr:hover {
@@ -142,9 +143,9 @@
 <body>
     <div class="admin-container">
         <aside class="admin-sidebar">
-            <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-5 text-decoration-none" style="font-size: 1.8rem;">BSMF ADMIN</a>
-            <div style="margin-top: -2.5rem; margin-bottom: 3rem;">
-                <span style="color: var(--secondary); font-weight: 900; letter-spacing: 3px; font-size: 0.7rem; text-transform: uppercase; font-family: 'Outfit';">Control Panel</span>
+            <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-3 text-decoration-none" style="font-size: 1.4rem;">BSMF ADMIN</a>
+            <div style="margin-top: -1.2rem; margin-bottom: 2rem;">
+                <span style="color: var(--secondary); font-weight: 900; letter-spacing: 2px; font-size: 0.6rem; text-transform: uppercase; font-family: 'Outfit';">Control Panel</span>
             </div>
             
             <nav class="admin-nav">

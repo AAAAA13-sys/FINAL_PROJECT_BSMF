@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1 class="card-title-premium fs-2">USER <span>MANAGEMENT</span></h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="card-title-premium fs-4">USER <span>MANAGEMENT</span></h1>
     </div>
 
     <div class="admin-table-container">

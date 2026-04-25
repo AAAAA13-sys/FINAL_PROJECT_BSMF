@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1 class="card-title-premium fs-2">PRODUCT <span>MANAGEMENT</span></h1>
-        <button onclick="document.getElementById('addModal').style.display='block'" class="btn btn-warning px-4 py-2 rounded-pill fw-black ls-1">+ ADD NEW MODEL</button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="card-title-premium fs-4">PRODUCT <span>MANAGEMENT</span></h1>
+        <button onclick="document.getElementById('addModal').style.display='block'" class="btn btn-warning px-3 py-2 rounded-pill fw-black ls-1" style="font-size: 0.75rem;">+ ADD NEW MODEL</button>
     </div>
 
     <div class="admin-table-container">
@@ -61,11 +61,11 @@
     </div>
 </div>
 
-<!-- Add Modal (Simplified Bootstrap Modal feel using custom container) -->
-<div id="addModal" class="glass shadow-2xl p-0 overflow-hidden" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; z-index: 2000; border: 2px solid var(--secondary); max-height: 90vh; overflow-y: auto;">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
-        <h2 class="h4 text-white text-uppercase italic mb-0">NEW <span>ACQUISITION</span></h2>
-        <button onclick="document.getElementById('addModal').style.display='none'" class="btn-close btn-close-white"></button>
+<!-- Add Modal -->
+<div id="addModal" class="glass shadow-2xl p-4 overflow-hidden" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; z-index: 2000; border: 2px solid var(--secondary); max-height: 90vh; overflow-y: auto;">
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
+        <h2 class="h5 text-white text-uppercase italic mb-0">NEW <span>ACQUISITION</span></h2>
+        <button onclick="document.getElementById('addModal').style.display='none'" class="btn-close btn-close-white" style="font-size: 0.7rem;"></button>
     </div>
     <form action="{{ route('admin.products.store') }}" method="POST">
         @csrf
@@ -124,8 +124,8 @@
                 <textarea name="description" class="form-control bg-dark border-secondary text-white" rows="3"></textarea>
             </div>
         </div>
-        <div class="mt-5">
-            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold text-uppercase ls-2">ADD TO GARAGE</button>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold text-uppercase ls-2" style="font-size: 0.8rem;">ADD TO GARAGE</button>
         </div>
     </form>
 </div>
