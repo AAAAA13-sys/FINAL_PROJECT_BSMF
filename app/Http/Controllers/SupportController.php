@@ -34,6 +34,9 @@ final class SupportController extends Controller
             'description' => 'required|string',
         ]);
 
+        // Ensure order belongs to user
+        $order = Order::where('user_id', Auth::id())->where('id', $request->order_id)->firstOrFail();
+
         Dispute::create([
             'user_id' => Auth::id(),
             'order_id' => $request->order_id,

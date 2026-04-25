@@ -18,7 +18,7 @@
     </style>
 </head>
 <body class="{{ Route::is('login') || Route::is('register') ? 'auth-page' : '' }}">
-    <nav class="fade-in">
+    <nav>
         <a href="{{ route('home') }}" class="logo">BSMF GARAGE</a>
         
         <button class="mobile-toggle" style="display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">
@@ -30,7 +30,6 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn">Collections <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
                 <div class="dropdown-content">
-                    <a href="{{ route('products.index') }}">All Models</a>
                     @foreach($globalCategories as $gc)
                         <a href="{{ route('products.index', ['category' => $gc->id]) }}">{{ $gc->name }}</a>
                     @endforeach

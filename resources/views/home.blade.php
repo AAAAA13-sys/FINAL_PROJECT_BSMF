@@ -6,10 +6,56 @@
         <h1 class="fade-in text-uppercase italic fw-black ls-tight mb-2" style="font-size: 5.5rem;">BSMF <span>GARAGE</span></h1>
         <p class="fade-in delay-1" style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 6px; margin-bottom: 3.5rem; font-weight: 700; opacity: 0.8; color: var(--secondary);">Premium Die-Cast Collector Series</p>
         
-        <form action="{{ route('products.index') }}" method="GET" class="fade-in delay-2" style="display: flex; gap: 0; width: 100%; max-width: 700px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-            <input type="text" name="search" placeholder="Search for your dream car: Skyline, Supra, Porsche..." style="flex-grow: 1; background: transparent; border: none; color: white; padding: 0 2.5rem; font-size: 1.1rem; outline: none;">
-            <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Garage</button>
-        </form>
+        <div style="position: relative; width: 100%; max-width: 700px;" class="fade-in delay-2">
+            <form action="{{ route('products.index') }}" method="GET" id="searchForm" style="display: flex; gap: 0; width: 100%; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+                <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search for your dream car: Skyline, Supra, Porsche..." style="flex-grow: 1; background: transparent; border: none; color: white; padding: 0 2.5rem; font-size: 1.1rem; outline: none;">
+                <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Garage</button>
+            </form>
+            <div id="searchSuggestions" class="glass" style="display: none; position: absolute; top: 110%; left: 0; right: 0; z-index: 1000; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border);"></div>
+        </div>
+
+        <script>
+            const searchInput = document.getElementById('searchInput');
+            const suggestionsBox = document.getElementById('searchSuggestions');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', async (e) => {
+                    const query = e.target.value;
+                    if (query.length < 2) {
+                        suggestionsBox.style.display = 'none';
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`/api/search-suggestions?query=${encodeURIComponent(query)}`);
+                        const products = await response.json();
+
+                        if (products.length > 0) {
+                            suggestionsBox.innerHTML = products.map(p => `
+                                <a href="/products/${p.id}" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; text-decoration: none; border-bottom: 1px solid var(--glass-border); transition: 0.3s;" class="suggestion-item">
+                                    <img src="${p.main_image || '/images/placeholder-car.webp'}" style="width: 50px; height: 35px; object-fit: contain; background: #000; border-radius: 4px;">
+                                    <div>
+                                        <div style="color: white; font-weight: 700; font-size: 0.9rem;">${p.name}</div>
+                                        <div style="color: var(--secondary); font-weight: 800; font-size: 0.8rem;">$${parseFloat(p.price).toFixed(2)}</div>
+                                    </div>
+                                </a>
+                            `).join('');
+                            suggestionsBox.style.display = 'block';
+                        } else {
+                            suggestionsBox.style.display = 'none';
+                        }
+                    } catch (err) {
+                        console.error('Search error:', err);
+                    }
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                        suggestionsBox.style.display = 'none';
+                    }
+                });
+            }
+        </script>
 
         <div class="fade-in delay-3" style="margin-top: 4rem; display: flex; gap: 3rem; color: var(--text-muted); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">
             <span><i class="fas fa-shipping-fast" style="color: var(--secondary); margin-right: 10px;"></i> Global Shipping</span>

@@ -27,6 +27,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     min-height: 100vh;
+    padding-top: 80px; /* Offset for fixed header */
 }
 
 /* Glassmorphism */
@@ -44,21 +45,21 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 5%;
+    padding: 1rem 5%;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 9999;
     transition: all 0.4s ease;
-    background: transparent;
+    background: var(--bg-darker);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 nav.scrolled {
-    padding: 1rem 5%;
-    background: rgba(0, 8, 20, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
+    padding: 0.8rem 5%;
+    background: var(--bg-darker);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .logo {
@@ -135,8 +136,8 @@ nav.scrolled {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
-    min-height: 700px;
+    height: calc(100vh - 80px);
+    min-height: 600px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -378,7 +379,7 @@ nav.scrolled {
 
 .auth-container {
     width: 400px;
-    margin: 5rem auto 0;
+    margin: 2rem auto 0;
     padding: 2rem;
     background: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(40px);

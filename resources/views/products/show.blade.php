@@ -4,13 +4,7 @@
 
 @section('content')
 <div class="container py-5">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-transparent p-0">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-warning">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('products.index') }}" class="text-warning">Collection</a></li>
-            <li class="breadcrumb-item active text-white" aria-current="page">{{ $product->name }}</li>
-        </ol>
-    </nav>
+
 
     <div class="row g-5">
         <!-- Product Images -->
@@ -45,6 +39,13 @@
         <!-- Product Info -->
         <div class="col-md-6">
             <div class="ps-md-4">
+                <div class="breadcrumb-minimal mb-3" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; opacity: 0.8;">
+                    <a href="{{ route('home') }}" style="color: var(--secondary); text-decoration: none;">HOME</a>
+                    <span style="color: var(--text-muted); margin: 0 8px;">/</span>
+                    <a href="{{ route('products.index') }}" style="color: var(--secondary); text-decoration: none;">COLLECTION</a>
+                    <span style="color: var(--text-muted); margin: 0 8px;">/</span>
+                    <span style="color: white;">{{ $product->category->name ?? 'MODELS' }}</span>
+                </div>
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <span class="badge bg-warning text-dark">{{ $product->brand->name }}</span>
                     <span class="badge bg-outline-secondary border border-secondary text-white">{{ $product->scale->name }}</span>
