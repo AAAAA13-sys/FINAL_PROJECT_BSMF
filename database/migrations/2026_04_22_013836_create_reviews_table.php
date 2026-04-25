@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $刻) {
-            $刻->id();
-            $刻->foreignId('product_id')->constrained()->onDelete('cascade');
-            $刻->foreignId('user_id')->constrained()->onDelete('cascade');
-            $刻->integer('rating');
-            $刻->text('comment');
-            $刻->timestamps();
+        Schema::create('reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('rating');
+            $table->text('comment');
+            $table->timestamps();
         });
     }
 

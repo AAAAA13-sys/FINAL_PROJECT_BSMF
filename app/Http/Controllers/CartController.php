@@ -1,20 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CartController extends Controller
+final class CartController extends Controller
 {
+    /**
+     * Display the shopping cart.
+     */
     public function index()
     {
-        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
-        return view('cart.index', compact('cartItems'));
+        $cart = Cart::with(['items.product.brand'])->firstOrCreate(['user_id' => Auth::id()]);
+        return view('cart.index', compact('cart'));
     }
 
+    /**
+     * Add a die-cast car to the cart.
+     */
     public function add(Request $request)
     {
         $request->validate([
@@ -22,40 +31,60 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem = Cart::where('user_id', Auth::id())
-                        ->where('product_id', $request->product_id)
-                        ->first();
+        $product = Product::findOrFail($request->product_id);
+        
+        // Stock validation
+        if ($product->stock_quantity < $request->quantity) {
+            return back()->with('error', "Only {$product->stock_quantity} left in stock!");
+        }
 
-        if ($cartItem) {
-            $cartItem->increment('quantity', $request->quantity);
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        
+        $item = $cart->items()->where('product_id', $product->id)->first();
+
+        if ($item) {
+            $newQuantity = $item->quantity + $request->quantity;
+            if ($product->stock_quantity < $newQuantity) {
+                return back()->with('error', "Cannot add more. Max stock reached.");
+            }
+            $item->increment('quantity', $request->quantity);
         } else {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'product_id' => $request->product_id,
+            $cart->items()->create([
+                'product_id' => $product->id,
                 'quantity' => $request->quantity,
+                'price_at_time' => $product->price,
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to pit stop!');
+        return redirect()->route('cart.index')->with('success', 'Car added to your garage!');
     }
 
+    /**
+     * Update item quantity.
+     */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
+        $request->validate(['quantity' => 'required|integer|min:1']);
+        
+        $item = CartItem::whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))->findOrFail($id);
+        
+        if ($item->product->stock_quantity < $request->quantity) {
+            return back()->with('error', "Insufficient stock.");
+        }
 
-        $cartItem = Cart::where('user_id', Auth::id())->findOrFail($id);
-        $cartItem->update(['quantity' => $request->quantity]);
+        $item->update(['quantity' => $request->quantity]);
 
         return back()->with('success', 'Quantity updated.');
     }
 
+    /**
+     * Remove item from cart.
+     */
     public function remove($id)
     {
-        $cartItem = Cart::where('user_id', Auth::id())->findOrFail($id);
-        $cartItem->delete();
+        $item = CartItem::whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))->findOrFail($id);
+        $item->delete();
 
-        return back()->with('success', 'Item removed from pit stop.');
+        return back()->with('success', 'Item removed from cart.');
     }
 }

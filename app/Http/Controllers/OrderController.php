@@ -1,132 +1,160 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Coupon;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
-class OrderController extends Controller
+final class OrderController extends Controller
 {
+    /**
+     * Display customer order history.
+     */
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())->latest()->get();
+        $orders = Order::where('user_id', Auth::id())
+            ->with(['items.product'])
+            ->latest()
+            ->paginate(10);
+            
         return view('orders.index', compact('orders'));
     }
 
+    /**
+     * Display specific order details.
+     */
     public function show($id)
     {
-        $order = Order::with('items.product')->where('user_id', Auth::id())->findOrFail($id);
+        $order = Order::with(['items.product', 'disputes'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+            
         return view('orders.show', compact('order'));
     }
 
+    /**
+     * Show checkout page with collector options.
+     */
     public function checkout()
     {
-        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
-        if ($cartItems->isEmpty()) {
+        $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
+        
+        if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('products.index')->with('error', 'Your cart is empty.');
         }
 
-        $total = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
+        $subtotal = $cart->subtotal();
         $discount = 0;
         $couponCode = session('coupon_code');
 
         if ($couponCode) {
             $coupon = Coupon::where('code', $couponCode)->first();
             if ($coupon && $coupon->isValid()) {
-                $discount = $coupon->calculateDiscount($total);
+                // Simplified discount calculation
+                if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
+                    $discount = $subtotal * ($coupon->discount_value / 100);
+                } else {
+                    $discount = $coupon->discount_value;
+                }
             }
         }
 
-        return view('cart.checkout', compact('cartItems', 'total', 'discount', 'couponCode'));
+        $shipping = $subtotal >= 50 ? 0 : 5.00; // Sample shipping logic
+        $total = $subtotal - $discount + $shipping;
+
+        return view('checkout.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode'));
     }
 
-    public function applyCoupon(Request $request)
-    {
-        $request->validate(['code' => 'required|string']);
-        $coupon = Coupon::where('code', $request->code)->first();
-        
-        if (!$coupon || !$coupon->isValid()) {
-            session()->forget('coupon_code');
-            return back()->with('error', 'Invalid or expired coupon code.');
-        }
-
-        session(['coupon_code' => $coupon->code]);
-        return back()->with('success', 'Coupon applied successfully!');
-    }
-
-    public function removeCoupon()
-    {
-        session()->forget('coupon_code');
-        return back()->with('success', 'Coupon removed.');
-    }
-
+    /**
+     * Process the die-cast order.
+     */
     public function processCheckout(Request $request)
     {
         $request->validate([
+            'customer_name' => 'required|string',
+            'customer_email' => 'required|email',
             'shipping_address' => 'required|string',
             'payment_method' => 'required|string',
         ]);
 
-        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+        $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
-        if ($cartItems->isEmpty()) {
+        if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('products.index')->with('error', 'Your cart is empty.');
         }
 
-        $total = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
-        $discount = 0;
-        $couponCode = session('coupon_code');
+        return DB::transaction(function () use ($request, $cart) {
+            // Calculate totals
+            $subtotal = $cart->subtotal();
+            $discount = 0;
+            $couponCode = session('coupon_code');
 
-        if ($couponCode) {
-            $coupon = Coupon::where('code', $couponCode)->first();
-            if ($coupon && $coupon->isValid()) {
-                $discount = $coupon->calculateDiscount($total);
-                $coupon->increment('used_count');
+            if ($couponCode) {
+                $coupon = Coupon::where('code', $couponCode)->first();
+                if ($coupon && $coupon->isValid()) {
+                    if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
+                        $discount = $subtotal * ($coupon->discount_value / 100);
+                    } else {
+                        $discount = $coupon->discount_value;
+                    }
+                    $coupon->increment('times_used');
+                }
             }
-        }
 
-        $finalTotal = $total - $discount;
+            $shipping = $subtotal >= 50 ? 0 : 5.00;
+            $total = $subtotal - $discount + $shipping;
 
-        $orderId = DB::transaction(function () use ($request, $cartItems, $finalTotal) {
+            // Generate BSG Order Number: BSG-{YYYYMMDD}-{5-digit}
+            $orderNumber = 'BSG-' . date('Ymd') . '-' . str_pad((string) (Order::whereDate('created_at', now())->count() + 1), 5, '0', STR_PAD_LEFT);
+
             $order = Order::create([
+                'order_number' => $orderNumber,
                 'user_id' => Auth::id(),
-                'total_price' => $finalTotal,
-                'status' => 'Order Placed',
+                'status' => Order::STATUS_PENDING,
+                'subtotal' => $subtotal,
+                'discount_amount' => $discount,
+                'shipping_fee' => $shipping,
+                'total_amount' => $total,
+                'coupon_code' => $couponCode,
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
                 'shipping_address' => $request->shipping_address,
                 'payment_method' => $request->payment_method,
+                'extra_packaging_requested' => $request->has('extra_packaging'),
+                'notes' => $request->notes,
+                'placed_at' => now(),
             ]);
 
-            foreach ($cartItems as $item) {
+            foreach ($cart->items as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'product_name' => $item->product->name,
-                    'price' => $item->product->price,
+                    'product_brand' => $item->product->brand->name ?? 'Unknown',
+                    'product_price' => $item->price_at_time,
                     'quantity' => $item->quantity,
+                    'subtotal' => $item->price_at_time * $item->quantity,
+                    'product_image' => $item->product->main_image,
                 ]);
 
-                // Reduce stock
-                $item->product->decrement('stock', $item->quantity);
+                // Deduct stock
+                $item->product->decrement('stock_quantity', $item->quantity);
             }
 
-            // Clear cart and coupon
-            Cart::where('user_id', Auth::id())->delete();
+            // Clear cart
+            $cart->items()->delete();
             session()->forget('coupon_code');
 
-            return $order->id;
+            return redirect()->route('orders.confirmation', $order->id)->with('success', 'Order placed successfully!');
         });
-
-        return redirect()->route('orders.confirmation', $orderId)->with('success', 'Order placed successfully!');
-    }
-
-    public function confirmation($id)
-    {
-        $order = Order::with('items.product')->where('user_id', Auth::id())->findOrFail($id);
-        return view('orders.confirmation', compact('order'));
     }
 }

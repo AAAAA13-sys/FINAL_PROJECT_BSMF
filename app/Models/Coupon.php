@@ -1,35 +1,64 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Coupon extends Model
+final class Coupon extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'type', 'value', 'usage_limit', 'used_count', 'expires_at'];
+    public const TYPE_PERCENTAGE = 'percentage';
+    public const TYPE_FIXED = 'fixed';
+    public const TYPE_FREE_SHIPPING = 'free_shipping';
+    public const TYPE_BOGO = 'bogo';
 
-    public function isValid()
+    protected $fillable = [
+        'code',
+        'name',
+        'discount_type',
+        'discount_value',
+        'min_order_amount',
+        'max_discount',
+        'applicable_brands',
+        'applicable_series',
+        'expires_at',
+        'usage_limit',
+        'per_user_limit',
+        'times_used',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'applicable_brands' => 'array',
+        'applicable_series' => 'array',
+        'expires_at' => 'datetime',
+        'is_active' => 'boolean',
+        'discount_value' => 'decimal:2',
+        'min_order_amount' => 'decimal:2',
+        'max_discount' => 'decimal:2',
+    ];
+
+    /**
+     * Check if coupon is valid.
+     */
+    public function isValid(): bool
     {
-        if ($this->expires_at && $this->expires_at < now()) {
+        if (!$this->is_active) {
             return false;
         }
 
-        if ($this->usage_limit && $this->used_count >= $this->usage_limit) {
+        if ($this->expires_at && $this->expires_at->isPast()) {
+            return false;
+        }
+
+        if ($this->usage_limit && $this->times_used >= $this->usage_limit) {
             return false;
         }
 
         return true;
-    }
-
-    public function calculateDiscount($total)
-    {
-        if ($this->type === 'fixed') {
-            return min($this->value, $total);
-        }
-
-        return $total * ($this->value / 100);
     }
 }

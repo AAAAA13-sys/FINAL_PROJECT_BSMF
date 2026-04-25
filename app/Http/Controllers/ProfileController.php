@@ -21,11 +21,17 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'default_shipping_address' => 'nullable|string',
+            'newsletter_subscribed' => 'boolean',
             'password' => 'nullable|min:8|confirmed',
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->default_shipping_address = $request->default_shipping_address;
+        $user->newsletter_subscribed = $request->has('newsletter_subscribed');
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);

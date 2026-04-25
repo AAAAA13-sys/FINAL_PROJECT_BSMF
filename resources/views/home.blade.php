@@ -3,8 +3,8 @@
 @section('content')
 <section class="hero">
     <div class="hero-content">
-        <h1 class="fade-in">PREMIUM DIE-CAST <span>COLLECTOR SERIES</span></h1>
-        <p class="fade-in delay-1" style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 8px; margin-bottom: 3rem; font-weight: 700; opacity: 0.9; color: var(--secondary);">The Ultimate Hot Wheels Marketplace</p>
+        <h1 class="fade-in text-uppercase italic fw-black ls-tight mb-2" style="font-size: 5.5rem;">BSMF <span>GARAGE</span></h1>
+        <p class="fade-in delay-1" style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 6px; margin-bottom: 3.5rem; font-weight: 700; opacity: 0.8; color: var(--secondary);">Premium Die-Cast Collector Series</p>
         
         <form action="{{ route('products.index') }}" method="GET" class="fade-in delay-2" style="display: flex; gap: 0; width: 100%; max-width: 700px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
             <input type="text" name="search" placeholder="Search for your dream car: Skyline, Supra, Porsche..." style="flex-grow: 1; background: transparent; border: none; color: white; padding: 0 2.5rem; font-size: 1.1rem; outline: none;">
@@ -33,14 +33,8 @@
         <div class="product-grid">
             @forelse($featuredProducts as $product)
                 <div class="product-card" style="background: var(--bg-darker); border: 1px solid var(--glass-border); color: white;">
-                    @php
-                        $img_path = $product->image_url;
-                        if (!Str::startsWith($img_path, ['http', '/'])) {
-                            $img_path = asset($img_path);
-                        }
-                    @endphp
                     <div style="position: relative; overflow: hidden; border-radius: 8px;">
-                        <img src="{{ $img_path }}" alt="{{ $product->name }}" class="product-image" style="aspect-ratio: 1; object-fit: contain; background: #000;">
+                        <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="aspect-ratio: 1; object-fit: contain; background: #000;">
                         <div style="position: absolute; top: 10px; left: 10px; background: var(--secondary); color: var(--bg-dark); padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 900; letter-spacing: 1px;">NEW ARRIVAL</div>
                     </div>
                     <div class="product-info">
@@ -70,7 +64,7 @@
     </div>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
         <div class="glass" style="position: relative; height: 500px; border-radius: 30px; overflow: hidden; border: 1px solid var(--glass-border); group">
-            <img src="/brain/4e1c821e-b0fb-4133-a96e-6b60f41651c1/collection_jdm_1776950730020.png" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s;" class="spotlight-img">
+            <img src="{{ asset('images/jdm_spotlight.png') }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s;" class="spotlight-img">
             <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem;">
                 <span style="color: var(--secondary); font-weight: 800; letter-spacing: 3px; font-size: 0.8rem;">THE JDM LEGENDS</span>
                 <h3 style="font-size: 2.5rem; font-style: italic; text-transform: uppercase; margin: 1rem 0;">Skyline, Supra & <span>Beyond</span></h3>
@@ -79,7 +73,7 @@
             </div>
         </div>
         <div class="glass" style="position: relative; height: 500px; border-radius: 30px; overflow: hidden; border: 1px solid var(--glass-border);">
-            <img src="/brain/4e1c821e-b0fb-4133-a96e-6b60f41651c1/collection_muscle_1776950754546.png" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s;" class="spotlight-img">
+            <img src="{{ asset('images/muscle_spotlight.png') }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s;" class="spotlight-img">
             <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem;">
                 <span style="color: var(--primary); font-weight: 800; letter-spacing: 3px; font-size: 0.8rem;">AMERICAN MUSCLE</span>
                 <h3 style="font-size: 2.5rem; font-style: italic; text-transform: uppercase; margin: 1rem 0;">V8 Power <span>Redefined</span></h3>
@@ -131,7 +125,7 @@
         @foreach($featuredProducts as $product)
             <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 20px; text-align: center;">
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <img src="{{ $product->image_url }}" alt="Grail" style="max-height: 100%; object-fit: contain;">
+                    <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="Grail" style="max-height: 100%; object-fit: contain;">
                 </div>
                 <h4 style="color: white; font-size: 0.9rem; margin-bottom: 0.5rem;">{{ $product->name }}</h4>
                 <div style="color: var(--secondary); font-weight: 900;">${{ number_format($product->price, 2) }}</div>
@@ -211,14 +205,8 @@
     <div class="product-grid">
         @foreach($featuredProducts as $product)
         <div class="product-card" style="background: var(--bg-dark); border: 1px solid var(--glass-border); color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            @php
-                $img_path = $product->image_url;
-                if (!Str::startsWith($img_path, ['http', '/'])) {
-                    $img_path = asset($img_path);
-                }
-            @endphp
             <div style="position: relative; overflow: hidden; border-radius: 8px;">
-                <img src="{{ $img_path }}" alt="{{ $product->name }}" class="product-image" style="background: #000814; border: none; margin-bottom: 0;">
+                <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="background: #000814; border: none; margin-bottom: 0;">
                 <div style="position: absolute; top: 10px; right: 10px; background: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;">STAR</div>
             </div>
             <div class="product-info" style="padding-top: 1.5rem;">

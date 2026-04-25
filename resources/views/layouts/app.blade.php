@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'E-Commerce-BFMSL - Premium Die-Cast')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,9 +17,9 @@
         }
     </style>
 </head>
-<body>
+<body class="{{ Route::is('login') || Route::is('register') ? 'auth-page' : '' }}">
     <nav class="fade-in">
-        <a href="{{ route('home') }}" class="logo">BSMF <span>GARAGE</span></a>
+        <a href="{{ route('home') }}" class="logo">BSMF GARAGE</a>
         
         <button class="mobile-toggle" style="display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">
             <i class="fas fa-bars"></i>
@@ -43,7 +44,7 @@
                 <li><a href="{{ route('wishlist.index') }}">Garage</a></li>
                 <li><a href="{{ route('cart.index') }}">Cart</a></li>
                 <li><a href="{{ route('orders.index') }}">Orders</a></li>
-                @if(Auth::user()->role === 'admin')
+                @if(Auth::user()->is_admin)
                     <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                 @endif
                 <li>
@@ -82,6 +83,12 @@
         document.querySelector('.mobile-toggle').addEventListener('click', function() {
             document.querySelector('.nav-links').classList.toggle('active');
         });
+
+        // Force scroll to top on reload
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
     </script>
 
     <main class="page-transition">
@@ -103,7 +110,7 @@
     <footer>
         <div class="footer-grid">
             <div>
-                <div class="logo" style="font-size: 1.5rem;">BSMF <span>GARAGE</span></div>
+                <div class="logo" style="font-size: 1.5rem;">BSMF GARAGE</div>
                 <p class="footer-desc">Premium Die-Cast Collector Series. The ultimate destination for collectors.</p>
             </div>
             <div>
@@ -122,8 +129,76 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; {{ date('Y') }} E-Commerce-BFMSL. All rights reserved.
+            &copy; {{ date('Y') }} BSMF GARAGE. All rights reserved.
         </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navigation Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (nav) {
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            }
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // Testimonial Slider
+        function moveSlider(index) {
+            const track = document.querySelector('.testimonial-track');
+            const dots = document.querySelectorAll('.dot');
+            if (track) {
+                track.style.transform = `translateX(-${index * 100}%)`;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+        }
+        window.moveSlider = moveSlider;
+
+        // Password Visibility Toggle
+        function togglePassword(btn) {
+            const input = btn.parentElement.querySelector('input');
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        window.togglePassword = togglePassword;
+    </script>
     @auth
         <!-- Support Widget -->
         <div id="support-widget" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 5000;">
@@ -252,52 +327,6 @@
                 if (disputeList) disputeList.style.display = 'block';
                 newDisputeForm.style.display = 'block';
             }
-
-            // Scroll Reveal Animation
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-            // Navigation Scroll Effect
-            window.addEventListener('scroll', () => {
-                const nav = document.querySelector('nav');
-                if (window.scrollY > 50) {
-                    nav.classList.add('scrolled');
-                } else {
-                    nav.classList.remove('scrolled');
-                }
-            });
-            // FAQ Accordion
-            document.querySelectorAll('.faq-question').forEach(q => {
-                q.addEventListener('click', () => {
-                    const item = q.parentElement;
-                    item.classList.toggle('active');
-                });
-            });
-
-            // Testimonial Slider
-            function moveSlider(index) {
-                const track = document.querySelector('.testimonial-track');
-                const dots = document.querySelectorAll('.dot');
-                if (track) {
-                    track.style.transform = `translateX(-${index * 100}%)`;
-                    dots.forEach((dot, i) => {
-                        dot.classList.toggle('active', i === index);
-                    });
-                }
-            }
-            window.moveSlider = moveSlider;
         </script>
     @endauth
 </body>

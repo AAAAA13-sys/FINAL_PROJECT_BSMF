@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Dispute;
@@ -7,8 +9,11 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class SupportController extends Controller
+final class SupportController extends Controller
 {
+    /**
+     * Display support center.
+     */
     public function index(Request $request)
     {
         $order_id = $request->query('order_id');
@@ -18,35 +23,25 @@ class SupportController extends Controller
         return view('support.index', compact('orders', 'disputes', 'order_id'));
     }
 
+    /**
+     * File a new collector dispute (Deliverable Phase 5).
+     */
     public function store(Request $request)
     {
         $request->validate([
             'order_id' => 'required|exists:orders,id',
-            'type' => 'required|in:wrong item,never received,damaged product,other',
+            'dispute_type' => 'required|in:wrong_item,never_received,damaged_card,not_as_described',
             'description' => 'required|string',
         ]);
 
         Dispute::create([
             'user_id' => Auth::id(),
             'order_id' => $request->order_id,
-            'type' => $request->type,
+            'dispute_type' => $request->dispute_type,
             'description' => $request->description,
-            'status' => 'pending',
+            'status' => Dispute::STATUS_PENDING,
         ]);
 
-        return back()->with('success', 'Your request has been submitted. Our team will review it shortly.');
-    }
-
-    public function messageStore(Request $request, $dispute_id)
-    {
-        $request->validate(['message' => 'required|string']);
-
-        \App\Models\DisputeMessage::create([
-            'dispute_id' => $dispute_id,
-            'user_id' => Auth::id(),
-            'message' => $request->message,
-        ]);
-
-        return back()->with('success', 'Message sent!');
+        return back()->with('success', 'Your dispute has been logged. Our marshals will investigate shortly.');
     }
 }

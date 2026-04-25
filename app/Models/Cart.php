@@ -1,20 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Cart extends Model
+final class Cart extends Model
 {
-    protected $fillable = ['user_id', 'product_id', 'quantity'];
+    use HasFactory;
 
-    public function user()
+    protected $fillable = [
+        'user_id',
+        'session_id',
+    ];
+
+    /**
+     * Get the user that owns the cart.
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    /**
+     * Get the items in the cart.
+     */
+    public function items(): HasMany
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(CartItem::class);
+    }
+
+    /**
+     * Calculate subtotal of all items.
+     */
+    public function subtotal(): float
+    {
+        return (float) $this->items->sum(fn($item) => $item->price_at_time * $item->quantity);
     }
 }

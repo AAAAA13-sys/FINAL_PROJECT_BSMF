@@ -2,50 +2,62 @@
 
 @section('content')
 <div class="fade-in">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
-        <h1 style="font-style: italic; text-transform: uppercase; font-weight: 900; letter-spacing: -1px;">Coupon <span>Management</span></h1>
-        <button onclick="document.getElementById('addCouponModal').style.display='flex'" class="btn btn-primary">+ Create New Coupon</button>
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="card-title-premium fs-2">COUPON <span>VAULT</span></h1>
+        <button onclick="document.getElementById('addCouponModal').style.display='flex'" class="btn btn-warning px-4 py-2 rounded-pill fw-black ls-1">+ NEW COUPON</button>
     </div>
 
-    <div class="glass" style="padding: 1rem; border-radius: 16px; overflow: hidden;">
+    <div class="admin-table-container">
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>Code</th>
+                    <th class="ps-4">Code</th>
                     <th>Type</th>
                     <th>Value</th>
-                    <th>Usage</th>
-                    <th>Expires</th>
-                    <th>Actions</th>
+                    <th>Usage Depth</th>
+                    <th>Expiry Status</th>
+                    <th class="pe-4 text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($coupons as $coupon)
                 <tr>
-                    <td style="font-weight: 800; color: var(--secondary);">{{ $coupon->code }}</td>
-                    <td style="text-transform: uppercase;">{{ $coupon->type }}</td>
-                    <td style="font-weight: 800;">
-                        {{ $coupon->type == 'percent' ? $coupon->value . '%' : '$' . number_format($coupon->value, 2) }}
+                    <td class="ps-4">
+                        <span class="text-warning fw-black ls-1 fs-5">{{ $coupon->code }}</span>
+                    </td>
+                    <td><span class="badge bg-dark border border-secondary text-muted px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">{{ strtoupper(str_replace('_', ' ', $coupon->discount_type)) }}</span></td>
+                    <td>
+                        <span class="text-white fw-black">
+                            {{ $coupon->discount_type == 'percentage' ? number_format($coupon->discount_value, 0) . '%' : ($coupon->discount_type == 'free_shipping' ? 'FREE SHIP' : '$' . number_format($coupon->discount_value, 2)) }}
+                        </span>
                     </td>
                     <td>
-                        <div style="font-size: 0.8rem;">
-                            {{ $coupon->used_count }} / {{ $coupon->usage_limit ?: '∞' }}
+                        <div class="d-flex align-items-center gap-3" style="min-width: 150px;">
+                            <div class="flex-grow-1">
+                                <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                                    @php 
+                                        $percent = $coupon->usage_limit ? ($coupon->times_used / $coupon->usage_limit) * 100 : 0;
+                                    @endphp
+                                    <div class="progress-bar bg-primary" style="width: {{ min($percent, 100) }}%"></div>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.6rem; margin-top: 6px; font-weight: 700;">{{ $coupon->times_used }} / {{ $coupon->usage_limit ?: '∞' }} BURNED</div>
+                            </div>
                         </div>
-                        <div style="width: 100px; height: 4px; background: rgba(255,255,255,0.05); margin-top: 5px; border-radius: 2px; overflow: hidden;">
-                            @php 
-                                $percent = $coupon->usage_limit ? ($coupon->used_count / $coupon->usage_limit) * 100 : 0;
-                            @endphp
-                            <div style="width: {{ min($percent, 100) }}%; height: 100%; background: var(--primary);"></div>
-                        </div>
-                    </td>
-                    <td style="color: {{ $coupon->expires_at && $coupon->expires_at < now() ? 'var(--danger)' : 'white' }}">
-                        {{ $coupon->expires_at ? date('M d, Y', strtotime($coupon->expires_at)) : 'Never' }}
                     </td>
                     <td>
-                        <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" onsubmit="return confirm('Delete this coupon?')" style="display: inline;">
+                        @if($coupon->expires_at && $coupon->expires_at->isPast())
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">EXPIRED</span>
+                        @else
+                            <span class="text-white-50 small fw-bold">
+                                {{ $coupon->expires_at ? $coupon->expires_at->format('M d, Y') : 'INFINITY' }}
+                            </span>
+                        @endif
+                    </td>
+                    <td class="pe-4 text-end">
+                        <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" onsubmit="return confirm('Burn this coupon code?')" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" style="color: var(--danger); background: none; border: none; cursor: pointer; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" style="font-size: 0.65rem;">DELETE</button>
                         </form>
                     </td>
                 </tr>
@@ -56,44 +68,44 @@
 </div>
 
 <!-- Add Coupon Modal -->
-<div id="addCouponModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px);">
-    <div class="auth-container" style="max-width: 600px; width: 90%;">
-        <h2 class="auth-title">CREATE <span>COUPON</span></h2>
+<div id="addCouponModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(15px);">
+    <div class="glass p-5 shadow-2xl" style="width: 100%; max-width: 550px; background: var(--bg-darker); border: 2px solid var(--secondary);">
+        <h2 class="h4 text-white text-uppercase italic mb-5 fw-black">CREATE <span>PROMO</span></h2>
         <form action="{{ route('admin.coupons.store') }}" method="POST">
             @csrf
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <div class="form-group">
-                    <label>Coupon Code</label>
-                    <input type="text" name="code" class="form-control" placeholder="e.g. SPEED20" required>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Coupon Code</label>
+                    <input type="text" name="code" class="form-control bg-dark border-secondary text-white p-3" placeholder="e.g. SPEED20" required>
                 </div>
-                <div class="form-group">
-                    <label>Discount Type</label>
-                    <select name="type" class="form-control" required>
-                        <option value="percent">Percentage (%)</option>
+                <div class="col-md-6">
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Type</label>
+                    <select name="discount_type" class="form-select bg-dark border-secondary text-white p-3" required>
+                        <option value="percentage">Percentage (%)</option>
                         <option value="fixed">Fixed Amount ($)</option>
+                        <option value="free_shipping">Free Shipping</option>
                     </select>
                 </div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <div class="form-group">
-                    <label>Discount Value</label>
-                    <input type="number" step="0.01" name="value" class="form-control" required>
+                <div class="col-md-6">
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Discount Value</label>
+                    <input type="number" step="0.01" name="discount_value" class="form-control bg-dark border-secondary text-white p-3" required>
                 </div>
-                <div class="form-group">
-                    <label>Usage Limit (Optional)</label>
-                    <input type="number" name="usage_limit" class="form-control">
+                <div class="col-md-6">
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Min Order ($)</label>
+                    <input type="number" step="0.01" name="min_order_amount" class="form-control bg-dark border-secondary text-white p-3" value="0.00">
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Usage Limit</label>
+                    <input type="number" name="usage_limit" class="form-control bg-dark border-secondary text-white p-3" placeholder="Leave empty for unlimited">
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Expiry Date</label>
+                    <input type="date" name="expires_at" class="form-control bg-dark border-secondary text-white p-3">
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>Expiry Date (Optional)</label>
-                <input type="date" name="expires_at" class="form-control">
-            </div>
-
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit" class="btn btn-primary" style="flex: 1;">Create Coupon</button>
-                <button type="button" onclick="document.getElementById('addCouponModal').style.display='none'" class="btn" style="flex: 1; background: var(--glass); color: white;">Cancel</button>
+            <div class="d-flex gap-3 mt-5">
+                <button type="submit" class="btn btn-warning flex-grow-1 py-3 fw-black text-uppercase ls-1">ACTIVATE</button>
+                <button type="button" onclick="document.getElementById('addCouponModal').style.display='none'" class="btn btn-outline-secondary flex-grow-1 py-3 fw-bold text-uppercase">CANCEL</button>
             </div>
         </form>
     </div>
