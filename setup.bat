@@ -24,7 +24,7 @@ call php artisan key:generate
 
 :: 4. Run Migrations and Seed Database
 echo [4/6] Setting up database (Migrating and Seeding)...
-:: Note: This assumes you have a database configured in .env
+echo        Ensure you have created the database 'final_project_bsmf' in XAMPP/MySQL.
 call php artisan migrate:fresh --seed
 
 :: 5. Create Storage Link

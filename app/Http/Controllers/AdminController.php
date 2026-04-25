@@ -33,9 +33,8 @@ final class AdminController extends Controller
         $totalCustomers = User::where('is_admin', false)->count();
         $recentDisputes = Dispute::where('status', Dispute::STATUS_PENDING)->limit(5)->get();
 
-        // Monthly Sales for Chart (SQLite compatible)
-        $isSqlite = DB::getDriverName() === 'sqlite';
-        $monthFormat = $isSqlite ? "strftime('%m', created_at)" : "DATE_FORMAT(created_at, '%m')";
+        // Monthly Sales for Chart
+        $monthFormat = "DATE_FORMAT(created_at, '%m')";
         
         $monthlySales = Order::where('status', '!=', Order::STATUS_CANCELLED)
             ->where('created_at', '>=', now()->subMonths(6))

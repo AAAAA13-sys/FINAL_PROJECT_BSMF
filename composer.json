@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "bsmf/final-project-bsmf",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "FINAL_PROJECT_BSMF - Premium Die-Cast Collector Platform.",
+    "keywords": ["die-cast", "bsmf", "ecommerce"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
@@ -60,7 +60,6 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
         "pre-package-uninstall": [
