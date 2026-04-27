@@ -67,6 +67,14 @@ final class ProductController extends Controller
             });
         }
 
+        // Filter by Carded / Loose
+        if ($request->filled('is_carded')) {
+            $query->where('is_carded', true);
+        }
+        if ($request->filled('is_loose')) {
+            $query->where('is_loose', true);
+        }
+
         // Filter by Price Range
         if ($request->filled('min_price')) {
             $query->where('price', '>=', $request->min_price);

@@ -28,6 +28,9 @@
                     @foreach($globalCategories as $gc)
                         <a href="{{ route('products.index', ['category' => $gc->id]) }}">{{ $gc->name }}</a>
                     @endforeach
+                    <hr class="dropdown-divider" style="margin: 5px 0; border-color: rgba(255,255,255,0.1); opacity: 0.5;">
+                    <a href="{{ route('products.index', ['is_carded' => 1]) }}"><i class="fas fa-box-open me-2" style="font-size: 0.8rem; color: var(--secondary);"></i> CARDED COLLECTION</a>
+                    <a href="{{ route('products.index', ['is_loose' => 1]) }}"><i class="fas fa-car me-2" style="font-size: 0.8rem; color: var(--secondary);"></i> LOOSE SELECTION</a>
                 </div>
             </li>
             <li><a href="{{ route('products.index') }}">SHOP</a></li>
