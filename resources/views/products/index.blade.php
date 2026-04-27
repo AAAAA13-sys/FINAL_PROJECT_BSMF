@@ -141,7 +141,7 @@
                             @endif
 
                             <div class="product-image-container overflow-hidden">
-                                <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" class="card-img-top zoom-on-hover" alt="{{ $product->name }}" loading="lazy">
+                                <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" class="card-img-top zoom-on-hover" alt="{{ $product->name }}" loading="lazy">
                             </div>
 
                             <div class="card-body">

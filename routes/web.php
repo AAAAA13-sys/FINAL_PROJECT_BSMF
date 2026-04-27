@@ -57,18 +57,18 @@ Route::middleware(['auth'])->group(function () {
     // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-        
+
         // Products
         Route::get('/products', [AdminController::class, 'products'])->name('products');
         Route::post('/products', [AdminController::class, 'productStore'])->name('products.store');
         Route::get('/products/{id}/edit', [AdminController::class, 'productEdit'])->name('products.edit');
         Route::put('/products/{id}', [AdminController::class, 'productUpdate'])->name('products.update');
         Route::delete('/products/{id}', [AdminController::class, 'productDestroy'])->name('products.destroy');
-        
+
         // Orders
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
         Route::post('/orders/{id}/status', [AdminController::class, 'orderUpdateStatus'])->name('orders.updateStatus');
-        
+
         // Disputes
         Route::get('/disputes', [AdminController::class, 'disputes'])->name('disputes');
         Route::post('/disputes/{id}/status', [AdminController::class, 'disputeUpdateStatus'])->name('disputes.updateStatus');

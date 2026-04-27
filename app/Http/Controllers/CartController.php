@@ -18,7 +18,7 @@ final class CartController extends Controller
     public function index(Request $request)
     {
         $cart = Cart::with(['items.product.brand'])->firstOrCreate(['user_id' => Auth::id()]);
-        
+
         if ($request->wantsJson() || $request->is('api/*')) {
             $cart->load('items.product.images');
             return new \App\Http\Resources\CartResource($cart);
@@ -38,7 +38,7 @@ final class CartController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
-        
+
         // Stock validation
         if ($product->stock_quantity < $request->quantity) {
             if ($request->wantsJson() || $request->is('api/*')) {
@@ -48,7 +48,7 @@ final class CartController extends Controller
         }
 
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-        
+
         $item = $cart->items()->where('product_id', $product->id)->first();
 
         if ($item) {
@@ -59,7 +59,8 @@ final class CartController extends Controller
                 }
                 return back()->with('error', "Cannot add more. Max stock reached.");
             }
-            $item->increment('quantity', $request->quantity);
+            $item->quantity += $request->quantity;
+            $item->save();
         } else {
             $cart->items()->create([
                 'product_id' => $product->id,
@@ -80,9 +81,9 @@ final class CartController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate(['quantity' => 'required|integer|min:1']);
-        
+
         $item = CartItem::whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))->findOrFail($id);
-        
+
         if ($item->product->stock_quantity < $request->quantity) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return response()->json(['message' => "Insufficient stock."], 400);

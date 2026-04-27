@@ -21,14 +21,14 @@ final class ProductController extends Controller
         $query = Product::query()
             ->with(['category', 'brand', 'scale', 'series', 'reviews'])
             ->active();
-        
+
         // Search by car name, casting name, or description
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('casting_name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('casting_name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -55,11 +55,15 @@ final class ProductController extends Controller
         // Filter by Rarity
         if ($request->filled('rarity')) {
             $rarity = (array) $request->rarity;
-            $query->where(function($q) use ($rarity) {
-                if (in_array('sth', $rarity)) $q->orWhere('is_super_treasure_hunt', true);
-                if (in_array('th', $rarity)) $q->orWhere('is_treasure_hunt', true);
-                if (in_array('chase', $rarity)) $q->orWhere('is_chase', true);
-                if (in_array('rlc', $rarity)) $q->orWhere('is_rlc_exclusive', true);
+            $query->where(function ($q) use ($rarity) {
+                if (in_array('sth', $rarity))
+                    $q->orWhere('is_super_treasure_hunt', true);
+                if (in_array('th', $rarity))
+                    $q->orWhere('is_treasure_hunt', true);
+                if (in_array('chase', $rarity))
+                    $q->orWhere('is_chase', true);
+                if (in_array('rlc', $rarity))
+                    $q->orWhere('is_rlc_exclusive', true);
             });
         }
 
@@ -73,9 +77,9 @@ final class ProductController extends Controller
 
         // Sorting
         $sort = $request->get('sort', 'newest');
-        
+
         $query->reorder(); // Clear any existing orders
-        
+
         switch ($sort) {
             case 'price_low':
                 $query->orderBy('price', 'asc')->orderBy('name', 'asc');
@@ -101,11 +105,11 @@ final class ProductController extends Controller
         }
 
         $products = $query->paginate(24)->withQueryString();
-        
+
         if ($request->wantsJson() || $request->is('api/*')) {
             return \App\Http\Resources\ProductResource::collection($products);
         }
-        
+
         $categories = Category::all();
         $brands = Brand::all();
         $scales = Scale::all();
@@ -121,14 +125,14 @@ final class ProductController extends Controller
     {
         $product = Product::with(['category', 'brand', 'scale', 'series', 'reviews.user', 'images'])
             ->findOrFail($id);
-            
+
         // Increment views
         $product->increment('views');
-        
+
         if (request()->wantsJson() || request()->is('api/*')) {
             return new \App\Http\Resources\ProductResource($product);
         }
-            
+
         // Product details view
         return view('products.show', compact('product'));
     }

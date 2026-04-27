@@ -33,8 +33,14 @@ call php artisan storage:link
 
 :: 6. Install Node Dependencies
 if exist package.json (
-    echo [6/6] Installing NPM dependencies...
+    echo [6/7] Installing NPM dependencies...
     call npm install
+)
+
+:: 7. Populate Product Images
+if exist scratch\populate_images.php (
+    echo [7/7] Populating product images...
+    call php scratch\populate_images.php
 )
 
 echo.

@@ -39,7 +39,7 @@
             @forelse($featuredProducts as $product)
                 <div class="product-card" style="background: var(--bg-darker); border: 1px solid var(--glass-border); color: white;">
                     <div style="position: relative; overflow: hidden; border-radius: 8px;">
-                        <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="aspect-ratio: 1; object-fit: contain; background: #000;" loading="lazy">
+                        <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="aspect-ratio: 1; object-fit: contain; background: #000;" loading="lazy">
                         <div style="position: absolute; top: 10px; left: 10px; background: var(--secondary); color: var(--bg-dark); padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 900; letter-spacing: 1px;">NEW ARRIVAL</div>
                     </div>
                     <div class="product-info">
