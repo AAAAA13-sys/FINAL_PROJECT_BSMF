@@ -9,53 +9,12 @@
         <div style="position: relative; width: 100%; max-width: 700px;" class="fade-in delay-2">
             <form action="{{ route('products.index') }}" method="GET" id="searchForm" style="display: flex; gap: 0; width: 100%; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
                 <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search for your dream car: Skyline, Supra, Porsche..." style="flex-grow: 1; background: transparent; border: none; color: white; padding: 0 2.5rem; font-size: 1.1rem; outline: none;">
-                <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Garage</button>
+                <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Collection</button>
             </form>
             <div id="searchSuggestions" class="glass" style="display: none; position: absolute; top: 110%; left: 0; right: 0; z-index: 1000; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border);"></div>
         </div>
 
-        <script>
-            const searchInput = document.getElementById('searchInput');
-            const suggestionsBox = document.getElementById('searchSuggestions');
 
-            if (searchInput) {
-                searchInput.addEventListener('input', async (e) => {
-                    const query = e.target.value;
-                    if (query.length < 2) {
-                        suggestionsBox.style.display = 'none';
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch(`/api/search-suggestions?query=${encodeURIComponent(query)}`);
-                        const products = await response.json();
-
-                        if (products.length > 0) {
-                            suggestionsBox.innerHTML = products.map(p => `
-                                <a href="/products/${p.id}" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; text-decoration: none; border-bottom: 1px solid var(--glass-border); transition: 0.3s;" class="suggestion-item">
-                                    <img src="${p.main_image || '/images/placeholder-car.webp'}" style="width: 50px; height: 35px; object-fit: contain; background: #000; border-radius: 4px;">
-                                    <div>
-                                        <div style="color: white; font-weight: 700; font-size: 0.9rem;">${p.name}</div>
-                                        <div style="color: var(--secondary); font-weight: 800; font-size: 0.8rem;">$${parseFloat(p.price).toFixed(2)}</div>
-                                    </div>
-                                </a>
-                            `).join('');
-                            suggestionsBox.style.display = 'block';
-                        } else {
-                            suggestionsBox.style.display = 'none';
-                        }
-                    } catch (err) {
-                        console.error('Search error:', err);
-                    }
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-                        suggestionsBox.style.display = 'none';
-                    }
-                });
-            }
-        </script>
 
         <div class="fade-in delay-3" style="margin-top: 4rem; display: flex; gap: 3rem; color: var(--text-muted); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">
             <span><i class="fas fa-shipping-fast" style="color: var(--secondary); margin-right: 10px;"></i> Global Shipping</span>
@@ -115,7 +74,7 @@
                 <span style="color: var(--secondary); font-weight: 800; letter-spacing: 3px; font-size: 0.8rem;">THE JDM LEGENDS</span>
                 <h3 style="font-size: 2.5rem; font-style: italic; text-transform: uppercase; margin: 1rem 0;">Skyline, Supra & <span>Beyond</span></h3>
                 <p style="color: rgba(255,255,255,0.7); max-width: 400px; margin-bottom: 2rem;">Discover precision-engineered 1:64 scale models of the most iconic Japanese performance cars ever built.</p>
-                <a href="{{ route('products.index') }}" class="btn" style="border: 1px solid white; color: white; border-radius: 30px; width: fit-content;">Browse JDM Garage</a>
+                <a href="{{ route('products.index') }}" class="btn" style="border: 1px solid white; color: white; border-radius: 30px; width: fit-content;">Browse JDM Collection</a>
             </div>
         </div>
         <div class="glass" style="position: relative; height: 500px; border-radius: 30px; overflow: hidden; border: 1px solid var(--glass-border);">
@@ -124,7 +83,7 @@
                 <span style="color: var(--primary); font-weight: 800; letter-spacing: 3px; font-size: 0.8rem;">AMERICAN MUSCLE</span>
                 <h3 style="font-size: 2.5rem; font-style: italic; text-transform: uppercase; margin: 1rem 0;">V8 Power <span>Redefined</span></h3>
                 <p style="color: rgba(255,255,255,0.7); max-width: 400px; margin-bottom: 2rem;">From the 1969 Mustang to the latest Widebody Chargers, find the heart of Detroit in die-cast form.</p>
-                <a href="{{ route('products.index') }}" class="btn" style="border: 1px solid white; color: white; border-radius: 30px; width: fit-content;">Browse Muscle Garage</a>
+                <a href="{{ route('products.index') }}" class="btn" style="border: 1px solid white; color: white; border-radius: 30px; width: fit-content;">Browse Muscle Collection</a>
             </div>
         </div>
     </div>
@@ -196,7 +155,7 @@
         <div class="service-card">
             <i class="fas fa-users service-icon"></i>
             <h3 style="margin-bottom: 1rem; font-style: italic; text-transform: uppercase;">Collector Community</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Join thousands of enthusiasts in our active garage.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Join thousands of enthusiasts in our active community.</p>
         </div>
     </div>
 </section>
@@ -308,7 +267,7 @@
 <section class="section-padding reveal">
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
         <div class="community-section" style="padding: 3rem; flex-direction: column; align-items: flex-start; text-align: left; gap: 2rem;">
-            <h2 style="font-size: 2rem; font-style: italic; text-transform: uppercase;">Join the <span>Garage</span></h2>
+            <h2 style="font-size: 2rem; font-style: italic; text-transform: uppercase;">Join the <span>Community</span></h2>
             <div style="display: flex; gap: 1rem;">
                 <a href="#" class="btn btn-primary" style="border-radius: 50px; background: #5865F2; box-shadow: none; font-size: 0.8rem;"><i class="fab fa-discord"></i> Discord</a>
                 <a href="#" class="btn btn-primary" style="border-radius: 50px; background: #E1306C; box-shadow: none; font-size: 0.8rem;"><i class="fab fa-instagram"></i> Insta</a>

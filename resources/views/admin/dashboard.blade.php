@@ -1,17 +1,20 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="fade-in p-2">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-white text-uppercase italic fw-black">BSMF <span>GARAGE CONTROL</span></h1>
-        <div class="text-muted small italic fw-bold">{{ now()->format('l, jS F Y') }}</div>
+<div class="fade-in p-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="h3 text-white text-uppercase italic fw-black">BSMF <span style="color: var(--secondary);">GARAGE CONTROL</span></h1>
+        <div class="text-end">
+            <div class="text-white-50 small italic fw-bold">{{ now()->format('l, jS F Y') }}</div>
+            <div class="text-secondary small fw-black text-uppercase">Admin: {{ Auth::user()->name }}</div>
+        </div>
     </div>
 
     <!-- Stats Grid -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="stat-card p-3 glass border-secondary">
-                <p class="text-muted small text-uppercase ls-2 mb-1" style="font-size: 0.65rem;">Total Revenue</p>
+                <p class="text-secondary small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Total Revenue</p>
                 <h2 class="text-warning fw-black mb-0">${{ number_format($totalSales, 2) }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-warning" style="width: 75%"></div>
@@ -20,7 +23,7 @@
         </div>
         <div class="col-md-3">
             <div class="stat-card p-3 glass border-primary">
-                <p class="text-muted small text-uppercase ls-2 mb-1" style="font-size: 0.65rem;">Total Orders</p>
+                <p class="text-white opacity-75 small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Total Orders</p>
                 <h2 class="text-white fw-black mb-0">{{ $totalOrders }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-primary" style="width: 60%"></div>
@@ -29,7 +32,7 @@
         </div>
         <div class="col-md-3">
             <div class="stat-card p-3 glass border-info">
-                <p class="text-muted small text-uppercase ls-2 mb-1" style="font-size: 0.65rem;">Inventory (SKUs)</p>
+                <p class="text-info small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Inventory (SKUs)</p>
                 <h2 class="text-info fw-black mb-0">{{ $totalProducts }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-info" style="width: 85%"></div>
@@ -38,7 +41,7 @@
         </div>
         <div class="col-md-3">
             <div class="stat-card p-3 glass border-success">
-                <p class="text-muted small text-uppercase ls-2 mb-1" style="font-size: 0.65rem;">Active Collectors</p>
+                <p class="text-success small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Active Collectors</p>
                 <h2 class="text-white fw-black mb-0">{{ $totalCustomers }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-success" style="width: 90%"></div>
@@ -162,59 +165,16 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        
-        const labels = {!! json_encode($monthlySales->pluck('month')) !!};
-        const data = {!! json_encode($monthlySales->pluck('total')) !!};
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Revenue ($)',
-                    data: data,
-                    borderColor: '#fbbf24',
-                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                    borderWidth: 4,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#e11d48',
-                    pointBorderColor: '#fff',
-                    pointHoverRadius: 8,
-                    pointRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
-                    }
-                }
-            }
+    <script src="{{ asset('js/admin.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initRevenueChart(
+                {!! json_encode($monthlySales->pluck('month')) !!},
+                {!! json_encode($monthlySales->pluck('total')) !!}
+            );
         });
-    });
-</script>
+    </script>
 
-<style>
-    .fw-black { font-weight: 900; }
-    .ls-2 { letter-spacing: 2px; }
-    .italic { font-style: italic; }
-    .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default; }
-    .stat-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.05) !important; }
-    .hover-underline:hover { text-decoration: underline !important; }
-</style>
+
 @endsection
 

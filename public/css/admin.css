@@ -1,0 +1,209 @@
+/* BSMF Admin Styles */
+
+:root {
+    --sidebar-width: 240px;
+    --danger: #ff4d4d;
+}
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: #00050a;
+    border-right: 1px solid var(--glass-border);
+    padding: 0.75rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex-grow: 1;
+}
+
+.admin-nav-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    margin-bottom: 0.4rem;
+}
+
+.admin-nav-link i {
+    width: 24px;
+    font-size: 1rem;
+    margin-right: 12px;
+    opacity: 0.7;
+}
+
+.admin-nav-link:hover {
+    color: var(--secondary);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.admin-nav-link.active {
+    background: rgba(251, 191, 36, 0.1);
+    color: var(--secondary) !important;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.admin-nav-link.active i {
+    opacity: 1;
+}
+
+.admin-main {
+    margin-left: var(--sidebar-width);
+    padding: 1.5rem 2.5rem;
+    width: calc(100% - var(--sidebar-width));
+    flex-grow: 1;
+    background: radial-gradient(circle at top right, #00122e 0%, #000814 100%);
+}
+
+.admin-table-container {
+    background: rgba(0, 8, 20, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--secondary);
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    border-bottom: 2px solid var(--glass-border);
+}
+
+.admin-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    vertical-align: middle;
+    font-size: 0.85rem;
+}
+
+.admin-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.card-title-premium {
+    font-style: italic;
+    text-transform: uppercase;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: white;
+    font-family: 'Outfit';
+}
+
+.modal-glass {
+    background: #000c1d !important;
+    border: 2px solid var(--secondary) !important;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9) !important;
+    border-radius: 24px;
+}
+
+/* Pagination */
+.pagination {
+    margin-bottom: 0;
+    gap: 8px;
+    padding: 0.5rem 0;
+}
+
+.page-link {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 1.1rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    box-shadow: none !important;
+}
+
+.page-item.active .page-link {
+    background: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    color: #000 !important;
+}
+
+.page-link:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+.page-item.disabled .page-link {
+    background: rgba(255, 255, 255, 0.02) !important;
+    color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.admin-pagination-compact .page-link {
+    padding: 0.3rem 0.7rem !important;
+    font-size: 0.7rem !important;
+    border-radius: 6px !important;
+}
+
+.admin-pagination-section {
+    padding-top: 1rem !important;
+    padding-bottom: 1.5rem !important;
+    min-height: 91px;
+}
+
+/* Dashboard Specific */
+.fw-black {
+    font-weight: 900;
+}
+
+.ls-2 {
+    letter-spacing: 2px;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.hover-underline:hover {
+    text-decoration: underline !important;
+}

@@ -10,12 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Extra polish for transitions */
-        .page-transition {
-            animation: fadeIn 0.5s ease-out;
-        }
-    </style>
+
 </head>
 <body class="{{ Route::is('login') || Route::is('register') ? 'auth-page' : '' }}">
     <nav>
@@ -26,79 +21,49 @@
         </button>
 
         <ul class="nav-links">
-            <li><a href="{{ route('home') }}">Home</a></li>
+            <li><a href="{{ route('home') }}">HOME</a></li>
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Collections <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
+                <a href="javascript:void(0)" class="dropbtn">COLLECTIONS <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
                 <div class="dropdown-content">
                     @foreach($globalCategories as $gc)
                         <a href="{{ route('products.index', ['category' => $gc->id]) }}">{{ $gc->name }}</a>
                     @endforeach
                 </div>
             </li>
+            <li><a href="{{ route('products.index') }}">SHOP</a></li>
             @auth
-                <li><a href="{{ route('profile.index') }}">Profile</a></li>
-            @endauth
-            <li><a href="{{ route('products.index') }}">Shop</a></li>
-            @auth
-                <li><a href="{{ route('wishlist.index') }}">Garage</a></li>
-                <li><a href="{{ route('cart.index') }}">Cart</a></li>
-                <li><a href="{{ route('orders.index') }}">Orders</a></li>
+                <li><a href="{{ route('cart.index') }}">CART</a></li>
+                <li><a href="{{ route('orders.index') }}">ORDERS</a></li>
+                <li><a href="{{ route('profile.index') }}">PROFILE</a></li>
                 @if(Auth::user()->is_admin)
-                    <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ route('admin.dashboard') }}">DASHBOARD</a></li>
                 @endif
                 <li>
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
-                        <button type="submit" style="background: none; border: none; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;">Logout</button>
+                        <button type="submit" style="background: none; border: none; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;">LOGOUT</button>
                     </form>
                 </li>
             @else
-                <li><a href="{{ route('login') }}">Login</a></li>
-                <li><a href="{{ route('register') }}" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Join</a></li>
+                <li><a href="{{ route('login') }}">LOGIN</a></li>
+                <li><a href="{{ route('register') }}" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">JOIN</a></li>
             @endauth
         </ul>
     </nav>
 
-    <style>
-        @media (max-width: 768px) {
-            .mobile-toggle { display: block !important; }
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: var(--bg-darker);
-                flex-direction: column;
-                padding: 2rem;
-                gap: 1.5rem;
-                border-bottom: 3px solid var(--secondary);
-            }
-            .nav-links.active { display: flex; }
-        }
-    </style>
 
-    <script>
-        document.querySelector('.mobile-toggle').addEventListener('click', function() {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // Force scroll to top on reload
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-        window.scrollTo(0, 0);
-    </script>
 
     <main class="page-transition">
         @if(session('success'))
-            <div class="auth-alert auth-alert-info" style="max-width: 1200px; margin: 2rem auto;">
+            <div class="auth-alert auth-alert-info auto-hide-alert">
+                <i class="fas fa-check-circle"></i>
                 {{ session('success') }}
             </div>
         @endif
 
         @if(session('error'))
-            <div class="auth-alert auth-alert-danger" style="max-width: 1200px; margin: 2rem auto;">
+            <div class="auth-alert auth-alert-danger auto-hide-alert">
+                <i class="fas fa-exclamation-triangle"></i>
                 {{ session('error') }}
             </div>
         @endif
@@ -132,72 +97,7 @@
         </div>
     </footer>
 
-    <script>
-        // Scroll Reveal Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Navigation Scroll Effect
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (nav) {
-                if (window.scrollY > 50) {
-                    nav.classList.add('scrolled');
-                } else {
-                    nav.classList.remove('scrolled');
-                }
-            }
-        });
-
-        // FAQ Accordion
-        document.querySelectorAll('.faq-question').forEach(q => {
-            q.addEventListener('click', () => {
-                const item = q.parentElement;
-                item.classList.toggle('active');
-            });
-        });
-
-        // Testimonial Slider
-        function moveSlider(index) {
-            const track = document.querySelector('.testimonial-track');
-            const dots = document.querySelectorAll('.dot');
-            if (track) {
-                track.style.transform = `translateX(-${index * 100}%)`;
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
-            }
-        }
-        window.moveSlider = moveSlider;
-
-        // Password Visibility Toggle
-        function togglePassword(btn) {
-            const input = btn.parentElement.querySelector('input');
-            const icon = btn.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-        window.togglePassword = togglePassword;
-    </script>
     @auth
         <!-- Support Widget -->
         <div id="support-widget" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 5000;">
@@ -292,51 +192,8 @@
             </div>
         </div>
 
-        <script>
-            // Support Widget Logic
-            const fab = document.getElementById('support-fab');
-            const chatbox = document.getElementById('support-chatbox');
-            const closeChat = document.getElementById('close-chat');
-            const disputeList = document.getElementById('dispute-list');
-            const newDisputeForm = document.getElementById('new-dispute-form');
 
-            if (fab) {
-                fab.addEventListener('click', () => {
-                    const isOpen = chatbox.style.display === 'flex';
-                    chatbox.style.display = isOpen ? 'none' : 'flex';
-                    fab.innerHTML = isOpen ? '<i class="fas fa-headset"></i>' : '<i class="fas fa-chevron-down"></i>';
-                });
-            }
-
-            if (closeChat) {
-                closeChat.addEventListener('click', () => {
-                    chatbox.style.display = 'none';
-                    fab.innerHTML = '<i class="fas fa-headset"></i>';
-                });
-            }
-
-            function showConversation(id) {
-                if (disputeList) disputeList.style.display = 'none';
-                newDisputeForm.style.display = 'none';
-                document.getElementById('conv-' + id).style.display = 'flex';
-            }
-
-            function hideConversation(id) {
-                document.getElementById('conv-' + id).style.display = 'none';
-                if (disputeList) disputeList.style.display = 'block';
-                newDisputeForm.style.display = 'block';
-            }
-        </script>
     @endauth
-    <script>
-        // Global handler to block 'e', 'E', '+', '-' in number inputs
-        document.addEventListener('keydown', function(e) {
-            if (e.target.type === 'number') {
-                if (['e', 'E', '+', '-'].includes(e.key)) {
-                    e.preventDefault();
-                }
-            }
-        });
-    </script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

@@ -116,7 +116,7 @@
                             <div style="width: 100px;">
                                 <input type="number" name="quantity" class="form-control bg-dark text-white border-secondary" value="1" min="1" max="{{ $product->stock_quantity }}">
                             </div>
-                            <button type="submit" class="btn btn-warning flex-grow-1 py-3 fw-bold">ADD TO GARAGE</button>
+                            <button type="submit" class="btn btn-warning flex-grow-1 py-3 fw-bold">ADD TO CART</button>
                         </form>
                     @else
                         <button class="btn btn-secondary w-100 py-3 mb-2" disabled>OUT OF STOCK</button>
@@ -142,17 +142,7 @@
     </div>
 </div>
 
-<script>
-    document.querySelectorAll('.thumbnail-switch').forEach(thumb => {
-        thumb.addEventListener('click', function() {
-            document.getElementById('mainProductImage').src = this.src;
-        });
-    });
-</script>
 
-<style>
-    .cursor-pointer { cursor: pointer; }
-    .thumbnail-switch:hover { border-color: #ffc107 !important; }
-    .breadcrumb-item + .breadcrumb-item::before { color: #6c757d; }
-</style>
+
+
 @endsection

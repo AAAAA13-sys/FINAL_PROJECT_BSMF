@@ -36,10 +36,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
         
-        // Wishlist routes
-        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-        Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store');
-        Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
         
         // Review routes
         Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');

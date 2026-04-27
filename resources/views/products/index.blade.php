@@ -104,53 +104,12 @@
             </div>
         </div>
 
-        <script>
-            const sidebarSearchInput = document.getElementById('sidebarSearchInput');
-            const sidebarSuggestionsBox = document.getElementById('sidebarSearchSuggestions');
 
-            if (sidebarSearchInput) {
-                sidebarSearchInput.addEventListener('input', async (e) => {
-                    const query = e.target.value;
-                    if (query.length < 2) {
-                        sidebarSuggestionsBox.style.display = 'none';
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch(`/api/search-suggestions?query=${encodeURIComponent(query)}`);
-                        const products = await response.json();
-
-                        if (products.length > 0) {
-                            sidebarSuggestionsBox.innerHTML = products.map(p => `
-                                <a href="/products/${p.id}" style="display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem; text-decoration: none; border-bottom: 1px solid var(--glass-border); transition: 0.3s;" class="suggestion-item">
-                                    <img src="${p.main_image || '/images/placeholder-car.webp'}" style="width: 40px; height: 30px; object-fit: contain; background: #000; border-radius: 4px;">
-                                    <div>
-                                        <div style="color: white; font-weight: 700; font-size: 0.8rem;">${p.name}</div>
-                                        <div style="color: var(--secondary); font-weight: 800; font-size: 0.75rem;">$${parseFloat(p.price).toFixed(2)}</div>
-                                    </div>
-                                </a>
-                            `).join('');
-                            sidebarSuggestionsBox.style.display = 'block';
-                        } else {
-                            sidebarSuggestionsBox.style.display = 'none';
-                        }
-                    } catch (err) {
-                        console.error('Search error:', err);
-                    }
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!sidebarSearchInput.contains(e.target) && !sidebarSuggestionsBox.contains(e.target)) {
-                        sidebarSuggestionsBox.style.display = 'none';
-                    }
-                });
-            }
-        </script>
 
         <!-- Product Listing -->
         <div class="col-md-9">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0 text-white" style="font-weight: 900; font-style: italic; letter-spacing: 1px;">THE GARAGE ({{ $products->total() }})</h5>
+                <h5 class="mb-0 text-white" style="font-weight: 900; font-style: italic; letter-spacing: 1px;">THE COLLECTION ({{ $products->total() }})</h5>
                 
                 <div class="d-flex align-items-center gap-2">
                     <label class="text-uppercase small mb-0" style="font-size: 0.7rem; font-weight: 800; white-space: nowrap; color: rgba(255,255,255,0.5); letter-spacing: 1px;">Sort By:</label>
@@ -164,14 +123,7 @@
                 </div>
             </div>
 
-            <script>
-                document.getElementById('headerSort')?.addEventListener('change', function() {
-                    const hiddenSort = document.getElementById('hiddenSort');
-                    const filterForm = hiddenSort.closest('form');
-                    hiddenSort.value = this.value;
-                    filterForm.submit();
-                });
-            </script>
+
 
             <div class="row g-4">
                 @forelse($products as $product)
@@ -210,7 +162,7 @@
                                 </div>
                             </div>
                             <div class="card-footer border-secondary bg-transparent p-0">
-                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-warning w-100 rounded-0">VIEW GARAGE</a>
+                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-warning w-100 rounded-0">VIEW DETAILS</a>
                             </div>
                         </div>
                     </div>
@@ -228,57 +180,5 @@
     </div>
 </div>
 
-<style>
-    .product-card-diecast {
-        transition: transform 0.3s ease;
-    }
-    .product-card-diecast:hover {
-        transform: translateY(-5px);
-        border-color: #ffc107 !important;
-    }
-    .zoom-on-hover {
-        transition: transform 0.5s ease;
-    }
-    .zoom-on-hover:hover {
-        transform: scale(1.1);
-    }
-    .product-image-container {
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #1a1a1a;
-    }
-    /* Perfect alignment for checkboxes */
-    .form-check {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        min-height: 1.5rem;
-        margin-bottom: 4px;
-    }
-    .form-check-input {
-        margin-top: 0 !important;
-        cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    }
-    .form-check-input:checked {
-        background-color: var(--secondary) !important;
-        border-color: var(--secondary) !important;
-    }
-    .form-check-label {
-        cursor: pointer;
-        user-select: none;
-        line-height: 1;
-        color: rgba(255, 255, 255, 0.9) !important;
-        font-weight: 500;
-    }
 
-    /* Section Headings */
-    .form-label.text-muted {
-        color: rgba(255, 255, 255, 0.5) !important;
-        letter-spacing: 1px;
-    }
-</style>
 @endsection

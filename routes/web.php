@@ -45,10 +45,6 @@ Route::middleware(['auth'])->group(function () {
     // Reviews
     Route::post('/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
-    // Wishlist
-    Route::get('/wishlist', [\App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/wishlist/add', [\App\Http\Controllers\WishlistController::class, 'store'])->name('wishlist.add');
-    Route::delete('/wishlist/{id}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('wishlist.remove');
 
     // Profile
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');

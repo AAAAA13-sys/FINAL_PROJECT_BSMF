@@ -19,19 +19,19 @@
                     
                     <div class="row g-3">
                         <div class="col-12">
-                            <label class="form-label text-muted small text-uppercase">Full Name</label>
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Full Name</label>
                             <input type="text" name="customer_name" class="form-control bg-transparent text-white border-secondary" value="{{ Auth::user()->name }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label text-muted small text-uppercase">Email Address</label>
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Email Address</label>
                             <input type="email" name="customer_email" class="form-control bg-transparent text-white border-secondary" value="{{ Auth::user()->email }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label text-muted small text-uppercase">Phone (For Carrier)</label>
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Phone (For Carrier)</label>
                             <input type="text" name="customer_phone" class="form-control bg-transparent text-white border-secondary" value="{{ Auth::user()->phone }}">
                         </div>
                         <div class="col-12">
-                            <label class="form-label text-muted small text-uppercase">Shipping Address</label>
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Shipping Address</label>
                             <textarea name="shipping_address" class="form-control bg-transparent text-white border-secondary" rows="3" required>{{ Auth::user()->default_shipping_address }}</textarea>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                         <p class="text-muted small mb-0">Crucial for carded collectors. We use double-walled boxes and extra bubble wrap.</p>
                     </div>
                     <div class="mb-0">
-                        <label class="form-label text-muted small text-uppercase">Notes for the Garage</label>
+                        <label class="form-label text-muted small text-uppercase">Special Instructions</label>
                         <textarea name="notes" class="form-control bg-transparent text-white border-secondary" rows="2" placeholder="e.g. Please pick the best card possible..."></textarea>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
 
                         <hr class="border-secondary my-4">
 
-                        <div class="d-flex justify-content-between mb-2 text-muted small">
+                        <div class="d-flex justify-content-between mb-2 text-white opacity-75 small">
                             <span>Subtotal</span>
                             <span>${{ number_format($subtotal, 2) }}</span>
                         </div>
@@ -105,7 +105,7 @@
                             </div>
                         @endif
 
-                        <div class="d-flex justify-content-between mb-4 text-muted small">
+                        <div class="d-flex justify-content-between mb-4 text-white opacity-75 small">
                             <span>Shipping</span>
                             <span>{{ $shipping == 0 ? 'FREE' : '$' . number_format($shipping, 2) }}</span>
                         </div>

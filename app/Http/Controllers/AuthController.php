@@ -49,7 +49,7 @@ final class AuthController extends Controller
                 return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Administrator!');
             }
             
-            return redirect()->intended(route('home'))->with('success', 'Welcome back to the Garage!');
+            return redirect()->intended(route('home'))->with('success', "Welcome back, {$user->name}!");
         }
 
         if ($request->wantsJson() || $request->is('api/*')) {
