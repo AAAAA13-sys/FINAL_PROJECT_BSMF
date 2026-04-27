@@ -119,7 +119,14 @@ final class ProductController extends Controller
         }
 
         $categories = Category::all();
-        $brands = Brand::all();
+        $brands = Brand::whereNotIn('name', [
+            'Tomica', 
+            'Mini GT', 
+            'Inno64', 
+            'Tarmac Works', 
+            'Pop Race', 
+            'Kaido House'
+        ])->get();
         $scales = Scale::all();
         $series = Series::all();
 

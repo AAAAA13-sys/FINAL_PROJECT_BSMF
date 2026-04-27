@@ -63,7 +63,7 @@
                     </div>
 
                     <h1 class="text-white display-5 mb-1">{{ $product->name }}</h1>
-                    <p class="mb-4 lead" style="color: rgba(255, 255, 255, 0.6);">{{ $product->casting_name }}</p>
+                    <p class="text-muted lead mb-4">{{ $product->casting_name }}</p>
 
                     <!-- Rarity Indicators -->
                     @if($product->is_super_treasure_hunt || $product->is_treasure_hunt || $product->is_rlc_exclusive)
@@ -92,7 +92,6 @@
                         @endif
                     </div>
 
-                    <!-- Attributes Table -->
                     <div class="row mb-4 border-top border-secondary pt-4">
                         <div class="col-6 mb-3">
                             <label class="text-muted small text-uppercase d-block">Year</label>
@@ -149,10 +148,6 @@
             </div>
         </div>
 
-        <!-- Related Products -->
-        <div class="mt-5 pt-5 border-top border-secondary">
-            <h4 class="text-white mb-4">COLLECTORS ALSO BOUGHT</h4>
-            <!-- This would normally be a separate query/partial -->
         </div>
     </div>
 
