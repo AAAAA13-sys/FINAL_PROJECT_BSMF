@@ -16,7 +16,7 @@ final class SupportController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->wantsJson() || $request->is('api/*')) {
+        if ($request->ajax() || $request->wantsJson() || $request->is('api/*')) {
             $disputes = Dispute::where('user_id', Auth::id())->with('order')->orderBy('created_at', 'desc')->get();
             return \App\Http\Resources\DisputeResource::collection($disputes);
         }
@@ -37,7 +37,7 @@ final class SupportController extends Controller
             ->with(['order', 'messages.user'])
             ->findOrFail($id);
 
-        if ($request->wantsJson() || $request->is('api/*')) {
+        if ($request->ajax() || $request->wantsJson() || $request->is('api/*')) {
             return new \App\Http\Resources\DisputeResource($dispute);
         }
 
@@ -51,8 +51,7 @@ final class SupportController extends Controller
     {
         $request->validate([
             'order_id' => 'required|exists:orders,id',
-            'subject' => 'required_without:dispute_type|string|max:255',
-            'dispute_type' => 'required_without:subject|string',
+            'dispute_type' => 'required|string',
             'description' => 'required|string',
         ]);
 
@@ -68,7 +67,7 @@ final class SupportController extends Controller
             'status' => 'open',
         ]);
 
-        if ($request->wantsJson() || $request->is('api/*')) {
+        if ($request->ajax() || $request->wantsJson() || $request->is('api/*')) {
             return new \App\Http\Resources\DisputeResource($dispute);
         }
 
@@ -92,7 +91,7 @@ final class SupportController extends Controller
 
         $dispute->touch();
 
-        if ($request->wantsJson() || $request->is('api/*')) {
+        if ($request->ajax() || $request->wantsJson() || $request->is('api/*')) {
             return new \App\Http\Resources\DisputeMessageResource($message);
         }
 

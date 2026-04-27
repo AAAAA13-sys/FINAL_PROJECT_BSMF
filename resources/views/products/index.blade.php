@@ -189,7 +189,7 @@
             <div class="col-md-9">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0 text-white" style="font-weight: 900; font-style: italic; letter-spacing: 1px;">THE
-                        COLLECTION ({{ $products->total() }})</h5>
+                        GARAGE ({{ $products->total() }})</h5>
 
                     <div class="d-flex align-items-center gap-2">
                         <label class="text-uppercase small mb-0"
@@ -214,7 +214,7 @@
 
                 <div class="row g-4">
                     @forelse($products as $product)
-                        <div class="col-md-4">
+                        <div class="col-6 col-md-4">
                             <div class="card h-100 bg-dark text-white border-secondary product-card-diecast">
                                 <!-- Rarity Badge -->
                                 @if($product->is_super_treasure_hunt)
@@ -230,20 +230,30 @@
                                         style="background-color: #6f42c1;">CHASE</span>
                                 @endif
 
-                                <div class="product-image-container overflow-hidden">
+                                <div class="product-image-container overflow-hidden position-relative">
                                     <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}"
                                         class="card-img-top zoom-on-hover" alt="{{ $product->name }}" loading="lazy">
+                                    
+                                    @auth
+                                        <form action="{{ route('wishlist.add') }}" method="POST" style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <button type="submit" class="btn btn-dark btn-sm rounded-circle shadow-lg border-secondary" style="width: 35px; height: 35px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;">
+                                                <i class="far fa-heart text-primary"></i>
+                                            </button>
+                                        </form>
+                                    @endauth
                                 </div>
 
                                 <div class="card-body">
-                                    <div class="mb-2"
-                                        style="font-size: 0.9rem; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        {{ $product->category->name }} &bull; {{ $product->brand->name }} &bull;
-                                        {{ $product->scale->name }} &bull; {{ $product->is_carded ? 'CARDED' : 'LOOSE' }}
-                                    </div>
-                                    <h5 class="card-title mb-2 text-white" style="font-weight: 800; letter-spacing: 0.5px;">
+                                    <h5 class="card-title mb-1 text-white" style="font-weight: 800; letter-spacing: 0.5px;">
                                         {{ $product->name }}
                                     </h5>
+                                    <div style="display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                        <span style="font-size: 0.55rem; color: var(--secondary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(251, 191, 36, 0.3); padding: 2px 8px; border-radius: 4px;">{{ $product->brand->name }}</span>
+                                        <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ $product->scale->name }}</span>
+                                        <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ strtoupper($product->card_condition) }}</span>
+                                    </div>
                                     <p class="card-text small text-muted mb-3">{{ Str::limit($product->casting_name, 50) }}</p>
 
                                     <div class="d-flex justify-content-between align-items-center">

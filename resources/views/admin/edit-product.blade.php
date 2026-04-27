@@ -65,16 +65,6 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="form-group mb-0">
-                            <label class="text-muted small fw-bold text-uppercase mb-2">Category</label>
-                            <select name="category_id" class="form-select bg-dark border-secondary text-white p-3" required>
-                                @foreach($categories as $c)
-                                    <option value="{{ $c->id }}" {{ $product->category_id == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
 
                     <div class="col-md-6">
                         <div class="form-group mb-0">

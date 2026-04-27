@@ -23,11 +23,8 @@
         <ul class="nav-links">
             <li><a href="{{ route('home') }}">HOME</a></li>
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">COLLECTIONS <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
+                <a href="javascript:void(0)" class="dropbtn">THE GARAGE <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
                 <div class="dropdown-content">
-                    @foreach($globalCategories as $gc)
-                        <a href="{{ route('products.index', ['category' => $gc->id]) }}">{{ $gc->name }}</a>
-                    @endforeach
                     <a href="{{ route('products.index', ['is_carded' => 1]) }}">CARDED COLLECTION</a>
                     <a href="{{ route('products.index', ['is_loose' => 1]) }}">LOOSE SELECTION</a>
                 </div>
@@ -57,16 +54,16 @@
 
     <main class="page-transition">
         @if(session('success'))
-            <div class="auth-alert auth-alert-info auto-hide-alert">
-                <i class="fas fa-check-circle"></i>
-                {{ session('success') }}
+            <div class="auth-alert auth-alert-info auto-hide-alert d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-check-circle me-2"></i> {{ session('success') }}</span>
+                <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.remove()" style="font-size: 0.6rem;"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="auth-alert auth-alert-danger auto-hide-alert">
-                <i class="fas fa-exclamation-triangle"></i>
-                {{ session('error') }}
+            <div class="auth-alert auth-alert-danger auto-hide-alert d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}</span>
+                <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.remove()" style="font-size: 0.6rem;"></button>
             </div>
         @endif
 
@@ -122,62 +119,68 @@
                             @foreach($userDisputes as $dispute)
                                 <div onclick="showConversation({{ $dispute->id }})" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border-left: 3px solid {{ $dispute->status === 'pending' ? 'var(--primary)' : 'var(--secondary)' }}; cursor: pointer; transition: 0.2s;">
                                     <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.3rem;">
-                                        <span style="font-weight: 800; color: white;">Order #{{ $dispute->order_id }}</span>
+                                        <span style="font-weight: 800; color: white;">Order #{{ $dispute->order->order_number }}</span>
                                         <span style="text-transform: uppercase; font-weight: 900; color: {{ $dispute->status === 'pending' ? 'var(--primary)' : 'var(--secondary)' }};">{{ $dispute->status }}</span>
                                     </div>
-                                    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0;">{{ ucfirst($dispute->type) }}</p>
-                                </div>
-
-                                <!-- Hidden Conversation View -->
-                                <div id="conv-{{ $dispute->id }}" class="conversation-view" style="display: none; flex-direction: column; height: 100%;">
-                                    <button onclick="hideConversation({{ $dispute->id }})" style="background: none; border: none; color: var(--secondary); cursor: pointer; font-size: 0.7rem; margin-bottom: 1rem; text-align: left; padding: 0;"><i class="fas fa-arrow-left"></i> BACK TO LIST</button>
-                                    
-                                    <div class="message-thread" style="flex-grow: 1; overflow-y: auto; margin-bottom: 1rem; padding-right: 5px;">
-                                        <!-- Initial Issue -->
-                                        <div style="margin-bottom: 1.5rem;">
-                                            <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Your Report</span>
-                                            <div style="background: var(--primary)22; padding: 0.8rem; border-radius: 12px; border: 1px solid var(--primary)44; margin-top: 0.3rem;">
-                                                <p style="font-size: 0.8rem; color: white; margin: 0;">{{ $dispute->description }}</p>
-                                            </div>
-                                        </div>
-
-                                        @foreach($dispute->messages as $msg)
-                                            <div style="margin-bottom: 1.5rem; text-align: {{ $msg->user_id == Auth::id() ? 'right' : 'left' }};">
-                                                <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">{{ $msg->user->role == 'admin' ? 'Support Agent' : 'You' }}</span>
-                                                <div style="background: {{ $msg->user->role == 'admin' ? 'var(--secondary)22' : 'rgba(255,255,255,0.05)' }}; padding: 0.8rem; border-radius: 12px; border: 1px solid {{ $msg->user->role == 'admin' ? 'var(--secondary)44' : 'var(--glass-border)' }}; margin-top: 0.3rem; display: inline-block; max-width: 90%;">
-                                                    <p style="font-size: 0.8rem; color: white; margin: 0; text-align: left;">{{ $msg->message }}</p>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-
-                                    <form action="{{ route('support.message.store', $dispute->id) }}" method="POST" style="margin-top: auto;">
-                                        @csrf
-                                        <div style="display: flex; gap: 0.5rem;">
-                                            <input type="text" name="message" class="form-control" placeholder="Type a reply..." style="padding: 0.5rem; font-size: 0.8rem; margin-bottom: 0;" required>
-                                            <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;"><i class="fas fa-paper-plane"></i></button>
-                                        </div>
-                                    </form>
+                                    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0;">{{ ucfirst($dispute->subject) }}</p>
                                 </div>
                             @endforeach
                             <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 1.5rem 0;">
                         </div>
+
+                        @foreach($userDisputes as $dispute)
+                            <!-- Hidden Conversation View -->
+                            <div id="conv-{{ $dispute->id }}" class="conversation-view" style="display: none; flex-direction: column; height: 100%;">
+                                <button onclick="hideConversation({{ $dispute->id }})" style="background: none; border: none; color: var(--secondary); cursor: pointer; font-size: 0.7rem; margin-bottom: 1rem; text-align: left; padding: 0;"><i class="fas fa-arrow-left"></i> BACK TO LIST</button>
+                                
+                                <div class="message-thread" style="flex-grow: 1; overflow-y: auto; margin-bottom: 1rem; padding-right: 5px;">
+                                    <!-- Initial Issue -->
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Your Report</span>
+                                        <div style="background: var(--primary)22; padding: 0.8rem; border-radius: 12px; border: 1px solid var(--primary)44; margin-top: 0.3rem;">
+                                            <p style="font-size: 0.8rem; color: white; margin: 0;">{{ $dispute->description }}</p>
+                                        </div>
+                                    </div>
+
+                                    @foreach($dispute->messages as $msg)
+                                        <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: {{ $msg->user->is_admin ? 'flex-start' : 'flex-end' }};">
+                                            <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.3rem; font-weight: 800;">{{ $msg->user->is_admin ? 'Support Agent' : 'You' }}</span>
+                                            <div style="background: {{ $msg->user->is_admin ? 'rgba(251, 191, 36, 0.1)' : 'rgba(255,255,255,0.05)' }}; 
+                                                        padding: 0.8rem 1rem; 
+                                                        border-radius: {{ $msg->user->is_admin ? '0 16px 16px 16px' : '16px 0 16px 16px' }}; 
+                                                        border: 1px solid {{ $msg->user->is_admin ? 'rgba(251, 191, 36, 0.2)' : 'var(--glass-border)' }}; 
+                                                        max-width: 85%;">
+                                                <p style="font-size: 0.8rem; color: white; margin: 0; line-height: 1.4;">{{ $msg->message }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <form action="{{ route('support.message.store', $dispute->id) }}" method="POST" class="ajax-reply-form" style="margin-top: auto; background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 12px; border: 1px solid var(--glass-border);">
+                                    @csrf
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <input type="text" name="message" class="form-control" placeholder="Type a reply..." style="padding: 0.5rem; font-size: 0.8rem; margin-bottom: 0;" required>
+                                        <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;"><i class="fas fa-paper-plane"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endforeach
                     @endif
 
                     <div id="new-dispute-form">
                         <h4 style="font-size: 0.8rem; margin-bottom: 1rem; text-transform: uppercase; font-style: italic;">Open New <span>Ticket</span></h4>
-                        <form action="{{ route('support.store') }}" method="POST">
+                        <form id="ajax-support-form" action="{{ route('support.store') }}" method="POST">
                             @csrf
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <select name="order_id" class="form-control" style="padding: 0.6rem; font-size: 0.8rem;" required>
                                     <option value="">Select Order</option>
                                     @foreach ($userOrders as $order)
-                                        <option value="{{ $order->id }}">Order #{{ $order->id }} ({{ $order->created_at->format('M d') }})</option>
+                                        <option value="{{ $order->id }}">#{{ $order->order_number }} ({{ $order->created_at->format('M d') }})</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
-                                <select name="type" class="form-control" style="padding: 0.6rem; font-size: 0.8rem;" required>
+                                <select name="dispute_type" class="form-control" style="padding: 0.6rem; font-size: 0.8rem;" required>
                                     <option value="wrong item">Wrong item</option>
                                     <option value="never received">Never received</option>
                                     <option value="damaged product">Damaged</option>

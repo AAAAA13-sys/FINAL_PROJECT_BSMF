@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Brand;
-use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Scale;
@@ -42,12 +41,6 @@ class DatabaseSeeder extends Seeder
         $brands = [
             'Hot Wheels' => 'Mattel',
             'Matchbox' => 'Mattel',
-            'Tomica' => 'Takara Tomy',
-            'Mini GT' => 'TSM Model',
-            'Inno64' => 'Inno Models',
-            'Tarmac Works' => 'Tarmac Works',
-            'Pop Race' => 'Pop Race',
-            'Kaido House' => 'Kaido House',
         ];
 
         foreach ($brands as $name => $desc) {
@@ -67,17 +60,11 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Categories
-        $categories = ['Cars', 'Track Sets', 'Display Cases'];
-        foreach ($categories as $name) {
-            Category::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-            ]);
-        }
 
         // Series (Hot Wheels)
         $hw = Brand::where('name', 'Hot Wheels')->first();
+        $mb = Brand::where('name', 'Matchbox')->first();
+        
         $seriesData = [
             ['name' => 'Mainline', 'is_premium' => false],
             ['name' => 'Treasure Hunt', 'is_premium' => false],
@@ -97,16 +84,30 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // Series (Matchbox)
+        $mbSeries = [
+            ['name' => 'Basic', 'is_premium' => false],
+            ['name' => 'Moving Parts', 'is_premium' => true],
+            ['name' => 'Collectors', 'is_premium' => true],
+        ];
+
+        foreach ($mbSeries as $data) {
+            Series::create([
+                'brand_id' => $mb->id,
+                'name' => $data['name'],
+                'slug' => Str::slug($data['name']),
+                'is_premium' => $data['is_premium'],
+            ]);
+        }
+
         // Sample Products Setup
         $scale64 = Scale::where('name', '1:64')->first();
-        $catCars = Category::where('name', 'Cars')->first();
 
         // 1. Hot Wheels '67 Camaro - Gold Chrome (STH)
         Product::create([
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
             'series_id' => Series::where('name', 'Super Treasure Hunt')->first()->id,
-            'category_id' => $catCars->id,
             'name' => "'67 Camaro - Gold Chrome",
             'casting_name' => "'67 Chevrolet Camaro",
             'slug' => Str::slug("hw-67-camaro-gold-chrome-sth"),
@@ -124,7 +125,6 @@ class DatabaseSeeder extends Seeder
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
             'series_id' => Series::where('name', 'Fast & Furious')->first()->id,
-            'category_id' => $catCars->id,
             'name' => "Nissan Skyline GT-R R34 - Blue",
             'casting_name' => "Nissan Skyline GT-R R34",
             'slug' => Str::slug("hw-nissan-skyline-gtr-r34-blue-ff"),
@@ -135,30 +135,30 @@ class DatabaseSeeder extends Seeder
             'description' => "Premium Fast & Furious series casting with metal/metal body and rubber tires.",
         ]);
 
-        // 3. MiniGT Porsche 911 GT3 RS
+        // 3. Matchbox 2023 Nissan Z
         Product::create([
-            'brand_id' => Brand::where('name', 'Mini GT')->first()->id,
+            'brand_id' => $mb->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
-            'name' => "Porsche 911 GT3 RS - Miami Blue",
-            'casting_name' => "Porsche 911 (991) GT3 RS",
-            'slug' => Str::slug("minigt-porsche-911-gt3-rs-miami-blue"),
-            'price' => 19.99,
+            'series_id' => Series::where('name', 'Moving Parts')->first()->id,
+            'name' => "2023 Nissan Z - Ikazuchi Yellow",
+            'casting_name' => "2023 Nissan Z",
+            'slug' => Str::slug("mb-2023-nissan-z-yellow"),
+            'price' => 6.99,
             'stock_quantity' => 28,
-            'description' => "Highly detailed Mini GT casting in the iconic Miami Blue color.",
+            'description' => "Matchbox Moving Parts series with opening hood and detailed engine bay.",
         ]);
 
-        // 4. Inno64 Honda Civic EK9
+        // 4. Hot Wheels Honda Civic EK9
         Product::create([
-            'brand_id' => Brand::where('name', 'Inno64')->first()->id,
+            'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
-            'name' => "Honda Civic EK9 - Spoon Sports",
-            'casting_name' => "Honda Civic Type-R EK9",
-            'slug' => Str::slug("inno64-honda-civic-ek9-spoon-sports"),
-            'price' => 29.99,
+            'series_id' => Series::where('name', 'Boulevard')->first()->id,
+            'name' => "Honda Civic Type R [EK9] - Yellow",
+            'casting_name' => "Honda Civic Type R EK9",
+            'slug' => Str::slug("hw-honda-civic-ek9-yellow-boulevard"),
+            'price' => 15.99,
             'stock_quantity' => 12,
-            'description' => "Limited edition Spoon Sports liveried Civic EK9 with display base and acrylic case.",
+            'description' => "Highly sought after Boulevard Series casting with Real Riders.",
         ]);
 
         // 5. Hot Wheels Toyota Supra - White (Car Culture)
@@ -166,7 +166,6 @@ class DatabaseSeeder extends Seeder
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
             'series_id' => Series::where('name', 'Car Culture')->first()->id,
-            'category_id' => $catCars->id,
             'name' => "Toyota Supra JZA80 - Modern Classics",
             'casting_name' => "Toyota Supra",
             'slug' => Str::slug("hw-toyota-supra-white-cc"),
@@ -179,9 +178,9 @@ class DatabaseSeeder extends Seeder
 
         // 6. Matchbox Mercedes-Benz G-Class
         Product::create([
-            'brand_id' => Brand::where('name', 'Matchbox')->first()->id,
+            'brand_id' => $mb->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
+            'series_id' => Series::where('name', 'Moving Parts')->first()->id,
             'name' => "Mercedes-Benz G 63 AMG - Silver",
             'casting_name' => "Mercedes-Benz G-Class",
             'slug' => Str::slug("mb-mercedes-g63-amg-silver"),
@@ -190,30 +189,30 @@ class DatabaseSeeder extends Seeder
             'description' => "Matchbox Moving Parts series with opening doors and detailed interior.",
         ]);
 
-        // 7. MiniGT BMW M4 GT3
+        // 7. Matchbox 1964 Chevy C10 Pickup
         Product::create([
-            'brand_id' => Brand::where('name', 'Mini GT')->first()->id,
+            'brand_id' => $mb->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
-            'name' => "BMW M4 GT3 #1 Presentation",
-            'casting_name' => "BMW M4 GT3",
-            'slug' => Str::slug("minigt-bmw-m4-gt3-presentation"),
+            'series_id' => Series::where('name', 'Collectors')->first()->id,
+            'name' => "1964 Chevy C10 Pickup - Red",
+            'casting_name' => "1964 Chevrolet C10",
+            'slug' => Str::slug("mb-1964-chevy-c10-red"),
             'price' => 16.99,
             'stock_quantity' => 10,
-            'description' => "Highly aerodynamic GT3 racing model in matte black presentation livery.",
+            'description' => "Matchbox Collectors series with premium packaging and rubber tires.",
         ]);
 
-        // 8. Tarmac Works Mitsubishi Lancer Evo V
+        // 8. Hot Wheels Mazda RX-7 FD
         Product::create([
-            'brand_id' => Brand::where('name', 'Tarmac Works')->first()->id,
+            'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
-            'name' => "Mitsubishi Lancer Evolution V - Yellow",
-            'casting_name' => "Mitsubishi Lancer Evo V",
-            'slug' => Str::slug("tarmac-lancer-evo-v-yellow"),
-            'price' => 24.99,
+            'series_id' => Series::where('name', 'RLC')->first()->id,
+            'name' => "Mazda RX-7 FD - Spectraflame Orange",
+            'casting_name' => "Mazda RX-7",
+            'slug' => Str::slug("hw-rlc-mazda-rx7-orange"),
+            'price' => 75.00,
             'stock_quantity' => 5,
-            'description' => "Global64 series. High detail, metal chassis, and correct scale wheels.",
+            'description' => "RLC Exclusive with opening hood and premium detail.",
         ]);
 
         // 9. Hot Wheels Lamborghini Countach (RLC)
@@ -221,7 +220,6 @@ class DatabaseSeeder extends Seeder
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
             'series_id' => Series::where('name', 'RLC')->first()->id,
-            'category_id' => $catCars->id,
             'name' => "Lamborghini Countach LP500 S - Spectraflame Blue",
             'casting_name' => "Lamborghini Countach",
             'slug' => Str::slug("hw-rlc-lamborghini-countach-blue"),
@@ -232,17 +230,17 @@ class DatabaseSeeder extends Seeder
             'description' => "Red Line Club Exclusive. Opening scissor doors and Spectraflame finish.",
         ]);
 
-        // 10. Kaido House Datsun 510 Pro Street
+        // 10. Matchbox Porsche 911 Carrera 4S
         Product::create([
-            'brand_id' => Brand::where('name', 'Kaido House')->first()->id,
+            'brand_id' => $mb->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
-            'name' => "Datsun 510 Pro Street - Hanami",
-            'casting_name' => "Datsun 510",
-            'slug' => Str::slug("kaido-datsun-510-hanami"),
-            'price' => 26.99,
-            'stock_quantity' => 8,
-            'description' => "Jun Imai designed Kaido House casting with opening hood and detailed engine.",
+            'series_id' => Series::where('name', 'Basic')->first()->id,
+            'name' => "Porsche 911 Carrera 4S - Silver",
+            'casting_name' => "Porsche 911",
+            'slug' => Str::slug("mb-porsche-911-silver"),
+            'price' => 1.49,
+            'stock_quantity' => 30,
+            'description' => "Matchbox Mainline series 2024 release.",
         ]);
 
         // 11. Hot Wheels '71 Datsun 510 (Boulevard)
@@ -250,7 +248,6 @@ class DatabaseSeeder extends Seeder
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
             'series_id' => Series::where('name', 'Boulevard')->first()->id,
-            'category_id' => $catCars->id,
             'name' => "'71 Datsun 510 - BRE Livery",
             'casting_name' => "'71 Datsun 510",
             'slug' => Str::slug("hw-71-datsun-510-bre"),
@@ -261,154 +258,19 @@ class DatabaseSeeder extends Seeder
             'description' => "Boulevard Series. Features the iconic BRE racing livery.",
         ]);
 
-        // 12. Tomica Premium Ferrari F40
+        // 12. Matchbox Toyota 4Runner
         Product::create([
-            'brand_id' => Brand::where('name', 'Tomica')->first()->id,
+            'brand_id' => $mb->id,
             'scale_id' => $scale64->id,
-            'category_id' => $catCars->id,
-            'name' => "Ferrari F40 - Red",
-            'casting_name' => "Ferrari F40",
-            'slug' => Str::slug("tomica-ferrari-f40-red"),
-            'price' => 14.50,
-            'stock_quantity' => 10,
-            'description' => "Tomica Premium series. Suspension and high detail plastic parts.",
+            'series_id' => Series::where('name', 'Basic')->first()->id,
+            'name' => "Toyota 4Runner - Black",
+            'casting_name' => "Toyota 4Runner",
+            'slug' => Str::slug("mb-toyota-4runner-black"),
+            'price' => 1.49,
+            'stock_quantity' => 25,
+            'description' => "Matchbox Mainline series. Off-road legend.",
         ]);
 
-        // --- TRACK SETS (Category 2) ---
-        $catTracks = Category::where('name', 'Track Sets')->first();
-        
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catTracks->id,
-            'name' => 'Ultimate T-Rex Garage',
-            'casting_name' => 'Hot Wheels City Ultimate Playset',
-            'slug' => Str::slug('ultimate-t-rex-garage'),
-            'price' => 129.99,
-            'stock_quantity' => 15,
-            'description' => 'Massive multi-level garage with T-Rex robot and elevator.',
-            'main_image' => '/images/products/t-rex-garage.png'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catTracks->id,
-            'name' => 'Bowser\'s Castle Track Set',
-            'casting_name' => 'Mario Kart Special Edition',
-            'slug' => Str::slug('bowsers-castle-track-set'),
-            'price' => 119.99,
-            'stock_quantity' => 8,
-            'description' => 'Interactive Bowser\'s Castle with slam launcher.',
-            'main_image' => '/images/products/bowsers-castle.png'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catTracks->id,
-            'name' => 'F1 Downhill Circuit',
-            'casting_name' => 'Formula 1 Racing Series',
-            'slug' => Str::slug('f1-downhill-circuit'),
-            'price' => 89.99,
-            'stock_quantity' => 12,
-            'description' => 'Gravity-fed circuit featuring elevation changes.',
-            'main_image' => '/images/products/f1-downhill.png'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catTracks->id,
-            'name' => 'City Ultimate Garage',
-            'casting_name' => 'Hot Wheels City Series',
-            'slug' => Str::slug('city-ultimate-garage'),
-            'price' => 120.00,
-            'stock_quantity' => 5,
-            'description' => '4 levels of racing with a car-eating dragon battle feature.',
-            'main_image' => '/images/placeholder-car.webp'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catTracks->id,
-            'name' => 'Mario Kart Nemesis Track Set',
-            'casting_name' => 'Mario Kart Challenge',
-            'slug' => Str::slug('mario-kart-nemesis'),
-            'price' => 108.99,
-            'stock_quantity' => 4,
-            'description' => 'Case of 4 unique Mario Kart obstacles (Thwomp, Piranha, etc).',
-            'main_image' => '/images/placeholder-car.webp'
-        ]);
-
-        // --- DISPLAY CASES (Category 3) ---
-        $catDisplay = Category::where('name', 'Display Cases')->first();
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catDisplay->id,
-            'name' => '2026 Mainline Case (72pcs)',
-            'casting_name' => 'Factory Sealed A-Case',
-            'slug' => Str::slug('2026-mainline-case-72'),
-            'price' => 94.99,
-            'stock_quantity' => 5,
-            'description' => 'Unopened case of 72 standard mainline cars.',
-            'main_image' => '/images/products/72-piece-case.png'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catDisplay->id,
-            'name' => 'Japan Historics 5 Set',
-            'casting_name' => 'Car Culture Premium Set',
-            'slug' => Str::slug('japan-historics-5-set'),
-            'price' => 34.99,
-            'stock_quantity' => 20,
-            'description' => 'Premium set of 5 Japanese historic racing cars.',
-            'main_image' => '/images/products/japan-historics-5.png'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catDisplay->id,
-            'name' => 'Vintage Racing Premium Set',
-            'casting_name' => 'Car Culture Vintage',
-            'slug' => Str::slug('vintage-racing-premium'),
-            'price' => 24.99,
-            'stock_quantity' => 15,
-            'description' => 'Metal/metal bodies with Real Riders tires (Ferrari 250 GTO included).',
-            'main_image' => '/images/placeholder-car.webp'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catDisplay->id,
-            'name' => 'Team Transport Case',
-            'casting_name' => 'Car Culture Transporters',
-            'slug' => Str::slug('team-transport-case'),
-            'price' => 44.99,
-            'stock_quantity' => 6,
-            'description' => 'Premium 4-piece set including car and hauler pairs.',
-            'main_image' => '/images/placeholder-car.webp'
-        ]);
-
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'category_id' => $catDisplay->id,
-            'name' => 'F1 Premium 2026 Assortment',
-            'casting_name' => 'Formula 1 Premium',
-            'slug' => Str::slug('f1-premium-2026'),
-            'price' => 49.99,
-            'stock_quantity' => 10,
-            'description' => 'Premium single cars representing all 20 drivers with special plinth.',
-            'main_image' => '/images/placeholder-car.webp'
-        ]);
 
         // Coupons
         Coupon::create([

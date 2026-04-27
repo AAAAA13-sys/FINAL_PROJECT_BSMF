@@ -47,7 +47,7 @@
                         </form>
                     </td>
                     <td class="pe-4 text-end">
-                        <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" style="font-size: 0.65rem;">DETAILS</a>
+                        <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" style="font-size: 0.65rem;">DETAILS</a>
                     </td>
                 </tr>
                 @endforeach

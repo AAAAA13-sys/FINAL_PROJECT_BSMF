@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
+
     // Coupons
     Route::post('/coupon/apply', [\App\Http\Controllers\OrderController::class, 'applyCoupon'])->name('coupon.apply');
     Route::delete('/coupon', [\App\Http\Controllers\OrderController::class, 'removeCoupon'])->name('coupon.remove');
@@ -67,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Orders
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+        Route::get('/orders/{id}', [AdminController::class, 'orderShow'])->name('orders.show');
         Route::post('/orders/{id}/status', [AdminController::class, 'orderUpdateStatus'])->name('orders.updateStatus');
 
         // Disputes
@@ -78,10 +80,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', [AdminController::class, 'users'])->name('users');
         Route::delete('/users/{id}', [AdminController::class, 'userDestroy'])->name('users.destroy');
 
-        // Categories
-        Route::get('/categories', [AdminController::class, 'categories'])->name('categories');
-        Route::post('/categories', [AdminController::class, 'categoryStore'])->name('categories.store');
-        Route::delete('/categories/{id}', [AdminController::class, 'categoryDestroy'])->name('categories.destroy');
 
         // Coupons
         Route::get('/coupons', [AdminController::class, 'coupons'])->name('coupons');

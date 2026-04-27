@@ -40,15 +40,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 4. Categories
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 100);
-            $table->string('slug', 120)->unique();
-            $table->text('description')->nullable();
-            $table->string('image')->nullable();
-            $table->timestamps();
-        });
 
         // 5. Products
         Schema::create('products', function (Blueprint $table) {
@@ -56,7 +47,6 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
             $table->foreignId('scale_id')->constrained()->cascadeOnDelete();
             $table->foreignId('series_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name', 200);
             $table->string('casting_name', 200);
             $table->string('slug', 220)->unique();
@@ -221,7 +211,6 @@ return new class extends Migration
         Schema::dropIfExists('coupons');
         Schema::dropIfExists('product_images');
         Schema::dropIfExists('products');
-        Schema::dropIfExists('categories');
         Schema::dropIfExists('series');
         Schema::dropIfExists('scales');
         Schema::dropIfExists('brands');

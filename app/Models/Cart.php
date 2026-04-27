@@ -39,6 +39,6 @@ final class Cart extends Model
      */
     public function subtotal(): float
     {
-        return (float) $this->items->sum(fn($item) => $item->price_at_time * $item->quantity);
+        return (float) $this->items->sum(fn($item) => $item->product->price * $item->quantity);
     }
 }

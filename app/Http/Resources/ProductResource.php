@@ -33,9 +33,6 @@ class ProductResource extends JsonResource
             'brand' => $this->whenLoaded('brand', function() {
                 return $this->brand->name;
             }),
-            'category' => $this->whenLoaded('category', function() {
-                return $this->category->name;
-            }),
             'scale' => $this->whenLoaded('scale', function() {
                 return $this->scale->name;
             }),

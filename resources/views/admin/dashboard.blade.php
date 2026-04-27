@@ -10,6 +10,7 @@
         </div>
     </div>
 
+
     <!-- Stats Grid -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
@@ -17,7 +18,7 @@
                 <p class="text-secondary small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Total Revenue</p>
                 <h2 class="text-warning fw-black mb-0">${{ number_format($totalSales, 2) }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
-                    <div class="progress-bar bg-warning" style="width: 75%"></div>
+                    <div class="progress-bar bg-warning" style="width: 100%"></div>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
                 <p class="text-white opacity-75 small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Total Orders</p>
                 <h2 class="text-white fw-black mb-0">{{ $totalOrders }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
-                    <div class="progress-bar bg-primary" style="width: 60%"></div>
+                    <div class="progress-bar bg-primary" style="width: 100%"></div>
                 </div>
             </div>
         </div>
@@ -35,7 +36,7 @@
                 <p class="text-info small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Inventory (SKUs)</p>
                 <h2 class="text-info fw-black mb-0">{{ $totalProducts }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
-                    <div class="progress-bar bg-info" style="width: 85%"></div>
+                    <div class="progress-bar bg-info" style="width: 100%"></div>
                 </div>
             </div>
         </div>
@@ -44,7 +45,7 @@
                 <p class="text-success small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Active Collectors</p>
                 <h2 class="text-white fw-black mb-0">{{ $totalCustomers }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
-                    <div class="progress-bar bg-success" style="width: 90%"></div>
+                    <div class="progress-bar bg-success" style="width: 100%"></div>
                 </div>
             </div>
         </div>
@@ -54,7 +55,13 @@
     <div class="card glass border-secondary p-3 mb-4 shadow-lg">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="text-white text-uppercase italic mb-0">REVENUE <span>PERFORMANCE</span></h5>
-            <div class="badge bg-dark border border-secondary p-2 px-3">LAST 6 MONTHS</div>
+            <form action="{{ route('admin.dashboard') }}" method="GET" id="revenueFilterForm">
+                <select name="revenue_filter" class="badge bg-dark border border-secondary p-2 px-3 text-uppercase fw-bold cursor-pointer" onchange="this.form.submit()">
+                    <option value="week" {{ $filter === 'week' ? 'selected' : '' }}>LAST 7 DAYS</option>
+                    <option value="month" {{ $filter === 'month' ? 'selected' : '' }}>LAST 6 MONTHS</option>
+                    <option value="year" {{ $filter === 'year' ? 'selected' : '' }}>LAST 5 YEARS</option>
+                </select>
+            </form>
         </div>
         <div style="height: 250px;">
             <canvas id="revenueChart"></canvas>
@@ -84,7 +91,7 @@
                             <tbody>
                                 @foreach($recentOrders as $order)
                                 <tr>
-                                    <td class="ps-4 text-warning fw-bold">{{ $order->order_number }}</td>
+                                    <td class="ps-4 text-warning fw-bold"><a href="{{ route('admin.orders.show', $order->id) }}" class="text-warning text-decoration-none hover-underline">{{ $order->order_number }}</a></td>
                                     <td class="text-white fw-bold">{{ $order->customer_name }}</td>
                                     <td class="text-muted small">{{ $order->created_at->format('M d, Y') }}</td>
                                     <td class="text-white fw-bold">${{ number_format($order->total_amount, 2) }}</td>
@@ -165,12 +172,11 @@
     </div>
 </div>
 
-    <script src="{{ asset('js/admin.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             initRevenueChart(
-                {!! json_encode($monthlySales->pluck('month')) !!},
-                {!! json_encode($monthlySales->pluck('total')) !!}
+                {!! json_encode($salesData->pluck('label')) !!},
+                {!! json_encode($salesData->pluck('total')) !!}
             );
         });
     </script>

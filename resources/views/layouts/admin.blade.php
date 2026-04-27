@@ -29,9 +29,6 @@
                 <a href="{{ route('admin.products') }}" class="admin-nav-link {{ Route::is('admin.products') ? 'active' : '' }}">
                     <i class="fas fa-car"></i> Products
                 </a>
-                <a href="{{ route('admin.categories') }}" class="admin-nav-link {{ Route::is('admin.categories') ? 'active' : '' }}">
-                    <i class="fas fa-tags"></i> Categories
-                </a>
                 <a href="{{ route('admin.coupons') }}" class="admin-nav-link {{ Route::is('admin.coupons') ? 'active' : '' }}">
                     <i class="fas fa-ticket-alt"></i> Coupons
                 </a>
@@ -62,19 +59,33 @@
 
         <main class="admin-main fade-in">
             @if(session('success'))
-                <div class="auth-alert auth-alert-info auto-hide-alert">
-                    <i class="fas fa-check-circle"></i>
-                    {{ session('success') }}
+                <div class="auth-alert auth-alert-info auto-hide-alert d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-check-circle me-2"></i> {{ session('success') }}</span>
+                    <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.remove()" style="font-size: 0.6rem;"></button>
                 </div>
             @endif
             @if(session('error'))
-                <div class="auth-alert auth-alert-danger auto-hide-alert">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    {{ session('error') }}
+                <div class="auth-alert auth-alert-danger auto-hide-alert d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}</span>
+                    <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.remove()" style="font-size: 0.6rem;"></button>
                 </div>
             @endif
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('js/admin.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alerts = document.querySelectorAll('.auto-hide-alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => alert.remove(), 500);
+                }, 3000);
+            });
+        });
+    </script>
 </body>
 </html>

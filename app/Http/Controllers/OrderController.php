@@ -102,69 +102,94 @@ final class OrderController extends Controller
             return redirect()->route('products.index')->with('error', 'Your cart is empty.');
         }
 
-        return DB::transaction(function () use ($request, $cart, $user) {
-            $subtotal = $cart->subtotal();
-            $discount = 0;
-            $couponCode = session('coupon_code');
+        try {
+            return DB::transaction(function () use ($request, $cart, $user) {
+                $subtotal = $cart->subtotal();
+                $discount = 0;
+                $couponCode = session('coupon_code');
 
-            if ($couponCode) {
-                $coupon = Coupon::where('code', $couponCode)->first();
-                if ($coupon && $coupon->isValid()) {
-                    if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
-                        $discount = $subtotal * ($coupon->discount_value / 100);
-                    } else {
-                        $discount = $coupon->discount_value;
+                if ($couponCode) {
+                    $coupon = Coupon::where('code', $couponCode)->first();
+                    if ($coupon && $coupon->isValid()) {
+                        if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
+                            $discount = $subtotal * ($coupon->discount_value / 100);
+                        } else {
+                            $discount = $coupon->discount_value;
+                        }
+                        $coupon->increment('times_used');
                     }
-                    $coupon->increment('times_used');
                 }
-            }
 
-            $shipping = $subtotal >= 50 ? 0 : 5.00;
-            $total = $subtotal - $discount + $shipping;
+                $shipping = $subtotal >= 50 ? 0 : 5.00;
+                $total = $subtotal - $discount + $shipping;
 
-            $orderNumber = 'BSG-' . date('Ymd') . '-' . str_pad((string) (Order::whereDate('created_at', now())->count() + 1), 5, '0', STR_PAD_LEFT);
+                $orderNumber = 'BSG-' . date('Ymd') . '-' . str_pad((string) (Order::where('user_id', $user->id)->count() + 1), 5, '0', STR_PAD_LEFT);
 
-            $order = Order::create([
-                'order_number' => $orderNumber,
-                'user_id' => $user->id,
-                'status' => Order::STATUS_PENDING,
-                'subtotal' => $subtotal,
-                'discount_amount' => $discount,
-                'shipping_fee' => $shipping,
-                'total_amount' => $total,
-                'coupon_code' => $couponCode,
-                'customer_name' => $request->customer_name ?? $user->name,
-                'customer_email' => $request->customer_email ?? $user->email,
-                'shipping_address' => $request->shipping_address,
-                'payment_method' => $request->payment_method,
-                'extra_packaging_requested' => $request->has('extra_packaging'),
-                'notes' => $request->notes,
-                'placed_at' => now(),
-            ]);
-
-            foreach ($cart->items as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'product_name' => $item->product->name,
-                    'product_brand' => $item->product->brand->name ?? 'Unknown',
-                    'price' => $item->product->price,
-                    'quantity' => $item->quantity,
-                    'total' => $item->product->price * $item->quantity,
-                    'product_image' => $item->product->main_image,
+                $order = Order::create([
+                    'order_number' => $orderNumber,
+                    'user_id' => $user->id,
+                    'status' => Order::STATUS_PENDING,
+                    'subtotal' => $subtotal,
+                    'discount_amount' => $discount,
+                    'shipping_fee' => $shipping,
+                    'total_amount' => $total,
+                    'coupon_code' => $couponCode,
+                    'customer_name' => $request->customer_name ?? $user->name,
+                    'customer_email' => $request->customer_email ?? $user->email,
+                    'shipping_address' => $request->shipping_address,
+                    'payment_method' => $request->payment_method,
+                    'extra_packaging_requested' => $request->has('extra_packaging'),
+                    'notes' => $request->notes,
+                    'placed_at' => now(),
                 ]);
 
-                $item->product->decrement('stock_quantity', $item->quantity);
-            }
+                foreach ($cart->items as $item) {
+                    // Ensure stock is still available at transaction time
+                    $product = $item->product;
+                    if ($product->stock_quantity < $item->quantity) {
+                        throw new \Exception("Insufficient stock for model: {$product->name}. Only {$product->stock_quantity} left.");
+                    }
 
-            $cart->items()->delete();
-            session()->forget('coupon_code');
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'product_name' => $item->product->name,
+                        'product_brand' => $item->product->brand->name ?? 'Unknown',
+                        'price' => $item->product->price,
+                        'quantity' => $item->quantity,
+                        'total' => $item->product->price * $item->quantity,
+                        'product_image' => $item->product->main_image,
+                    ]);
 
+                    $product->decrement('stock_quantity', $item->quantity);
+                }
+
+                $cart->items()->delete();
+                session()->forget('coupon_code');
+
+                if ($request->wantsJson() || $request->is('api/*')) {
+                    return (new \App\Http\Resources\OrderResource($order))->response()->setStatusCode(201);
+                }
+
+                return redirect()->route('orders.confirmation', $order->id)->with('success', 'Order placed successfully!');
+            });
+        } catch (\Exception $e) {
             if ($request->wantsJson() || $request->is('api/*')) {
-                return (new \App\Http\Resources\OrderResource($order))->response()->setStatusCode(201);
+                return response()->json(['message' => $e->getMessage()], 400);
             }
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
 
-            return redirect()->route('orders.confirmation', $order->id)->with('success', 'Order placed successfully!');
-        });
+    /**
+     * Display order confirmation page.
+     */
+    public function confirmation($id)
+    {
+        $order = Order::with(['items.product'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('orders.confirmation', compact('order'));
     }
 }

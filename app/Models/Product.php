@@ -17,7 +17,6 @@ final class Product extends Model
         'brand_id',
         'scale_id',
         'series_id',
-        'category_id',
         'name',
         'casting_name',
         'slug',
@@ -89,13 +88,6 @@ final class Product extends Model
         return $this->belongsTo(Series::class);
     }
 
-    /**
-     * Get the category for the product.
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
 
     /**
      * Get the images for the product.

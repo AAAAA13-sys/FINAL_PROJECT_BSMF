@@ -23,7 +23,6 @@
                 <tr>
                     <th class="ps-4">Model Info</th>
                     <th>Casting</th>
-                    <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
                     <th class="pe-4 text-end">Actions</th>
@@ -42,7 +41,6 @@
                         </div>
                     </td>
                     <td><span class="text-white-50 small">{{ $product->casting_name ?? 'N/A' }}</span></td>
-                    <td><span class="badge bg-dark border border-secondary text-muted px-3 py-2" style="font-size: 0.6rem;">{{ $product->category->name ?? 'Uncategorized' }}</span></td>
                     <td class="text-warning fw-black">${{ number_format($product->price, 2) }}</td>
                     <td>
                         <span class="fw-bold {{ $product->stock_quantity < 10 ? 'text-danger' : 'text-success' }}">
@@ -112,14 +110,6 @@
                     <option value="">None</option>
                     @foreach($series as $s)
                         <option value="{{ $s->id }}">{{ $s->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label text-muted small fw-bold text-uppercase ls-1">Category</label>
-                <select name="category_id" class="form-select bg-dark border-secondary text-white">
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                     @endforeach
                 </select>
             </div>

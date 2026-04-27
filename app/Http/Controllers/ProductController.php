@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Scale;
 use App\Models\Series;
@@ -19,7 +18,7 @@ final class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::query()
-            ->with(['category', 'brand', 'scale', 'series', 'reviews'])
+            ->with(['brand', 'scale', 'series', 'reviews'])
             ->active();
 
         // Search by car name, casting name, or description
@@ -32,10 +31,6 @@ final class ProductController extends Controller
             });
         }
 
-        // Filter by Category
-        if ($request->filled('category') && $request->category !== 'all') {
-            $query->where('category_id', $request->category);
-        }
 
         // Filter by Brand
         if ($request->filled('brand')) {
@@ -118,19 +113,11 @@ final class ProductController extends Controller
             return \App\Http\Resources\ProductResource::collection($products);
         }
 
-        $categories = Category::all();
-        $brands = Brand::whereNotIn('name', [
-            'Tomica', 
-            'Mini GT', 
-            'Inno64', 
-            'Tarmac Works', 
-            'Pop Race', 
-            'Kaido House'
-        ])->get();
+        $brands = Brand::all();
         $scales = Scale::all();
         $series = Series::all();
 
-        return view('products.index', compact('products', 'categories', 'brands', 'scales', 'series'));
+        return view('products.index', compact('products', 'brands', 'scales', 'series'));
     }
 
     /**
@@ -138,7 +125,7 @@ final class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['category', 'brand', 'scale', 'series', 'reviews.user', 'images'])
+        $product = Product::with(['brand', 'scale', 'series', 'reviews.user', 'images'])
             ->findOrFail($id);
 
         // Increment views

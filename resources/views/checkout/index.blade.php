@@ -86,7 +86,7 @@
                                         <span class="text-muted">{{ $item->quantity }}x</span>
                                         <span class="text-white small">{{ $item->product->name }}</span>
                                     </div>
-                                    <span class="text-white small">${{ number_format($item->price_at_time * $item->quantity, 2) }}</span>
+                                    <span class="text-white small">${{ number_format($item->product->price * $item->quantity, 2) }}</span>
                                 </div>
                             @endforeach
                         </div>

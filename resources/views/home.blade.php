@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'BSMF Garage')
+
 @section('content')
 <section class="hero">
     <div class="hero-content">
@@ -9,7 +11,7 @@
         <div style="position: relative; width: 100%; max-width: 700px;" class="fade-in delay-2">
             <form action="{{ route('products.index') }}" method="GET" id="searchForm" style="display: flex; gap: 0; width: 100%; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
                 <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search for your dream car: Skyline, Supra, Porsche..." style="flex-grow: 1; background: transparent; border: none; color: white; padding: 0 2.5rem; font-size: 1.1rem; outline: none;">
-                <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Collection</button>
+                <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Garage</button>
             </form>
             <div id="searchSuggestions" class="glass" style="display: none; position: absolute; top: 110%; left: 0; right: 0; z-index: 1000; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border);"></div>
         </div>
@@ -17,7 +19,7 @@
 
 
         <div class="fade-in delay-3" style="margin-top: 4rem; display: flex; gap: 3rem; color: var(--text-muted); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">
-            <span><i class="fas fa-shipping-fast" style="color: var(--secondary); margin-right: 10px;"></i> Global Shipping</span>
+            <span><i class="fas fa-shipping-fast" style="color: var(--secondary); margin-right: 10px;"></i> Nationwide Shipping</span>
             <span><i class="fas fa-shield-alt" style="color: var(--secondary); margin-right: 10px;"></i> 100% Authentic</span>
             <span><i class="fas fa-history" style="color: var(--secondary); margin-right: 10px;"></i> 24/7 Support</span>
         </div>
@@ -43,8 +45,12 @@
                         <div style="position: absolute; top: 10px; left: 10px; background: var(--secondary); color: var(--bg-dark); padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 900; letter-spacing: 1px;">NEW ARRIVAL</div>
                     </div>
                     <div class="product-info">
-                        <span style="font-size: 0.7rem; color: var(--secondary); font-weight: 800; text-transform: uppercase;">{{ $product->category->name ?? 'Uncategorized' }}</span>
-                        <h3 style="margin-top: 0.5rem; color: white; font-size: 1.1rem;">{{ $product->name }}</h3>
+                        <h3 style="margin-top: 0.5rem; color: white; font-size: 1.1rem; margin-bottom: 0;">{{ $product->name }}</h3>
+                        <div style="display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                            <span style="font-size: 0.55rem; color: var(--secondary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(251, 191, 36, 0.3); padding: 2px 8px; border-radius: 4px;">{{ $product->brand->name }}</span>
+                            <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ $product->scale->name }}</span>
+                            <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ strtoupper($product->card_condition) }}</span>
+                        </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
                             <div class="product-price" style="font-size: 1.4rem; color: white;">${{ number_format($product->price, 2) }}</div>
                             <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.75rem; border-radius: 20px;">Buy Now</a>
@@ -132,7 +138,10 @@
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
                     <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="Grail" style="max-height: 100%; object-fit: contain;">
                 </div>
-                <h4 style="color: white; font-size: 0.9rem; margin-bottom: 0.5rem;">{{ $product->name }}</h4>
+                <h4 style="color: white; font-size: 0.9rem; margin-bottom: 0.2rem;">{{ $product->name }}</h4>
+                <div style="font-size: 0.5rem; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; margin-bottom: 0.8rem; letter-spacing: 1px;">
+                    {{ $product->brand->name }} • {{ $product->scale->name }} • {{ $product->card_condition }}
+                </div>
                 <div style="color: var(--secondary); font-weight: 900;">${{ number_format($product->price, 2) }}</div>
             </div>
         @endforeach
@@ -160,44 +169,27 @@
     </div>
 </section>
 
-<!-- Shop by Category Section -->
-<section class="section-padding reveal" style="background: rgba(255,255,255,0.01);">
-    <div class="section-header">
-        <h2 class="section-title">BROWSE <span>COLLECTIONS</span></h2>
-        <a href="{{ route('products.index') }}" class="btn" style="color: var(--secondary); border: 1px solid var(--secondary); border-radius: 30px;">Explore All</a>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2rem;">
-        @foreach($categories as $category)
-            <a href="{{ route('products.index', ['category' => $category->id]) }}" class="glass" style="padding: 3rem 1.5rem; text-align: center; text-decoration: none; transition: 0.4s; border: 1px solid var(--glass-border); display: block;">
-                <div style="font-size: 2rem; margin-bottom: 1.5rem;"><i class="fas fa-folder-open" style="color: var(--secondary);"></i></div>
-                <h3 style="color: white; text-transform: uppercase; font-style: italic; font-size: 1.1rem; letter-spacing: 1px;">{{ $category->name }}</h3>
-                <div style="height: 2px; width: 30px; background: var(--primary); margin: 1rem auto;"></div>
-                <p style="color: var(--text-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">{{ $category->products()->count() }} MODELS</p>
-            </a>
-        @endforeach
-    </div>
-</section>
 
 <!-- Brand Ticker Showcase -->
 <section class="brand-ticker-container reveal">
     <div class="brand-ticker">
         <div class="brand-item">Hot Wheels</div>
         <div class="brand-item">Matchbox</div>
-        <div class="brand-item">Tomica</div>
-        <div class="brand-item">Majorette</div>
-        <div class="brand-item">Inno64</div>
-        <div class="brand-item">MiniGT</div>
-        <div class="brand-item">Greenlight</div>
-        <div class="brand-item">Tarmac Works</div>
+        <div class="brand-item">Mattel</div>
+        <div class="brand-item">Hot Wheels</div>
+        <div class="brand-item">Matchbox</div>
+        <div class="brand-item">Mattel</div>
+        <div class="brand-item">Hot Wheels</div>
+        <div class="brand-item">Matchbox</div>
         <!-- Duplicate for seamless loop -->
         <div class="brand-item">Hot Wheels</div>
         <div class="brand-item">Matchbox</div>
-        <div class="brand-item">Tomica</div>
-        <div class="brand-item">Majorette</div>
-        <div class="brand-item">Inno64</div>
-        <div class="brand-item">MiniGT</div>
-        <div class="brand-item">Greenlight</div>
-        <div class="brand-item">Tarmac Works</div>
+        <div class="brand-item">Mattel</div>
+        <div class="brand-item">Hot Wheels</div>
+        <div class="brand-item">Matchbox</div>
+        <div class="brand-item">Mattel</div>
+        <div class="brand-item">Hot Wheels</div>
+        <div class="brand-item">Matchbox</div>
     </div>
 </section>
 
@@ -213,10 +205,17 @@
             <div style="position: relative; overflow: hidden; border-radius: 8px;">
                 <img src="{{ $product->main_image ?? asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" style="background: #000814; border: none; margin-bottom: 0;">
                 <div style="position: absolute; top: 10px; right: 10px; background: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;">STAR</div>
+                
             </div>
             <div class="product-info" style="padding-top: 1.5rem;">
-                <span style="font-size: 0.7rem; color: var(--secondary); font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">{{ $product->category->name ?? 'Collection' }}</span>
-                <h3 style="margin-top: 0.5rem; color: white;">{{ $product->name }}</h3>
+                <h3 style="margin-top: 0.5rem; color: white; margin-bottom: 0;">{{ $product->name }}</h3>
+                <div style="display: flex; gap: 0.4rem; margin-top: 0.8rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.6rem; color: var(--secondary); font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">{{ $product->brand->name }}</span>
+                    <span style="font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 900;">/</span>
+                    <span style="font-size: 0.6rem; color: rgba(255,255,255,0.6); font-weight: 900; text-transform: uppercase;">{{ $product->scale->name }}</span>
+                    <span style="font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 900;">/</span>
+                    <span style="font-size: 0.6rem; color: rgba(255,255,255,0.6); font-weight: 900; text-transform: uppercase;">{{ $product->card_condition }}</span>
+                </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem;">
                     <div class="product-price" style="margin-bottom: 0; font-size: 1.5rem; text-shadow: none; color: white;">${{ number_format($product->price, 2) }}</div>
                     <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; border-radius: 30px;">View</a>

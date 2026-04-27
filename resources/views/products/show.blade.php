@@ -50,8 +50,6 @@
                         <span style="color: var(--text-muted); margin: 0 8px;">/</span>
                         <a href="{{ route('products.index') }}"
                             style="color: var(--secondary); text-decoration: none;">COLLECTION</a>
-                        <span style="color: var(--text-muted); margin: 0 8px;">/</span>
-                        <span style="color: white;">{{ $product->category->name ?? 'MODELS' }}</span>
                     </div>
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <span class="badge bg-warning text-dark">{{ $product->brand->name }}</span>
@@ -93,27 +91,34 @@
                     </div>
 
                     <div class="row mb-4 border-top border-secondary pt-4">
-                        <div class="col-6 mb-3">
-                            <label class="text-muted small text-uppercase d-block">Year</label>
-                            <span class="text-white">{{ $product->year ?? 'N/A' }}</span>
+                        <div class="col-4 mb-3">
+                            <label class="text-secondary small text-uppercase d-block fw-black ls-1">Brand</label>
+                            <span class="text-white fw-bold">{{ $product->brand->name }}</span>
                         </div>
-                        <div class="col-6 mb-3">
-                            <label class="text-muted small text-uppercase d-block">Condition</label>
-                            <span class="text-white">{{ ucfirst($product->card_condition) }}
-                                {{ $product->is_carded ? '(Carded)' : '(Loose)' }}</span>
+                        <div class="col-4 mb-3">
+                            <label class="text-secondary small text-uppercase d-block fw-black ls-1">Scale</label>
+                            <span class="text-white fw-bold">{{ $product->scale->name }}</span>
+                        </div>
+                        <div class="col-4 mb-3">
+                            <label class="text-secondary small text-uppercase d-block fw-black ls-1">Condition</label>
+                            <span class="text-white fw-bold">{{ ucfirst($product->card_condition) }} {{ $product->is_carded ? 'Card' : 'Loose' }}</span>
+                        </div>
+                        
+                        <div class="col-4 mt-2">
+                            <label class="text-muted small text-uppercase d-block">Year</label>
+                            <span class="text-white-50">{{ $product->year ?? 'N/A' }}</span>
                         </div>
                         @if($product->color)
-                            <div class="col-6">
+                            <div class="col-4 mt-2">
                                 <label class="text-muted small text-uppercase d-block">Color</label>
-                                <span class="text-white">{{ $product->color }}</span>
+                                <span class="text-white-50">{{ $product->color }}</span>
                             </div>
                         @endif
-                        <div class="col-6">
+                        <div class="col-4 mt-2">
                             <label class="text-muted small text-uppercase d-block">Stock Status</label>
                             @php $status = $product->stock_status; @endphp
-                            <span
-                                class="text-{{ $status == 'In Stock' ? 'success' : ($status == 'Low Stock' ? 'warning' : 'danger') }}">
-                                {{ $status }} ({{ $product->stock_quantity }} available)
+                            <span class="small text-{{ $status == 'In Stock' ? 'success' : ($status == 'Low Stock' ? 'warning' : 'danger') }}">
+                                {{ $status }} ({{ $product->stock_quantity }})
                             </span>
                         </div>
                     </div>

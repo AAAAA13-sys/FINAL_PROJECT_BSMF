@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Models\Category;
 use App\Models\Order;
 use App\Models\Dispute;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +24,6 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            $view->with('globalCategories', Category::all());
             
             if (Auth::check()) {
                 $view->with('userOrders', Order::where('user_id', Auth::id())->latest()->get());

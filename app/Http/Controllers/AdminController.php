@@ -8,7 +8,6 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Dispute;
-use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Scale;
 use App\Models\Series;
@@ -33,22 +32,33 @@ final class AdminController extends Controller
         $totalCustomers = User::where('is_admin', false)->count();
         $recentDisputes = Dispute::where('status', 'open')->limit(5)->get();
 
-        // Monthly Sales for Chart
-        $monthFormat = "DATE_FORMAT(created_at, '%m')";
-        
-        $monthlySales = Order::where('status', '!=', Order::STATUS_CANCELLED)
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->select(
-                DB::raw('SUM(total_amount) as total'),
-                DB::raw("$monthFormat as month_num")
-            )
-            ->groupBy('month_num')
-            ->orderBy('month_num')
-            ->get()
-            ->map(function($item) {
-                $item->month = date("M", mktime(0, 0, 0, (int)$item->month_num, 1));
-                return $item;
-            });
+        // Dynamic Sales for Chart
+        $filter = request('revenue_filter', 'month');
+        $query = Order::where('status', '!=', Order::STATUS_CANCELLED);
+
+        if ($filter === 'week') {
+            $salesData = $query->where('created_at', '>=', now()->subDays(7))
+                ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%a') as label"))
+                ->groupBy('label')
+                ->orderBy('created_at')
+                ->get();
+        } elseif ($filter === 'year') {
+            $salesData = $query->where('created_at', '>=', now()->subYears(5))
+                ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%Y') as label"))
+                ->groupBy('label')
+                ->orderBy('label')
+                ->get();
+        } else {
+            $salesData = $query->where('created_at', '>=', now()->subMonths(6))
+                ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%m') as month_num"))
+                ->groupBy('month_num')
+                ->orderBy('month_num')
+                ->get()
+                ->map(function($item) {
+                    $item->label = date("M", mktime(0, 0, 0, (int)$item->month_num, 1));
+                    return $item;
+                });
+        }
 
         return view('admin.dashboard', compact(
             'totalSales', 
@@ -58,7 +68,8 @@ final class AdminController extends Controller
             'recentOrders', 
             'lowStockProducts',
             'recentDisputes',
-            'monthlySales'
+            'salesData',
+            'filter'
         ));
     }
 
@@ -67,13 +78,12 @@ final class AdminController extends Controller
      */
     public function products()
     {
-        $products = Product::with(['category', 'brand', 'scale', 'series'])->latest()->paginate(20);
-        $categories = Category::all();
+        $products = Product::with(['brand', 'scale', 'series'])->latest()->paginate(20);
         $brands = Brand::all();
         $scales = Scale::all();
         $series = Series::all();
         
-        return view('admin.products', compact('products', 'categories', 'brands', 'scales', 'series'));
+        return view('admin.products', compact('products', 'brands', 'scales', 'series'));
     }
 
     /**
@@ -87,7 +97,6 @@ final class AdminController extends Controller
             'brand_id' => 'required|exists:brands,id',
             'scale_id' => 'required|exists:scales,id',
             'series_id' => 'nullable|exists:series,id',
-            'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'year' => 'nullable|integer',
@@ -109,6 +118,15 @@ final class AdminController extends Controller
     {
         $orders = Order::with('user')->latest()->paginate(20);
         return view('admin.orders', compact('orders'));
+    }
+
+    /**
+     * Show detailed order view for admin.
+     */
+    public function orderShow($id)
+    {
+        $order = Order::with(['items.product', 'user', 'disputes.messages'])->findOrFail($id);
+        return view('admin.order-details', compact('order'));
     }
 
     /**
@@ -172,11 +190,10 @@ final class AdminController extends Controller
     public function productEdit($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::all();
         $brands = Brand::all();
         $scales = Scale::all();
         $series = Series::all();
-        return view('admin.edit-product', compact('product', 'categories', 'brands', 'scales', 'series'));
+        return view('admin.edit-product', compact('product', 'brands', 'scales', 'series'));
     }
 
     /**
@@ -191,7 +208,6 @@ final class AdminController extends Controller
             'brand_id' => 'required|exists:brands,id',
             'scale_id' => 'required|exists:scales,id',
             'series_id' => 'nullable|exists:series,id',
-            'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
@@ -234,28 +250,6 @@ final class AdminController extends Controller
         return back()->with('success', 'Collector ejected from the garage.');
     }
 
-    /**
-     * Category management.
-     */
-    public function categories()
-    {
-        $categories = Category::withCount('products')->get();
-        return view('admin.categories', compact('categories'));
-    }
-
-    public function categoryStore(Request $request)
-    {
-        $request->validate(['name' => 'required|string|unique:categories,name']);
-        Category::create(['name' => $request->name, 'slug' => Str::slug($request->name)]);
-        return back()->with('success', 'New category established.');
-    }
-
-    public function categoryDestroy($id)
-    {
-        $category = Category::findOrFail($id);
-        $category->delete();
-        return back()->with('success', 'Category decommissioned.');
-    }
 
     /**
      * Coupon management.

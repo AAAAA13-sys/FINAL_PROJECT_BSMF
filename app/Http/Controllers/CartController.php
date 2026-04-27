@@ -65,6 +65,7 @@ final class CartController extends Controller
             $cart->items()->create([
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
+                'price_at_time' => $product->price,
             ]);
         }
 

@@ -3,7 +3,7 @@
 @section('title', 'Your Collection History - BSMF Garage')
 
 @section('content')
-<div class="container py-5">
+<div class="container py-5" style="min-height: 80vh;">
     <div class="d-flex align-items-center gap-3 mb-5">
         <h1 class="text-white text-uppercase italic fw-black mb-0">ORDER <span>HISTORY</span></h1>
     </div>
@@ -37,19 +37,29 @@
                     <div class="card-body p-4">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <div class="d-flex gap-2 overflow-auto pb-2">
+                                <div class="d-flex flex-column gap-3">
                                     @foreach($order->items as $item)
-                                        <div class="bg-black p-1 rounded" style="width: 80px; height: 60px; flex-shrink: 0;" title="{{ $item->product_name }}">
-                                            <img src="{{ $item->product_image ?? asset('images/placeholder-car.webp') }}" class="w-100 h-100 object-fit-contain" alt="Car Thumbnail">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="bg-black p-1 rounded" style="width: 60px; height: 45px; flex-shrink: 0;">
+                                                <img src="{{ $item->product_image ?? asset('images/placeholder-car.webp') }}" class="w-100 h-100 object-fit-contain" alt="Car Thumbnail">
+                                            </div>
+                                            <div>
+                                                <div class="text-white small fw-bold">{{ $item->product_name }}</div>
+                                                <div class="text-muted" style="font-size: 0.7rem;">Quantity: {{ $item->quantity }}</div>
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
-                                <p class="text-white mt-3 mb-0 fw-bold">
-                                    Status: <span class="text-warning">{{ strtoupper($order->tracking_status) }}</span>
+                                <p class="text-white mt-4 mb-0 fw-bold">
+                                    Status: <span class="text-warning">{{ strtoupper($order->status) }}</span>
                                 </p>
                             </div>
                             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                                <a href="{{ route('orders.show', $order->id) }}" class="btn btn-warning px-4">TRACK PACKAGE</a>
+                                @if($order->status == 'delivered')
+                                    <button class="btn btn-outline-success px-4" disabled><i class="fas fa-check-double me-2"></i> DELIVERED</button>
+                                @else
+                                    <a href="{{ route('orders.show', $order->id) }}" class="btn btn-warning px-4">TRACK PACKAGE</a>
+                                @endif
                             </div>
                         </div>
                     </div>
