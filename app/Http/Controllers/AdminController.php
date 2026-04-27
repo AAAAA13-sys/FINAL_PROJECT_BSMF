@@ -31,7 +31,7 @@ final class AdminController extends Controller
         $recentOrders = Order::with('user')->latest()->limit(5)->get();
         $lowStockProducts = Product::whereColumn('stock_quantity', '<=', 'low_stock_threshold')->limit(5)->get();
         $totalCustomers = User::where('is_admin', false)->count();
-        $recentDisputes = Dispute::where('status', Dispute::STATUS_PENDING)->limit(5)->get();
+        $recentDisputes = Dispute::where('status', 'open')->limit(5)->get();
 
         // Monthly Sales for Chart
         $monthFormat = "DATE_FORMAT(created_at, '%m')";
@@ -136,7 +136,7 @@ final class AdminController extends Controller
      */
     public function disputes()
     {
-        $disputes = Dispute::with(['order', 'user'])->latest()->paginate(20);
+        $disputes = Dispute::with(['order', 'user', 'messages.user'])->latest()->paginate(20);
         return view('admin.disputes', compact('disputes'));
     }
 
@@ -146,9 +146,6 @@ final class AdminController extends Controller
         $dispute = Dispute::findOrFail($id);
         
         $updateData = ['status' => $request->status];
-        if ($request->status === Dispute::STATUS_RESOLVED) {
-            $updateData['resolved_at'] = now();
-        }
 
         $dispute->update($updateData);
         return back()->with('success', 'Dispute status updated!');

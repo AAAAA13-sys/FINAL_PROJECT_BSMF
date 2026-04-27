@@ -11,8 +11,8 @@
             <div class="card border-secondary rounded-4 shadow-lg overflow-hidden">
                 <div class="card-header bg-darker border-secondary p-4 d-flex justify-content-between align-items-center">
                     <div>
-                        <h3 class="h5 text-warning mb-1 text-uppercase italic fw-bold">{{ str_replace('_', ' ', $d->dispute_type) }}</h3>
-                        <p class="text-muted small mb-0">ORDER <span class="text-white">#{{ $d->order->order_number }}</span> • FROM <span class="text-white">{{ $d->user->name }}</span> • {{ $d->created_at->format('M d, Y') }}</p>
+                        <h3 class="h5 text-warning mb-1 text-uppercase italic fw-bold">{{ str_replace('_', ' ', $d->subject) }}</h3>
+                        <p class="text-muted small mb-0">DISPUTE <span class="text-white">#{{ $d->dispute_number }}</span> • ORDER <span class="text-white">#{{ $d->order->order_number }}</span> • FROM <span class="text-white">{{ $d->user->name }}</span> • {{ $d->created_at->format('M d, Y') }}</p>
                     </div>
                     <form action="{{ route('admin.disputes.updateStatus', $d->id) }}" method="POST" class="d-flex gap-2">
                         @csrf

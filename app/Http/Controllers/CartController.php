@@ -15,16 +15,22 @@ final class CartController extends Controller
     /**
      * Display the shopping cart.
      */
-    public function index()
+    public function index(Request $request)
     {
         $cart = Cart::with(['items.product.brand'])->firstOrCreate(['user_id' => Auth::id()]);
+        
+        if ($request->wantsJson() || $request->is('api/*')) {
+            $cart->load('items.product.images');
+            return new \App\Http\Resources\CartResource($cart);
+        }
+
         return view('cart.index', compact('cart'));
     }
 
     /**
      * Add a die-cast car to the cart.
      */
-    public function add(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -35,6 +41,9 @@ final class CartController extends Controller
         
         // Stock validation
         if ($product->stock_quantity < $request->quantity) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return response()->json(['message' => "Only {$product->stock_quantity} left in stock!"], 400);
+            }
             return back()->with('error', "Only {$product->stock_quantity} left in stock!");
         }
 
@@ -45,6 +54,9 @@ final class CartController extends Controller
         if ($item) {
             $newQuantity = $item->quantity + $request->quantity;
             if ($product->stock_quantity < $newQuantity) {
+                if ($request->wantsJson() || $request->is('api/*')) {
+                    return response()->json(['message' => "Cannot add more. Max stock reached."], 400);
+                }
                 return back()->with('error', "Cannot add more. Max stock reached.");
             }
             $item->increment('quantity', $request->quantity);
@@ -52,8 +64,11 @@ final class CartController extends Controller
             $cart->items()->create([
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'price_at_time' => $product->price,
             ]);
+        }
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return $this->index($request);
         }
 
         return redirect()->route('cart.index')->with('success', 'Car added to your garage!');
@@ -69,10 +84,17 @@ final class CartController extends Controller
         $item = CartItem::whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))->findOrFail($id);
         
         if ($item->product->stock_quantity < $request->quantity) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return response()->json(['message' => "Insufficient stock."], 400);
+            }
             return back()->with('error', "Insufficient stock.");
         }
 
         $item->update(['quantity' => $request->quantity]);
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return $this->index($request);
+        }
 
         return back()->with('success', 'Quantity updated.');
     }
@@ -80,10 +102,14 @@ final class CartController extends Controller
     /**
      * Remove item from cart.
      */
-    public function remove($id)
+    public function destroy(Request $request, $id)
     {
         $item = CartItem::whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))->findOrFail($id);
         $item->delete();
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json(['message' => 'Item removed from cart']);
+        }
 
         return back()->with('success', 'Item removed from cart.');
     }

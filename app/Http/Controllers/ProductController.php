@@ -102,6 +102,10 @@ final class ProductController extends Controller
 
         $products = $query->paginate(24)->withQueryString();
         
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return \App\Http\Resources\ProductResource::collection($products);
+        }
+        
         $categories = Category::all();
         $brands = Brand::all();
         $scales = Scale::all();
@@ -118,6 +122,13 @@ final class ProductController extends Controller
         $product = Product::with(['category', 'brand', 'scale', 'series', 'reviews.user', 'images'])
             ->findOrFail($id);
             
+        // Increment views
+        $product->increment('views');
+        
+        if (request()->wantsJson() || request()->is('api/*')) {
+            return new \App\Http\Resources\ProductResource($product);
+        }
+            
         // Product details view
         return view('products.show', compact('product'));
     }
@@ -127,8 +138,8 @@ final class ProductController extends Controller
      */
     public function suggestions(Request $request)
     {
-        $query = $request->query('query');
-        if (empty($query)) {
+        $query = $request->query('q') ?? $request->query('query');
+        if (empty($query) || strlen($query) < 2) {
             return response()->json([]);
         }
 

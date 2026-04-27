@@ -12,36 +12,13 @@ final class Dispute extends Model
 {
     use HasFactory;
 
-    public const TYPE_WRONG_ITEM = 'wrong_item';
-    public const TYPE_NEVER_RECEIVED = 'never_received';
-    public const TYPE_DAMAGED_CARD = 'damaged_card';
-    public const TYPE_NOT_AS_DESCRIBED = 'not_as_described';
-
-    public const STATUS_PENDING = 'pending';
-    public const STATUS_INVESTIGATING = 'investigating';
-    public const STATUS_RESOLVED = 'resolved';
-    public const STATUS_REJECTED = 'rejected';
-
     protected $fillable = [
+        'dispute_number',
         'order_id',
         'user_id',
-        'order_item_id',
-        'dispute_type',
+        'subject',
         'description',
-        'evidence_photos',
         'status',
-        'resolution_notes',
-        'refund_amount',
-        'refund_issued',
-        'admin_notes',
-        'resolved_at',
-    ];
-
-    protected $casts = [
-        'evidence_photos' => 'array',
-        'refund_issued' => 'boolean',
-        'resolved_at' => 'datetime',
-        'refund_amount' => 'decimal:2',
     ];
 
     /**
@@ -61,10 +38,10 @@ final class Dispute extends Model
     }
 
     /**
-     * Get the order item associated with the dispute.
+     * Get the messages for the dispute.
      */
-    public function orderItem(): BelongsTo
+    public function messages()
     {
-        return $this->belongsTo(OrderItem::class);
+        return $this->hasMany(DisputeMessage::class);
     }
 }

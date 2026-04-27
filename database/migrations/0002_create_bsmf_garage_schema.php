@@ -77,6 +77,7 @@ return new class extends Migration
             $table->string('main_image')->nullable();
             $table->json('additional_images')->nullable();
             $table->longText('description')->nullable();
+            $table->integer('views')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -185,9 +186,11 @@ return new class extends Migration
         // 14. Disputes
         Schema::create('disputes', function (Blueprint $table) {
             $table->id();
+            $table->string('dispute_number', 50)->unique();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->string('subject');
+            $table->text('description')->nullable();
             $table->string('status', 20)->default('open'); // open, closed, pending_customer
             $table->timestamps();
         });

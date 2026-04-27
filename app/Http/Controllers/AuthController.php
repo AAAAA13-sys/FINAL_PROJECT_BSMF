@@ -31,13 +31,31 @@ final class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            
+            if ($request->wantsJson() || $request->is('api/*')) {
+                $token = $user->createToken('auth_token')->plainTextToken;
+                return response()->json([
+                    'message' => 'Logged in successfully',
+                    'user' => new \App\Http\Resources\UserResource($user),
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                ]);
+            }
+
             $request->session()->regenerate();
             
-            if (Auth::user()->is_admin) {
+            if ($user->is_admin) {
                 return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Administrator!');
             }
             
             return redirect()->intended(route('home'))->with('success', 'Welcome back to the Garage!');
+        }
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
 
         return back()->withErrors([
@@ -54,11 +72,11 @@ final class AuthController extends Controller
     }
 
     /**
-     * Handle new user registration (Deliverable Phase 1).
+     * Handle new user registration.
      */
     public function register(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:50|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
@@ -66,12 +84,22 @@ final class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
             'is_admin' => false,
         ]);
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'message' => 'User registered successfully',
+                'user' => new \App\Http\Resources\UserResource($user),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+            ], 201);
+        }
 
         Auth::login($user);
 
@@ -79,10 +107,23 @@ final class AuthController extends Controller
     }
 
     /**
+     * Get authenticated user profile.
+     */
+    public function profile(Request $request)
+    {
+        return new \App\Http\Resources\UserResource($request->user());
+    }
+
+    /**
      * Handle logout.
      */
     public function logout(Request $request)
     {
+        if ($request->wantsJson() || $request->is('api/*')) {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json(['message' => 'Logged out successfully']);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

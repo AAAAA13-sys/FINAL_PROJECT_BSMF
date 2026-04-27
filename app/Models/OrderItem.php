@@ -17,16 +17,15 @@ final class OrderItem extends Model
         'product_id',
         'product_name',
         'product_brand',
-        'product_sku',
-        'product_price',
-        'quantity',
-        'subtotal',
         'product_image',
+        'quantity',
+        'price',
+        'total',
     ];
 
     protected $casts = [
-        'product_price' => 'decimal:2',
-        'subtotal' => 'decimal:2',
+        'price' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
 
     /**

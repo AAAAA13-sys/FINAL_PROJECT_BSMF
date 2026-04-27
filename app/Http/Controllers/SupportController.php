@@ -16,6 +16,11 @@ final class SupportController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->wantsJson() || $request->is('api/*')) {
+            $disputes = Dispute::where('user_id', Auth::id())->with('order')->orderBy('created_at', 'desc')->get();
+            return \App\Http\Resources\DisputeResource::collection($disputes);
+        }
+
         $order_id = $request->query('order_id');
         $orders = Order::where('user_id', Auth::id())->latest()->get();
         $disputes = Dispute::where('user_id', Auth::id())->latest()->get();
@@ -24,27 +29,73 @@ final class SupportController extends Controller
     }
 
     /**
-     * File a new collector dispute (Deliverable Phase 5).
+     * Display specific dispute.
+     */
+    public function show(Request $request, $id)
+    {
+        $dispute = Dispute::where('user_id', Auth::id())
+            ->with(['order', 'messages.user'])
+            ->findOrFail($id);
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return new \App\Http\Resources\DisputeResource($dispute);
+        }
+
+        return view('support.show', compact('dispute'));
+    }
+
+    /**
+     * File a new collector dispute.
      */
     public function store(Request $request)
     {
         $request->validate([
             'order_id' => 'required|exists:orders,id',
-            'dispute_type' => 'required|in:wrong_item,never_received,damaged_card,not_as_described',
+            'subject' => 'required_without:dispute_type|string|max:255',
+            'dispute_type' => 'required_without:subject|string',
             'description' => 'required|string',
         ]);
 
         // Ensure order belongs to user
         $order = Order::where('user_id', Auth::id())->where('id', $request->order_id)->firstOrFail();
 
-        Dispute::create([
+        $dispute = Dispute::create([
+            'dispute_number' => 'DSP-' . strtoupper(\Illuminate\Support\Str::random(10)),
             'user_id' => Auth::id(),
             'order_id' => $request->order_id,
-            'dispute_type' => $request->dispute_type,
+            'subject' => $request->subject ?? $request->dispute_type,
             'description' => $request->description,
-            'status' => Dispute::STATUS_PENDING,
+            'status' => 'open',
         ]);
 
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return new \App\Http\Resources\DisputeResource($dispute);
+        }
+
         return back()->with('success', 'Your dispute has been logged. Our marshals will investigate shortly.');
+    }
+
+    /**
+     * Add message to dispute.
+     */
+    public function messageStore(Request $request, $id)
+    {
+        $request->validate(['message' => 'required|string']);
+
+        $dispute = Dispute::where('user_id', Auth::id())->findOrFail($id);
+
+        $message = \App\Models\DisputeMessage::create([
+            'dispute_id' => $dispute->id,
+            'user_id' => Auth::id(),
+            'message' => $request->message,
+        ]);
+
+        $dispute->touch();
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return new \App\Http\Resources\DisputeMessageResource($message);
+        }
+
+        return back()->with('success', 'Reply dispatched.');
     }
 }
