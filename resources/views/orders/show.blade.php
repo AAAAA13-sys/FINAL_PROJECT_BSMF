@@ -51,13 +51,13 @@
                 @foreach($order->items as $item)
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                         <span>{{ $item->product_name }} x {{ $item->quantity }}</span>
-                        <span>${{ number_format($item->price * $item->quantity, 2) }}</span>
+                        <span>₱{{ number_format($item->price * $item->quantity, 2) }}</span>
                     </div>
                 @endforeach
                 <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 1rem 0;">
                 <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem;">
                     <span>TOTAL</span>
-                    <span style="color: var(--secondary);">${{ number_format($order->total_amount, 2) }}</span>
+                    <span style="color: var(--secondary);">₱{{ number_format($order->total_amount, 2) }}</span>
                 </div>
             </div>
         </div>

@@ -20,8 +20,6 @@ return new class extends Migration
             $table->boolean('is_admin')->default(false);
             $table->string('phone', 20)->nullable();
             $table->text('default_shipping_address')->nullable();
-            $table->boolean('newsletter_subscribed')->default(false);
-            $table->rememberToken();
             $table->timestamps();
         });
     }

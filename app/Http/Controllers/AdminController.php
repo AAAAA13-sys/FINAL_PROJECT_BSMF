@@ -78,7 +78,7 @@ final class AdminController extends Controller
      */
     public function products()
     {
-        $products = Product::with(['brand', 'scale', 'series'])->latest()->paginate(20);
+        $products = Product::with(['brand', 'scale', 'series'])->latest()->paginate(10);
         $brands = Brand::all();
         $scales = Scale::all();
         $series = Series::all();

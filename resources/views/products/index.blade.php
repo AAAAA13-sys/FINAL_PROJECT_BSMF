@@ -234,15 +234,6 @@
                                     <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}"
                                         class="card-img-top zoom-on-hover" alt="{{ $product->name }}" loading="lazy">
                                     
-                                    @auth
-                                        <form action="{{ route('wishlist.add') }}" method="POST" style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button type="submit" class="btn btn-dark btn-sm rounded-circle shadow-lg border-secondary" style="width: 35px; height: 35px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;">
-                                                <i class="far fa-heart text-primary"></i>
-                                            </button>
-                                        </form>
-                                    @endauth
                                 </div>
 
                                 <div class="card-body">
@@ -258,7 +249,7 @@
 
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="h5 mb-0 text-warning"
-                                            style="font-weight: 700;">${{ number_format($product->price, 2) }}</span>
+                                            style="font-weight: 700;">₱{{ number_format($product->price, 2) }}</span>
 
                                         @php $status = $product->stock_status; @endphp
                                         <span

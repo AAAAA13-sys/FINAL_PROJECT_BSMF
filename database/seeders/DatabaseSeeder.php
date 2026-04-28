@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Brand;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\Scale;
 use App\Models\Series;
 use App\Models\User;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin User
+        // 1. Users
         User::create([
             'name' => 'BSMF Admin',
             'username' => 'bs_garage_admin',
@@ -28,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'is_admin' => true,
         ]);
 
-        // Sample Customer
         User::create([
             'name' => 'John Collector',
             'username' => 'johndiecast',
@@ -37,242 +37,167 @@ class DatabaseSeeder extends Seeder
             'is_admin' => false,
         ]);
 
-        // Brands
-        $brands = [
-            'Hot Wheels' => 'Mattel',
-            'Matchbox' => 'Mattel',
-        ];
+        // 2. Brands
+        $hw = Brand::create([
+            'name' => 'Hot Wheels',
+            'slug' => 'hot-wheels',
+            'description' => 'Mattel Premium Die-Cast',
+        ]);
 
-        foreach ($brands as $name => $desc) {
-            Brand::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'description' => $desc,
-            ]);
-        }
+        // 3. Scales
+        $scale64 = Scale::create([
+            'name' => '1:64',
+            'sort_order' => 0,
+        ]);
 
-        // Scales
-        $scales = ['1:64', '1:43', '1:24', '1:18'];
-        foreach ($scales as $index => $name) {
-            Scale::create([
-                'name' => $name,
-                'sort_order' => $index,
-            ]);
-        }
+        // 4. Series
+        $sthSeries = Series::create([
+            'brand_id' => $hw->id,
+            'name' => 'Super Treasure Hunt',
+            'slug' => 'super-treasure-hunt',
+            'is_premium' => false,
+        ]);
 
+        $premiumSeries = Series::create([
+            'brand_id' => $hw->id,
+            'name' => 'Premium',
+            'slug' => 'premium',
+            'is_premium' => true,
+        ]);
 
-        // Series (Hot Wheels)
-        $hw = Brand::where('name', 'Hot Wheels')->first();
-        $mb = Brand::where('name', 'Matchbox')->first();
-        
-        $seriesData = [
-            ['name' => 'Mainline', 'is_premium' => false],
-            ['name' => 'Treasure Hunt', 'is_premium' => false],
-            ['name' => 'Super Treasure Hunt', 'is_premium' => false],
-            ['name' => 'Car Culture', 'is_premium' => true],
-            ['name' => 'Boulevard', 'is_premium' => true],
-            ['name' => 'Fast & Furious', 'is_premium' => true],
-            ['name' => 'RLC', 'is_premium' => true],
-        ];
+        // 5. Products
 
-        foreach ($seriesData as $data) {
-            Series::create([
-                'brand_id' => $hw->id,
-                'name' => $data['name'],
-                'slug' => Str::slug($data['name']),
-                'is_premium' => $data['is_premium'],
-            ]);
-        }
-
-        // Series (Matchbox)
-        $mbSeries = [
-            ['name' => 'Basic', 'is_premium' => false],
-            ['name' => 'Moving Parts', 'is_premium' => true],
-            ['name' => 'Collectors', 'is_premium' => true],
-        ];
-
-        foreach ($mbSeries as $data) {
-            Series::create([
-                'brand_id' => $mb->id,
-                'name' => $data['name'],
-                'slug' => Str::slug($data['name']),
-                'is_premium' => $data['is_premium'],
-            ]);
-        }
-
-        // Sample Products Setup
-        $scale64 = Scale::where('name', '1:64')->first();
-
-        // 1. Hot Wheels '67 Camaro - Gold Chrome (STH)
-        Product::create([
+        // --- SUBARU ---
+        $subaru = Product::create([
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Super Treasure Hunt')->first()->id,
-            'name' => "'67 Camaro - Gold Chrome",
-            'casting_name' => "'67 Chevrolet Camaro",
-            'slug' => Str::slug("hw-67-camaro-gold-chrome-sth"),
-            'year' => 2025,
-            'color' => 'Gold Chrome',
+            'series_id' => $sthSeries->id,
+            'name' => 'STH Subaru Impreza STI',
+            'casting_name' => 'Subaru Impreza STI',
+            'slug' => 'subaru-impreza-sti',
+            'year' => 2026,
             'is_super_treasure_hunt' => true,
-            'price' => 149.99,
-            'stock_quantity' => 3,
-            'is_carded' => true,
-            'description' => "Extremely rare 2025 Super Treasure Hunt variant with Spectraflame gold finish and Real Riders wheels.",
-        ]);
-
-        // 2. Hot Wheels Nissan Skyline GT-R R34 - Blue (Fast & Furious)
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Fast & Furious')->first()->id,
-            'name' => "Nissan Skyline GT-R R34 - Blue",
-            'casting_name' => "Nissan Skyline GT-R R34",
-            'slug' => Str::slug("hw-nissan-skyline-gtr-r34-blue-ff"),
-            'year' => 2024,
-            'color' => 'Bayside Blue',
-            'price' => 12.99,
-            'stock_quantity' => 45,
-            'description' => "Premium Fast & Furious series casting with metal/metal body and rubber tires.",
-        ]);
-
-        // 3. Matchbox 2023 Nissan Z
-        Product::create([
-            'brand_id' => $mb->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Moving Parts')->first()->id,
-            'name' => "2023 Nissan Z - Ikazuchi Yellow",
-            'casting_name' => "2023 Nissan Z",
-            'slug' => Str::slug("mb-2023-nissan-z-yellow"),
-            'price' => 6.99,
-            'stock_quantity' => 28,
-            'description' => "Matchbox Moving Parts series with opening hood and detailed engine bay.",
-        ]);
-
-        // 4. Hot Wheels Honda Civic EK9
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Boulevard')->first()->id,
-            'name' => "Honda Civic Type R [EK9] - Yellow",
-            'casting_name' => "Honda Civic Type R EK9",
-            'slug' => Str::slug("hw-honda-civic-ek9-yellow-boulevard"),
-            'price' => 15.99,
-            'stock_quantity' => 12,
-            'description' => "Highly sought after Boulevard Series casting with Real Riders.",
-        ]);
-
-        // 5. Hot Wheels Toyota Supra - White (Car Culture)
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Car Culture')->first()->id,
-            'name' => "Toyota Supra JZA80 - Modern Classics",
-            'casting_name' => "Toyota Supra",
-            'slug' => Str::slug("hw-toyota-supra-white-cc"),
-            'year' => 2024,
-            'color' => 'Super White',
-            'price' => 8.99,
-            'stock_quantity' => 20,
-            'description' => "Modern Classics Series 4 casting. A must-have for JDM fans.",
-        ]);
-
-        // 6. Matchbox Mercedes-Benz G-Class
-        Product::create([
-            'brand_id' => $mb->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Moving Parts')->first()->id,
-            'name' => "Mercedes-Benz G 63 AMG - Silver",
-            'casting_name' => "Mercedes-Benz G-Class",
-            'slug' => Str::slug("mb-mercedes-g63-amg-silver"),
-            'price' => 5.49,
-            'stock_quantity' => 15,
-            'description' => "Matchbox Moving Parts series with opening doors and detailed interior.",
-        ]);
-
-        // 7. Matchbox 1964 Chevy C10 Pickup
-        Product::create([
-            'brand_id' => $mb->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Collectors')->first()->id,
-            'name' => "1964 Chevy C10 Pickup - Red",
-            'casting_name' => "1964 Chevrolet C10",
-            'slug' => Str::slug("mb-1964-chevy-c10-red"),
-            'price' => 16.99,
-            'stock_quantity' => 10,
-            'description' => "Matchbox Collectors series with premium packaging and rubber tires.",
-        ]);
-
-        // 8. Hot Wheels Mazda RX-7 FD
-        Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'RLC')->first()->id,
-            'name' => "Mazda RX-7 FD - Spectraflame Orange",
-            'casting_name' => "Mazda RX-7",
-            'slug' => Str::slug("hw-rlc-mazda-rx7-orange"),
-            'price' => 75.00,
+            'price' => 1999.00,
             'stock_quantity' => 5,
-            'description' => "RLC Exclusive with opening hood and premium detail.",
+            'is_carded' => false,
+            'is_loose' => true,
+            'card_condition' => 'Loose Pack',
+            'main_image' => 'images/products/subaru-impreza-sti/main.jpg',
+            'description' => "The super treasure hunt Subaru Impreza STI was recently released by hotwheels on the newly released J case 2026. The STH have the traditional Subaru Rally Livery in a spectraflame blue and a golden yellow tires.\n\nFun Fact: STH (Super Treasure Hunts) have rubber tires. There is only one exception on this which is the Custom otto STH.\n\nCondition: Loose Pack",
         ]);
 
-        // 9. Hot Wheels Lamborghini Countach (RLC)
-        Product::create([
+        for ($i = 1; $i <= 4; $i++) {
+            ProductImage::create([
+                'product_id' => $subaru->id,
+                'image_path' => "images/products/subaru-impreza-sti/gallery-$i.jpg",
+                'type' => 'gallery',
+            ]);
+        }
+
+        // --- CRUELLA DE VILL ---
+        $cruella = Product::create([
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'RLC')->first()->id,
-            'name' => "Lamborghini Countach LP500 S - Spectraflame Blue",
-            'casting_name' => "Lamborghini Countach",
-            'slug' => Str::slug("hw-rlc-lamborghini-countach-blue"),
-            'year' => 2024,
-            'color' => 'Spectraflame Blue',
-            'price' => 85.00,
-            'stock_quantity' => 2,
-            'description' => "Red Line Club Exclusive. Opening scissor doors and Spectraflame finish.",
+            'series_id' => $sthSeries->id,
+            'name' => 'STH Cruella De Vill',
+            'casting_name' => 'Cruella De Vill',
+            'slug' => 'cruella-de-vill',
+            'is_super_treasure_hunt' => true,
+            'price' => 999.00,
+            'stock_quantity' => 5,
+            'is_carded' => false,
+            'is_loose' => true,
+            'card_condition' => 'Loose Pack',
+            'main_image' => 'images/products/cruella-de-vill/main.jpg',
+            'description' => "The Super Treasure Hunt Cruella De Vill was one of the oldest STH released by hotwheels. It is a disney collaboration exclusive which makes it very sought after and hard to find nowadays.\n\nFun Fact: STH (Super Treasure Hunts) Have a \"TH\" logo on the car. This separates it from the normal/basic version.\n\nCondition: Loose Pack",
         ]);
 
-        // 10. Matchbox Porsche 911 Carrera 4S
-        Product::create([
-            'brand_id' => $mb->id,
-            'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Basic')->first()->id,
-            'name' => "Porsche 911 Carrera 4S - Silver",
-            'casting_name' => "Porsche 911",
-            'slug' => Str::slug("mb-porsche-911-silver"),
-            'price' => 1.49,
-            'stock_quantity' => 30,
-            'description' => "Matchbox Mainline series 2024 release.",
-        ]);
+        for ($i = 1; $i <= 4; $i++) {
+            ProductImage::create([
+                'product_id' => $cruella->id,
+                'image_path' => "images/products/cruella-de-vill/gallery-$i.jpg",
+                'type' => 'gallery',
+            ]);
+        }
 
-        // 11. Hot Wheels '71 Datsun 510 (Boulevard)
-        Product::create([
+        // --- DODGE CHARGER ---
+        $dodge = Product::create([
             'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Boulevard')->first()->id,
-            'name' => "'71 Datsun 510 - BRE Livery",
-            'casting_name' => "'71 Datsun 510",
-            'slug' => Str::slug("hw-71-datsun-510-bre"),
-            'year' => 2024,
-            'color' => 'White/Red',
-            'price' => 15.00,
-            'stock_quantity' => 12,
-            'description' => "Boulevard Series. Features the iconic BRE racing livery.",
+            'series_id' => $sthSeries->id,
+            'name' => "STH '20 Dodge Charger Hellcat",
+            'casting_name' => "'20 Dodge Charger Hellcat",
+            'slug' => 'dodge-charger-hellcat',
+            'year' => 2026,
+            'is_super_treasure_hunt' => true,
+            'price' => 1499.00,
+            'stock_quantity' => 5,
+            'is_carded' => false,
+            'is_loose' => true,
+            'card_condition' => 'Loose Pack',
+            'main_image' => 'images/products/dodge-charger-hellcat/main.jpg',
+            'description' => "The Super Treasure Hunt '20 Dodge Charger Was released as the STH of the 2026 P case of hotwheels. It is a spectraflame pink with a clean finish on the decals. One of the most sought after and most expensive STH of the 2025 Batch\n\nFun fact: STH (Super Treasure Hunts) Are Painted in spectraflame and are very sought after by the collectors.\n\nCondition: Loose Pack",
         ]);
 
-        // 12. Matchbox Toyota 4Runner
-        Product::create([
-            'brand_id' => $mb->id,
+        for ($i = 1; $i <= 4; $i++) {
+            ProductImage::create([
+                'product_id' => $dodge->id,
+                'image_path' => "images/products/dodge-charger-hellcat/gallery-$i.jpg",
+                'type' => 'gallery',
+            ]);
+        }
+
+        // --- MCLAREN 720S ---
+        $mclaren = Product::create([
+            'brand_id' => $hw->id,
             'scale_id' => $scale64->id,
-            'series_id' => Series::where('name', 'Basic')->first()->id,
-            'name' => "Toyota 4Runner - Black",
-            'casting_name' => "Toyota 4Runner",
-            'slug' => Str::slug("mb-toyota-4runner-black"),
-            'price' => 1.49,
-            'stock_quantity' => 25,
-            'description' => "Matchbox Mainline series. Off-road legend.",
+            'series_id' => $premiumSeries->id,
+            'name' => 'Hotwheels Premium LBWK McLaren 720s',
+            'casting_name' => 'McLaren 720s',
+            'slug' => 'mclaren-720s',
+            'price' => 399.00,
+            'stock_quantity' => 5,
+            'is_carded' => false,
+            'is_loose' => true,
+            'card_condition' => 'Loose Pack',
+            'main_image' => 'images/products/mclaren-720s/main.jpg',
+            'description' => "The Premium Hotwheels LBWK (Liberty walk) McLaren 720s was one of the most recent releases of hotwheels premium from the \"silhouette\" set. This model contains the usual aggressive body kits of LBWK with the deep rims.\n\nFun Fact: Premium Hotwheels have rubber tires. They are called \"Premium\" for a reason. It is much expensive compared to the 129 Pesos we see on the mall.\n\nCondition: Loose Pack",
         ]);
 
+        for ($i = 1; $i <= 4; $i++) {
+            ProductImage::create([
+                'product_id' => $mclaren->id,
+                'image_path' => "images/products/mclaren-720s/gallery-$i.jpg",
+                'type' => 'gallery',
+            ]);
+        }
 
-        // Coupons
+        // --- NISSAN SILVIA ---
+        $nissan = Product::create([
+            'brand_id' => $hw->id,
+            'scale_id' => $scale64->id,
+            'series_id' => $premiumSeries->id,
+            'name' => 'Hotwheels Premium Forza Nissan Silvia S15',
+            'casting_name' => 'Nissan Silvia S15',
+            'slug' => 'nissan-silvia-s15',
+            'price' => 799.00,
+            'stock_quantity' => 5,
+            'is_carded' => false,
+            'is_loose' => true,
+            'card_condition' => 'Loose Pack',
+            'main_image' => 'images/products/nissan-silvia-s15/main.jpg',
+            'description' => "The Premium Forza Nissan Silvia S15 was released in a box set and individual blister packaging. It is one of the hardest to find forza cars and it is much expensive compared to other premium cars due to it's demand. This Premium consist of the Forza livery in sea blue with a yellow 6 spoke wheels.\n\nFun Fact: Premium Hotwheels have metal base making it much heavier than normal hotwheels.\n\nCondition: Loose Pack",
+        ]);
+
+        for ($i = 1; $i <= 4; $i++) {
+            ProductImage::create([
+                'product_id' => $nissan->id,
+                'image_path' => "images/products/nissan-silvia-s15/gallery-$i.jpg",
+                'type' => 'gallery',
+            ]);
+        }
+
+        // 6. Coupons
         Coupon::create([
             'code' => 'WELCOME10',
             'name' => 'Welcome to BSMF Garage',
@@ -280,14 +205,6 @@ class DatabaseSeeder extends Seeder
             'discount_value' => 10.00,
             'min_order_amount' => 25.00,
             'expires_at' => now()->addDays(30),
-        ]);
-
-        Coupon::create([
-            'code' => 'FREESHIP64',
-            'name' => 'Free Shipping on Die-Cast',
-            'discount_type' => 'free_shipping',
-            'min_order_amount' => 50.00,
-            'expires_at' => now()->addDays(90),
         ]);
     }
 }

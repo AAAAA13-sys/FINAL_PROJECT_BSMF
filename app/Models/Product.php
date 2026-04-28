@@ -29,8 +29,6 @@ final class Product extends Model
         'card_condition',
         'is_carded',
         'is_loose',
-        'is_graded',
-        'grade_score',
         'price',
         'original_price',
         'stock_quantity',
@@ -54,14 +52,12 @@ final class Product extends Model
         'is_rlc_exclusive' => 'boolean',
         'is_carded' => 'boolean',
         'is_loose' => 'boolean',
-        'is_graded' => 'boolean',
         'is_active' => 'boolean',
         'is_pre_order' => 'boolean',
         'additional_images' => 'array',
         'expected_release_date' => 'date',
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
-        'grade_score' => 'decimal:1',
     ];
 
     /**

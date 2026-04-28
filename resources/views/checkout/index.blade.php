@@ -43,7 +43,7 @@
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" name="extra_packaging" id="extra_packaging">
                         <label class="form-check-label text-white fw-bold" for="extra_packaging">
-                            EXTRA PROTECTION PACKAGING (+ $0.00)
+                            EXTRA PROTECTION PACKAGING (+ ₱0.00)
                         </label>
                         <p class="text-muted small mb-0">Crucial for carded collectors. We use double-walled boxes and extra bubble wrap.</p>
                     </div>
@@ -86,7 +86,7 @@
                                         <span class="text-muted">{{ $item->quantity }}x</span>
                                         <span class="text-white small">{{ $item->product->name }}</span>
                                     </div>
-                                    <span class="text-white small">${{ number_format($item->product->price * $item->quantity, 2) }}</span>
+                                    <span class="text-white small">₱{{ number_format($item->product->price * $item->quantity, 2) }}</span>
                                 </div>
                             @endforeach
                         </div>
@@ -95,24 +95,24 @@
 
                         <div class="d-flex justify-content-between mb-2 text-white opacity-75 small">
                             <span>Subtotal</span>
-                            <span>${{ number_format($subtotal, 2) }}</span>
+                            <span>₱{{ number_format($subtotal, 2) }}</span>
                         </div>
                         
                         @if($discount > 0)
                             <div class="d-flex justify-content-between mb-2 text-success small">
                                 <span>Discount ({{ $couponCode }})</span>
-                                <span>- ${{ number_format($discount, 2) }}</span>
+                                <span>- ₱{{ number_format($discount, 2) }}</span>
                             </div>
                         @endif
 
                         <div class="d-flex justify-content-between mb-4 text-white opacity-75 small">
                             <span>Shipping</span>
-                            <span>{{ $shipping == 0 ? 'FREE' : '$' . number_format($shipping, 2) }}</span>
+                            <span>{{ $shipping == 0 ? 'FREE' : '₱' . number_format($shipping, 2) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-5 h3 text-white">
                             <span class="fw-black italic">TOTAL</span>
-                            <span class="fw-black text-warning">${{ number_format($total, 2) }}</span>
+                            <span class="fw-black text-warning">₱{{ number_format($total, 2) }}</span>
                         </div>
 
                         <button type="submit" class="btn btn-warning w-100 py-3 fw-black ls-1 h5 mb-3">COMPLETE ACQUISITION</button>

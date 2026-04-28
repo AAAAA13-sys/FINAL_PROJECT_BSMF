@@ -43,7 +43,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="py-4 text-white">${{ number_format($item->price_at_time, 2) }}</td>
+                                            <td class="py-4 text-white">₱{{ number_format($item->price_at_time, 2) }}</td>
                                             <td class="py-4">
                                                 <form action="{{ route('cart.update', $item->id) }}" method="POST" class="d-flex align-items-center gap-2">
                                                     @csrf
@@ -51,7 +51,7 @@
                                                     <button type="submit" class="btn btn-outline-warning btn-sm border-0"><i class="fas fa-sync-alt"></i></button>
                                                 </form>
                                             </td>
-                                            <td class="py-4 text-end pe-4 text-white fw-bold h5">${{ number_format($item->price_at_time * $item->quantity, 2) }}</td>
+                                            <td class="py-4 text-end pe-4 text-white fw-bold h5">₱{{ number_format($item->price_at_time * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -68,19 +68,19 @@
                         
                         <div class="d-flex justify-content-between mb-3 text-muted">
                             <span>Subtotal</span>
-                            <span class="text-white">${{ number_format($cart->subtotal(), 2) }}</span>
+                            <span class="text-white">₱{{ number_format($cart->subtotal(), 2) }}</span>
                         </div>
                         
                         <div class="d-flex justify-content-between mb-3 text-muted">
                             <span>Shipping</span>
-                            <span class="text-success">{{ $cart->subtotal() >= 50 ? 'FREE' : '$5.00' }}</span>
+                            <span class="text-success">{{ $cart->subtotal() >= 50 ? 'FREE' : '₱5.00' }}</span>
                         </div>
 
                         <hr class="border-secondary my-4">
 
                         <div class="d-flex justify-content-between mb-5 h4 text-white">
                             <span class="fw-black italic">TOTAL</span>
-                            <span class="fw-black text-warning">${{ number_format($cart->subtotal() >= 50 ? $cart->subtotal() : $cart->subtotal() + 5, 2) }}</span>
+                            <span class="fw-black text-warning">₱{{ number_format($cart->subtotal() >= 50 ? $cart->subtotal() : $cart->subtotal() + 5, 2) }}</span>
                         </div>
 
                         <a href="{{ route('checkout') }}" class="btn btn-warning w-100 py-3 fw-black ls-1">PROCEED TO CHECKOUT</a>

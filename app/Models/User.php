@@ -71,13 +71,6 @@ final class User extends Authenticatable
         return $this->hasOne(Cart::class);
     }
 
-    /**
-     * Get the wishlist for the user.
-     */
-    public function wishlist(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Wishlist::class);
-    }
 
     /**
      * Get the restock requests for the user.

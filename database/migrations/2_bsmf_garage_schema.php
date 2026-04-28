@@ -59,8 +59,6 @@ return new class extends Migration
             $table->string('card_condition', 20)->default('mint');
             $table->boolean('is_carded')->default(true);
             $table->boolean('is_loose')->default(false);
-            $table->boolean('is_graded')->default(false);
-            $table->decimal('grade_score', 3, 1)->nullable();
             $table->decimal('price', 12, 2);
             $table->integer('stock_quantity')->default(0);
             $table->integer('low_stock_threshold')->default(5);
@@ -90,11 +88,8 @@ return new class extends Migration
             $table->decimal('discount_value', 10, 2)->nullable();
             $table->decimal('min_order_amount', 12, 2)->default(0);
             $table->decimal('max_discount', 12, 2)->nullable();
-            $table->json('applicable_brands')->nullable();
-            $table->json('applicable_series')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->integer('usage_limit')->nullable();
-            $table->integer('per_user_limit')->default(1);
             $table->integer('times_used')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -165,15 +160,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 13. Wishlists
-        Schema::create('wishlists', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-        });
-
-        // 14. Disputes
+        // 13. Disputes
         Schema::create('disputes', function (Blueprint $table) {
             $table->id();
             $table->string('dispute_number', 50)->unique();
@@ -185,7 +172,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 15. Dispute Messages
+        // 14. Dispute Messages
         Schema::create('dispute_messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dispute_id')->constrained()->cascadeOnDelete();
@@ -202,7 +189,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('dispute_messages');
         Schema::dropIfExists('disputes');
-        Schema::dropIfExists('wishlists');
         Schema::dropIfExists('reviews');
         Schema::dropIfExists('cart_items');
         Schema::dropIfExists('carts');

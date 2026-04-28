@@ -8,27 +8,27 @@
         <h1 class="fade-in text-uppercase italic fw-black ls-tight mb-2" style="font-size: 5.5rem;">BSMF <span>GARAGE</span></h1>
         <p class="fade-in delay-1" style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 6px; margin-bottom: 3.5rem; font-weight: 700; opacity: 0.8; color: var(--secondary);">Premium Die-Cast Collector Series</p>
         
-        <div style="position: relative; width: 100%; max-width: 700px;" class="fade-in delay-2">
-            <form action="{{ route('products.index') }}" method="GET" id="searchForm" style="display: flex; gap: 0; width: 100%; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-                <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search for your dream car: Skyline, Supra, Porsche..." style="flex-grow: 1; background: transparent; border: none; color: white; padding: 0 2.5rem; font-size: 1.1rem; outline: none;">
-                <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3.5rem; font-size: 1rem; letter-spacing: 1px;">Search Garage</button>
+        <div style="position: relative; width: 100%; max-width: 700px;" class="fade-in delay-2 search-container-hero">
+            <form action="{{ route('products.index') }}" method="GET" id="searchForm" class="hero-search-form">
+                <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search for your dream car..." class="hero-search-input">
+                <button type="submit" class="btn btn-primary hero-search-btn">Search</button>
             </form>
             <div id="searchSuggestions" class="glass" style="display: none; position: absolute; top: 110%; left: 0; right: 0; z-index: 1000; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border);"></div>
         </div>
 
 
 
-        <div class="fade-in delay-3" style="margin-top: 4rem; display: flex; gap: 3rem; color: var(--text-muted); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">
-            <span><i class="fas fa-shipping-fast" style="color: var(--secondary); margin-right: 10px;"></i> Nationwide Shipping</span>
-            <span><i class="fas fa-shield-alt" style="color: var(--secondary); margin-right: 10px;"></i> 100% Authentic</span>
-            <span><i class="fas fa-history" style="color: var(--secondary); margin-right: 10px;"></i> 24/7 Support</span>
+        <div class="fade-in delay-3 hero-badges">
+            <span><i class="fas fa-shipping-fast"></i> Nationwide Shipping</span>
+            <span><i class="fas fa-shield-alt"></i> 100% Authentic</span>
+            <span><i class="fas fa-history"></i> 24/7 Support</span>
         </div>
     </div>
 </section>
 
 <!-- Immediate Product Grid (Latest Drops) -->
 <section class="section-padding reveal" style="padding-top: 4rem; margin-top: 0; position: relative; z-index: 10;">
-    <div style="background: rgba(0,8,20,0.8); backdrop-filter: blur(20px); border-radius: 40px; padding: 4rem; border: 1px solid var(--glass-border); box-shadow: 0 40px 100px rgba(0,0,0,0.6);">
+    <div class="glass-section-card">
         <div class="section-header">
             <div>
                 <h2 class="section-title">LATEST <span>ARRIVALS</span></h2>
@@ -52,7 +52,7 @@
                             <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ strtoupper($product->card_condition) }}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
-                            <div class="product-price" style="font-size: 1.4rem; color: white;">${{ number_format($product->price, 2) }}</div>
+                            <div class="product-price" style="font-size: 1.4rem; color: white;">₱{{ number_format($product->price, 2) }}</div>
                             <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.75rem; border-radius: 20px;">Buy Now</a>
                         </div>
                     </div>
@@ -70,10 +70,9 @@
 <!-- Collection Spotlight (Visual Richness) -->
 <section class="section-padding reveal">
     <div style="text-align: center; margin-bottom: 4rem;">
-        <h2 class="section-title">THE <span>COLLECTOR</span> SPOTLIGHT</h2>
         <p style="color: var(--text-muted); margin-top: 1rem;">Dive deep into our most sought-after categories.</p>
     </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="grid-2">
         <div class="glass" style="position: relative; height: 500px; border-radius: 30px; overflow: hidden; border: 1px solid var(--glass-border); group">
             <img src="{{ asset('images/jdm_spotlight.png') }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s;" class="spotlight-img">
             <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem;">
@@ -97,7 +96,7 @@
 
 <!-- Store Introduction -->
 <section class="section-padding reveal">
-    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: center;">
+    <div class="grid-2 align-items-center" style="gap: 5rem;">
         <div style="position: relative;">
             <div style="position: absolute; top: -20px; left: -20px; width: 100px; height: 100px; border-top: 5px solid var(--secondary); border-left: 5px solid var(--secondary);"></div>
             <img src="https://images.unsplash.com/photo-1594731802114-039942f35f29?auto=format&fit=crop&q=80&w=800" alt="Collector Garage" style="width: 100%; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
@@ -132,7 +131,7 @@
         <h2 class="section-title">THE GRAIL <span>VAULT</span></h2>
         <p style="color: var(--text-muted);">Our most exclusive, limited-edition acquisitions.</p>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+    <div class="grid-4">
         @foreach($featuredProducts as $product)
             <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 20px; text-align: center;">
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
@@ -142,7 +141,7 @@
                 <div style="font-size: 0.5rem; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; margin-bottom: 0.8rem; letter-spacing: 1px;">
                     {{ $product->brand->name }} • {{ $product->scale->name }} • {{ $product->card_condition }}
                 </div>
-                <div style="color: var(--secondary); font-weight: 900;">${{ number_format($product->price, 2) }}</div>
+                <div style="color: var(--secondary); font-weight: 900;">₱{{ number_format($product->price, 2) }}</div>
             </div>
         @endforeach
     </div>
@@ -217,7 +216,7 @@
                     <span style="font-size: 0.6rem; color: rgba(255,255,255,0.6); font-weight: 900; text-transform: uppercase;">{{ $product->card_condition }}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem;">
-                    <div class="product-price" style="margin-bottom: 0; font-size: 1.5rem; text-shadow: none; color: white;">${{ number_format($product->price, 2) }}</div>
+                    <div class="product-price" style="margin-bottom: 0; font-size: 1.5rem; text-shadow: none; color: white;">₱{{ number_format($product->price, 2) }}</div>
                     <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; border-radius: 30px;">View</a>
                 </div>
             </div>
@@ -264,7 +263,7 @@
 
 <!-- Community & FAQ Side-by-Side (Condensed) -->
 <section class="section-padding reveal">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
+    <div class="grid-2" style="gap: 4rem;">
         <div class="community-section" style="padding: 3rem; flex-direction: column; align-items: flex-start; text-align: left; gap: 2rem;">
             <h2 style="font-size: 2rem; font-style: italic; text-transform: uppercase;">Join the <span>Community</span></h2>
             <div style="display: flex; gap: 1rem;">

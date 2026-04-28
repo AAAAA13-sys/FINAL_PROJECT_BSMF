@@ -16,7 +16,7 @@
     <nav>
         <a href="{{ route('home') }}" class="logo">BSMF GARAGE</a>
         
-        <button class="mobile-toggle" style="display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">
+        <button class="mobile-toggle" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">
             <i class="fas fa-bars"></i>
         </button>
 

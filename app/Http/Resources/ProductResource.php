@@ -25,8 +25,6 @@ class ProductResource extends JsonResource
             'is_chase' => $this->is_chase,
             'is_rlc_exclusive' => $this->is_rlc_exclusive,
             'card_condition' => $this->card_condition,
-            'is_graded' => $this->is_graded,
-            'grade_score' => $this->grade_score,
             'main_image' => $this->main_image,
             'short_description' => $this->short_description,
             'description' => $this->description,

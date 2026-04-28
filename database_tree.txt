@@ -1,0 +1,190 @@
+Database Schema Tree
+====================
+
+users
+├── id (primary key)
+├── name (string)
+├── username (string, 50, unique)
+├── email (string, unique)
+├── password (string)
+├── is_admin (boolean, default false)
+├── phone (string, 20, nullable)
+├── default_shipping_address (text, nullable)
+├── created_at
+└── updated_at
+
+brands
+├── id (primary key)
+├── name (string, 100)
+├── slug (string, 120, unique)
+├── description (text, nullable)
+├── logo (string, nullable)
+├── created_at
+└── updated_at
+
+scales
+├── id (primary key)
+├── name (string, 50)
+├── sort_order (integer, default 0)
+├── created_at
+└── updated_at
+
+series
+├── id (primary key)
+├── brand_id (foreign key -> brands.id, cascade on delete)
+├── name (string, 150)
+├── slug (string, 170, unique)
+├── year (integer, nullable)
+├── is_premium (boolean, default false)
+├── created_at
+└── updated_at
+
+products
+├── id (primary key)
+├── brand_id (foreign key -> brands.id, cascade on delete)
+├── scale_id (foreign key -> scales.id, cascade on delete)
+├── series_id (foreign key -> series.id, nullable, null on delete)
+├── name (string, 200)
+├── casting_name (string, 200)
+├── slug (string, 220, unique)
+├── year (integer, nullable)
+├── color (string, 50, nullable)
+├── is_treasure_hunt (boolean, default false)
+├── is_super_treasure_hunt (boolean, default false)
+├── is_chase (boolean, default false)
+├── is_rlc_exclusive (boolean, default false)
+├── card_condition (string, 20, default 'mint')
+├── is_carded (boolean, default true)
+├── is_loose (boolean, default false)
+├── price (decimal, 12,2)
+├── stock_quantity (integer, default 0)
+├── low_stock_threshold (integer, default 5)
+├── main_image (string, nullable)
+├── additional_images (json, nullable)
+├── description (longText, nullable)
+├── views (integer, default 0)
+├── is_active (boolean, default true)
+├── created_at
+└── updated_at
+
+product_images
+├── id (primary key)
+├── product_id (foreign key -> products.id, cascade on delete)
+├── image_path (string)
+├── type (string, 50, default 'gallery')
+├── created_at
+└── updated_at
+
+coupons
+├── id (primary key)
+├── code (string, 50, unique)
+├── name (string, 100)
+├── discount_type (enum: percentage, fixed, free_shipping, bogo, default percentage)
+├── discount_value (decimal, 10,2, nullable)
+├── min_order_amount (decimal, 12,2, default 0)
+├── max_discount (decimal, 12,2, nullable)
+├── expires_at (timestamp, nullable)
+├── usage_limit (integer, nullable)
+├── times_used (integer, default 0)
+├── is_active (boolean, default true)
+├── created_at
+└── updated_at
+
+orders
+├── id (primary key)
+├── order_number (string, 50, unique)
+├── user_id (foreign key -> users.id, cascade on delete)
+├── status (enum: pending, processing, out_for_delivery, delivered, cancelled, refunded, default pending)
+├── subtotal (decimal, 12,2)
+├── discount_amount (decimal, 12,2, default 0)
+├── shipping_fee (decimal, 10,2, default 0)
+├── total_amount (decimal, 12,2)
+├── coupon_code (string, 50, nullable)
+├── customer_name (string)
+├── customer_email (string)
+├── shipping_address (text)
+├── payment_method (string, 50)
+├── extra_packaging_requested (boolean, default false)
+├── notes (text, nullable)
+├── placed_at (timestamp, default current)
+├── processed_at (timestamp, nullable)
+├── out_for_delivery_at (timestamp, nullable)
+├── delivered_at (timestamp, nullable)
+├── created_at
+└── updated_at
+
+order_items
+├── id (primary key)
+├── order_id (foreign key -> orders.id, cascade on delete)
+├── product_id (foreign key -> products.id, cascade on delete)
+├── product_name (string)
+├── product_brand (string, nullable)
+├── product_image (string, nullable)
+├── quantity (integer)
+├── price (decimal, 12,2)
+├── total (decimal, 12,2)
+├── created_at
+└── updated_at
+
+carts
+├── id (primary key)
+├── user_id (foreign key -> users.id, cascade on delete)
+├── created_at
+└── updated_at
+
+cart_items
+├── id (primary key)
+├── cart_id (foreign key -> carts.id, cascade on delete)
+├── product_id (foreign key -> products.id, cascade on delete)
+├── quantity (integer, default 1)
+├── created_at
+└── updated_at
+
+reviews
+├── id (primary key)
+├── product_id (foreign key -> products.id, cascade on delete)
+├── user_id (foreign key -> users.id, cascade on delete)
+├── rating (integer)
+├── comment (text, nullable)
+├── is_verified_purchase (boolean, default false)
+├── created_at
+└── updated_at
+
+disputes
+├── id (primary key)
+├── dispute_number (string, 50, unique)
+├── user_id (foreign key -> users.id, cascade on delete)
+├── order_id (foreign key -> orders.id, cascade on delete)
+├── subject (string)
+├── description (text, nullable)
+├── status (string, 20, default 'open')
+├── created_at
+└── updated_at
+
+dispute_messages
+├── id (primary key)
+├── dispute_id (foreign key -> disputes.id, cascade on delete)
+├── user_id (foreign key -> users.id, cascade on delete)
+├── message (text)
+├── created_at
+└── updated_at
+
+personal_access_tokens
+├── id (primary key)
+├── tokenable_type (string)
+├── tokenable_id (unsigned big integer)
+├── name (text)
+├── token (string, 64, unique)
+├── abilities (text, nullable)
+├── last_used_at (timestamp, nullable)
+├── expires_at (timestamp, nullable, indexed)
+├── created_at
+└── updated_at
+
+sessions
+├── id (string, primary)
+├── user_id (foreign key -> users.id, nullable, indexed)
+├── ip_address (string, 45, nullable)
+├── user_agent (text, nullable)
+├── payload (longText)
+└── last_activity (integer, indexed)

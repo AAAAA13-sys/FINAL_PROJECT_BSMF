@@ -63,6 +63,7 @@
         </table>
     </div>
 
+
 <!-- Add Modal -->
 <div id="addModal" class="modal-glass p-4 overflow-hidden" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; z-index: 2000; max-height: 90vh; overflow-y: auto;">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-50">

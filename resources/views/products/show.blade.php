@@ -9,7 +9,7 @@
         <div class="row g-5">
             <!-- Product Images -->
             <div class="col-md-6">
-                <div class="product-gallery">
+                <div class="product-gallery" style="position: sticky; top: 100px;">
                     <!-- Main Image -->
                     <div
                         class="main-image-container bg-dark border border-secondary rounded overflow-hidden mb-3 text-center p-4">
@@ -18,23 +18,19 @@
                     </div>
 
                     <!-- Thumbnails (Multiple Angles) -->
-                    <div class="row g-2">
-                        @if($product->card_image)
-                            <div class="col-3">
-                                <img src="{{ $product->card_image }}"
-                                    class="img-thumbnail bg-dark border-secondary cursor-pointer thumbnail-switch" alt="Carded">
-                            </div>
-                        @endif
-                        @if($product->loose_image)
-                            <div class="col-3">
-                                <img src="{{ $product->loose_image }}"
-                                    class="img-thumbnail bg-dark border-secondary cursor-pointer thumbnail-switch" alt="Loose">
-                            </div>
-                        @endif
-                        @foreach($product->additional_images ?? [] as $img)
-                            <div class="col-3">
-                                <img src="{{ $img }}"
-                                    class="img-thumbnail bg-dark border-secondary cursor-pointer thumbnail-switch" alt="Angle">
+                    <div class="row row-cols-5 g-2">
+                        <div class="col">
+                            <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}"
+                                class="img-thumbnail bg-dark border-secondary cursor-pointer thumbnail-switch active" 
+                                alt="Main View"
+                                onclick="document.getElementById('mainProductImage').src = this.src; document.querySelectorAll('.thumbnail-switch').forEach(i => i.classList.remove('active')); this.classList.add('active');">
+                        </div>
+                        @foreach($product->images as $image)
+                            <div class="col">
+                                <img src="{{ asset($image->image_path) }}"
+                                    class="img-thumbnail bg-dark border-secondary cursor-pointer thumbnail-switch" 
+                                    alt="Gallery Image"
+                                    onclick="document.getElementById('mainProductImage').src = this.src; document.querySelectorAll('.thumbnail-switch').forEach(i => i.classList.remove('active')); this.classList.add('active');">
                             </div>
                         @endforeach
                     </div>
@@ -83,10 +79,10 @@
                     @endif
 
                     <div class="mb-4">
-                        <span class="h2 text-white">${{ number_format($product->price, 2) }}</span>
+                        <span class="h2 text-white">₱{{ number_format($product->price, 2) }}</span>
                         @if($product->original_price > $product->price)
                             <span
-                                class="text-muted text-decoration-line-through ms-2">${{ number_format($product->original_price, 2) }}</span>
+                                class="text-muted text-decoration-line-through ms-2">₱{{ number_format($product->original_price, 2) }}</span>
                         @endif
                     </div>
 

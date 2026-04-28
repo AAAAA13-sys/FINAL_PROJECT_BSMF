@@ -23,18 +23,13 @@ final class Coupon extends Model
         'discount_value',
         'min_order_amount',
         'max_discount',
-        'applicable_brands',
-        'applicable_series',
         'expires_at',
         'usage_limit',
-        'per_user_limit',
         'times_used',
         'is_active',
     ];
 
     protected $casts = [
-        'applicable_brands' => 'array',
-        'applicable_series' => 'array',
         'expires_at' => 'datetime',
         'is_active' => 'boolean',
         'discount_value' => 'decimal:2',

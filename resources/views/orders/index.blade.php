@@ -21,7 +21,7 @@
                                 </div>
                                 <div>
                                     <small class="text-muted text-uppercase d-block mb-1">Total Amount</small>
-                                    <span class="text-white small fw-bold">${{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="text-white small fw-bold">₱{{ number_format($order->total_amount, 2) }}</span>
                                 </div>
                                 <div>
                                     <small class="text-muted text-uppercase d-block mb-1">Ship To</small>
