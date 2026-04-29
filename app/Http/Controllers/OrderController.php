@@ -122,17 +122,18 @@ final class OrderController extends Controller
 
             // Call the Stored Procedure
             DB::statement("SET @p_order_id = 0;");
-            DB::statement("CALL sp_ProcessOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_order_id)", [
+            DB::statement("CALL sp_ProcessOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_order_id)", [
                 $user->id,
                 $request->shipping_address,
                 $request->payment_method,
                 $request->customer_name ?? $user->name,
                 $request->customer_email ?? $user->email,
+                $request->customer_phone,
                 $couponCode,
                 $discount,
                 $shipping,
                 $request->notes,
-                $request->has('extra_packaging')
+                (int) $request->has('extra_packaging')
             ]);
 
             $result = DB::selectOne("SELECT @p_order_id as id");

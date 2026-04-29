@@ -82,11 +82,5 @@ final class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-     * Get the disputes for the order.
-     */
-    public function disputes(): HasMany
-    {
-        return $this->hasMany(Dispute::class);
-    }
+
 }

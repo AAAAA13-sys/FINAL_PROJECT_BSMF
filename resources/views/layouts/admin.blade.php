@@ -35,9 +35,7 @@
                 <a href="{{ route('admin.orders') }}" class="admin-nav-link {{ Route::is('admin.orders') ? 'active' : '' }}">
                     <i class="fas fa-shopping-bag"></i> Orders
                 </a>
-                <a href="{{ route('admin.disputes') }}" class="admin-nav-link {{ Route::is('admin.disputes') ? 'active' : '' }}">
-                    <i class="fas fa-headset"></i> Support
-                </a>
+
                 <a href="{{ route('admin.users') }}" class="admin-nav-link {{ Route::is('admin.users') ? 'active' : '' }}">
                     <i class="fas fa-users"></i> Users
                 </a>

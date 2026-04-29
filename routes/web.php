@@ -37,10 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/confirmation/{id}', [OrderController::class, 'confirmation'])->name('orders.confirmation');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 
-    // Support
-    Route::get('/support', [SupportController::class, 'index'])->name('support.index');
-    Route::post('/support', [SupportController::class, 'store'])->name('support.store');
-    Route::post('/support/message/{dispute_id}', [SupportController::class, 'messageStore'])->name('support.message.store');
+
 
     // Reviews
     Route::post('/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
@@ -71,10 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders/{id}', [AdminController::class, 'orderShow'])->name('orders.show');
         Route::post('/orders/{id}/status', [AdminController::class, 'orderUpdateStatus'])->name('orders.updateStatus');
 
-        // Disputes
-        Route::get('/disputes', [AdminController::class, 'disputes'])->name('disputes');
-        Route::post('/disputes/{id}/status', [AdminController::class, 'disputeUpdateStatus'])->name('disputes.updateStatus');
-        Route::post('/disputes/{id}/reply', [AdminController::class, 'disputeReply'])->name('disputes.reply');
+
 
         // Users
         Route::get('/users', [AdminController::class, 'users'])->name('users');

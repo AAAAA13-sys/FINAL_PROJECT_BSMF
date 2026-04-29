@@ -80,11 +80,5 @@ final class User extends Authenticatable
         return $this->hasMany(RestockRequest::class);
     }
 
-    /**
-     * Get the disputes for the user.
-     */
-    public function disputes(): HasMany
-    {
-        return $this->hasMany(Dispute::class);
-    }
+
 }

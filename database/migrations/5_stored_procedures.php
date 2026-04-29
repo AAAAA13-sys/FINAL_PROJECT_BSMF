@@ -21,6 +21,7 @@ return new class extends Migration
                 IN p_payment_method VARCHAR(50),
                 IN p_customer_name VARCHAR(255),
                 IN p_customer_email VARCHAR(255),
+                IN p_customer_phone VARCHAR(20),
                 IN p_coupon_code VARCHAR(50),
                 IN p_discount_amount DECIMAL(12,2),
                 IN p_shipping_fee DECIMAL(10,2),
@@ -74,12 +75,12 @@ return new class extends Migration
                 INSERT INTO orders (
                     order_number, user_id, status, subtotal, discount_amount, 
                     shipping_fee, total_amount, coupon_code, customer_name, 
-                    customer_email, shipping_address, payment_method, 
+                    customer_email, customer_phone, shipping_address, payment_method, 
                     extra_packaging_requested, notes, placed_at, created_at, updated_at
                 ) VALUES (
                     v_order_number, p_user_id, 'pending', v_subtotal, p_discount_amount,
                     p_shipping_fee, v_total, p_coupon_code, p_customer_name,
-                    p_customer_email, p_shipping_address, p_payment_method,
+                    p_customer_email, p_customer_phone, p_shipping_address, p_payment_method,
                     p_extra_packaging, p_notes, NOW(), NOW(), NOW()
                 );
 

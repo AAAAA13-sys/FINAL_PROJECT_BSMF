@@ -43,7 +43,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="py-4 text-white">₱{{ number_format($item->price_at_time, 2) }}</td>
+                                            <td class="py-4 text-white">₱{{ number_format($item->price_at_time ?? $item->product->price, 2) }}</td>
                                             <td class="py-4">
                                                 <form action="{{ route('cart.update', $item->id) }}" method="POST" class="d-flex align-items-center gap-2">
                                                     @csrf
@@ -51,7 +51,7 @@
                                                     <button type="submit" class="btn btn-outline-warning btn-sm border-0"><i class="fas fa-sync-alt"></i></button>
                                                 </form>
                                             </td>
-                                            <td class="py-4 text-end pe-4 text-white fw-bold h5">₱{{ number_format($item->price_at_time * $item->quantity, 2) }}</td>
+                                            <td class="py-4 text-end pe-4 text-white fw-bold h5">₱{{ number_format(($item->price_at_time ?? $item->product->price) * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

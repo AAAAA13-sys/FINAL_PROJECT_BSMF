@@ -108,6 +108,7 @@ return new class extends Migration
             $table->string('coupon_code', 50)->nullable();
             $table->string('customer_name');
             $table->string('customer_email');
+            $table->string('customer_phone')->nullable();
             $table->text('shipping_address');
             $table->string('payment_method', 50);
             $table->boolean('extra_packaging_requested')->default(false);
@@ -146,6 +147,7 @@ return new class extends Migration
             $table->foreignId('cart_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity')->default(1);
+            $table->decimal('price_at_time', 12, 2)->nullable();
             $table->timestamps();
         });
 
@@ -160,26 +162,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 13. Disputes
-        Schema::create('disputes', function (Blueprint $table) {
-            $table->id();
-            $table->string('dispute_number', 50)->unique();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->string('subject');
-            $table->text('description')->nullable();
-            $table->string('status', 20)->default('open'); // open, closed, pending_customer
-            $table->timestamps();
-        });
 
-        // 14. Dispute Messages
-        Schema::create('dispute_messages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('dispute_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->text('message');
-            $table->timestamps();
-        });
     }
 
     /**
@@ -187,8 +170,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dispute_messages');
-        Schema::dropIfExists('disputes');
+
         Schema::dropIfExists('reviews');
         Schema::dropIfExists('cart_items');
         Schema::dropIfExists('carts');

@@ -7,12 +7,10 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\Dispute;
 use App\Models\Brand;
 use App\Models\Scale;
 use App\Models\Series;
 use App\Models\Coupon;
-use App\Models\DisputeMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -30,7 +28,6 @@ final class AdminController extends Controller
         $recentOrders = Order::with('user')->latest()->limit(5)->get();
         $lowStockProducts = Product::whereColumn('stock_quantity', '<=', 'low_stock_threshold')->limit(5)->get();
         $totalCustomers = User::where('is_admin', false)->count();
-        $recentDisputes = Dispute::where('status', 'open')->limit(5)->get();
 
         // Dynamic Sales for Chart
         $filter = request('revenue_filter', 'month');
@@ -67,7 +64,6 @@ final class AdminController extends Controller
             'totalCustomers', 
             'recentOrders', 
             'lowStockProducts',
-            'recentDisputes',
             'salesData',
             'filter'
         ));
@@ -125,7 +121,7 @@ final class AdminController extends Controller
      */
     public function orderShow($id)
     {
-        $order = Order::with(['items.product', 'user', 'disputes.messages'])->findOrFail($id);
+        $order = Order::with(['items.product', 'user'])->findOrFail($id);
         return view('admin.order-details', compact('order'));
     }
 
@@ -149,25 +145,7 @@ final class AdminController extends Controller
         return back()->with('success', 'Order status updated!');
     }
 
-    /**
-     * Dispute management.
-     */
-    public function disputes()
-    {
-        $disputes = Dispute::with(['order', 'user', 'messages.user'])->latest()->paginate(20);
-        return view('admin.disputes', compact('disputes'));
-    }
 
-    public function disputeUpdateStatus(Request $request, $id)
-    {
-        $request->validate(['status' => 'required|string']);
-        $dispute = Dispute::findOrFail($id);
-        
-        $updateData = ['status' => $request->status];
-
-        $dispute->update($updateData);
-        return back()->with('success', 'Dispute status updated!');
-    }
 
     /**
      * Brand management (Deliverable Phase 2).
@@ -283,19 +261,5 @@ final class AdminController extends Controller
         return back()->with('success', 'Promo code deactivated.');
     }
 
-    /**
-     * Admin reply to dispute.
-     */
-    public function disputeReply(Request $request, $id)
-    {
-        $request->validate(['message' => 'required|string']);
-        
-        DisputeMessage::create([
-            'dispute_id' => $id,
-            'user_id' => auth()->id(),
-            'message' => $request->message
-        ]);
 
-        return back()->with('success', 'Reply dispatched.');
-    }
 }

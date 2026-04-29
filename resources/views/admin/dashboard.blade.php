@@ -144,29 +144,7 @@
                     </div>
                 </div>
 
-                <!-- Disputes -->
-                <div class="card glass border-warning rounded-4 shadow-lg">
-                    <div class="card-header bg-transparent border-warning p-3">
-                        <h6 class="text-warning text-uppercase italic mb-0">ACTIVE <span>DISPUTES</span></h6>
-                    </div>
-                    <div class="card-body p-3">
-                        @forelse($recentDisputes as $dispute)
-                            <div class="mb-3 pb-3 border-bottom border-secondary border-opacity-25">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-white small fw-bold">#{{ $dispute->order->order_number }}</span>
-                                    <span class="text-warning small italic fw-bold">{{ strtoupper($dispute->dispute_type) }}</span>
-                                </div>
-                                <p class="text-muted small mb-2 text-truncate">{{ $dispute->description }}</p>
-                                <a href="{{ route('admin.disputes') }}" class="text-warning small text-decoration-none fw-bold hover-underline">INTERVENE →</a>
-                            </div>
-                        @empty
-                            <div class="text-center py-3">
-                                <i class="fas fa-handshake text-warning mb-2"></i>
-                                <p class="text-muted small italic mb-0">No Active Disputes</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
