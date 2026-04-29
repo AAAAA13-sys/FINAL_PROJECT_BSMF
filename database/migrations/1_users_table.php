@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Create Dedicated Database User (Non-Root)
+        \Illuminate\Support\Facades\DB::unprepared("
+            CREATE USER IF NOT EXISTS 'BSMF_User1'@'localhost' IDENTIFIED BY 'BSMF_Pass123!';
+            GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON `final_project_bsmf`.* TO 'BSMF_User1'@'localhost';
+            FLUSH PRIVILEGES;
+        ");
+
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name');
             $table->string('username', 50)->unique();
             $table->string('email')->unique();

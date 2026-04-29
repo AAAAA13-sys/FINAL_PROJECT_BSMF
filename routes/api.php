@@ -19,8 +19,8 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::get('/search-suggestions', [ProductController::class, 'suggestions'])->name('products.suggestions');
     Route::apiResource('categories', CategoryController::class)->only(['index']);
 
-    // Protected routes
-    Route::middleware('auth:sanctum')->group(function () {
+    // Protected routes (Removed Sanctum)
+    Route::group([], function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         

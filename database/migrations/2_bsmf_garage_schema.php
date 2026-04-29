@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // 1. Brands
         Schema::create('brands', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name', 100);
             $table->string('slug', 120)->unique();
             $table->text('description')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
 
         // 2. Scales
         Schema::create('scales', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name', 50); // e.g. 1:64, 1:24
             $table->integer('sort_order')->default(0);
             $table->timestamps();
@@ -31,8 +31,9 @@ return new class extends Migration
 
         // 3. Series
         Schema::create('series', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('brand_id');
+            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
             $table->string('name', 150);
             $table->string('slug', 170)->unique();
             $table->integer('year')->nullable();
@@ -41,12 +42,16 @@ return new class extends Migration
         });
 
 
-        // 5. Products
+        // 4. Products
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('scale_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('series_id')->nullable()->constrained()->nullOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('brand_id');
+            $table->unsignedInteger('scale_id');
+            $table->unsignedInteger('series_id')->nullable();
+
+            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+            $table->foreign('scale_id')->references('id')->on('scales')->onDelete('cascade');
+            $table->foreign('series_id')->references('id')->on('series')->onDelete('set null');
             $table->string('name', 200);
             $table->string('casting_name', 200);
             $table->string('slug', 220)->unique();
@@ -70,18 +75,19 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 6. Product Images
+        // 5. Product Images
         Schema::create('product_images', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->string('image_path');
             $table->string('type', 50)->default('gallery');
             $table->timestamps();
         });
 
-        // 7. Coupons
+        // 6. Coupons
         Schema::create('coupons', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('code', 50)->unique();
             $table->string('name', 100);
             $table->enum('discount_type', ['percentage', 'fixed', 'free_shipping', 'bogo'])->default('percentage');
@@ -95,11 +101,12 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 8. Orders
+        // 7. Orders
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('order_number', 50)->unique();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('status', ['pending', 'processing', 'out_for_delivery', 'delivered', 'cancelled', 'refunded'])->default('pending');
             $table->decimal('subtotal', 12, 2);
             $table->decimal('discount_amount', 12, 2)->default(0);
@@ -120,11 +127,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 9. Order Items
+        // 8. Order Items
         Schema::create('order_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('order_id');
+            $table->unsignedInteger('product_id');
+
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->string('product_name');
             $table->string('product_brand')->nullable();
             $table->string('product_image')->nullable();
@@ -134,28 +144,35 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 10. Carts
+        // 9. Carts
         Schema::create('carts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
 
-        // 11. Cart Items
+        // 10. Cart Items
         Schema::create('cart_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('cart_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('cart_id');
+            $table->unsignedInteger('product_id');
+
+            $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->integer('quantity')->default(1);
             $table->decimal('price_at_time', 12, 2)->nullable();
             $table->timestamps();
         });
 
-        // 12. Reviews
+        // 11. Reviews
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->unsignedInteger('product_id');
+            $table->unsignedInteger('user_id');
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('rating');
             $table->text('comment')->nullable();
             $table->boolean('is_verified_purchase')->default(false);
