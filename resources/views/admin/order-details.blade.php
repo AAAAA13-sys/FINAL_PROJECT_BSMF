@@ -46,9 +46,9 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-white-50">${{ number_format($item->price, 2) }}</td>
+                                    <td class="text-white-50">₱{{ number_format($item->price, 2) }}</td>
                                     <td class="text-white">{{ $item->quantity }}</td>
-                                    <td class="text-end pe-4 text-warning fw-black">${{ number_format($item->total, 2) }}</td>
+                                    <td class="text-end pe-4 text-warning fw-black">₱{{ number_format($item->total, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -60,22 +60,22 @@
                         <div style="width: 300px;">
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted small">Subtotal</span>
-                                <span class="text-white fw-bold">${{ number_format($order->subtotal, 2) }}</span>
+                                <span class="text-white fw-bold">₱{{ number_format($order->subtotal, 2) }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted small">Shipping Fee</span>
-                                <span class="text-white fw-bold">${{ number_format($order->shipping_fee, 2) }}</span>
+                                <span class="text-white fw-bold">₱{{ number_format($order->shipping_fee, 2) }}</span>
                             </div>
                             @if($order->discount_amount > 0)
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-danger small">Discount ({{ $order->coupon_code }})</span>
-                                    <span class="text-danger fw-bold">-${{ number_format($order->discount_amount, 2) }}</span>
+                                    <span class="text-danger fw-bold">-₱{{ number_format($order->discount_amount, 2) }}</span>
                                 </div>
                             @endif
                             <hr class="border-secondary opacity-25 my-3">
                             <div class="d-flex justify-content-between">
                                 <span class="text-white fw-black italic">GRAND TOTAL</span>
-                                <span class="text-secondary h4 fw-black mb-0">${{ number_format($order->total_amount, 2) }}</span>
+                                <span class="text-secondary h4 fw-black mb-0">₱{{ number_format($order->total_amount, 2) }}</span>
                             </div>
                         </div>
                     </div>

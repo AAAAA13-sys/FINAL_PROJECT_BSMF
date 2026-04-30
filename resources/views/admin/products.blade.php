@@ -41,7 +41,7 @@
                         </div>
                     </td>
                     <td><span class="text-white-50 small">{{ $product->casting_name ?? 'N/A' }}</span></td>
-                    <td class="text-warning fw-black">${{ number_format($product->price, 2) }}</td>
+                    <td class="text-warning fw-black">₱{{ number_format($product->price, 2) }}</td>
                     <td>
                         <span class="fw-bold {{ $product->stock_quantity < 10 ? 'text-danger' : 'text-success' }}">
                             {{ $product->stock_quantity }}

@@ -32,7 +32,7 @@
                         <div class="text-muted small" style="font-size: 0.7rem;">{{ $order->customer_email }}</div>
                     </td>
                     <td><span class="text-white-50 small">{{ $order->created_at->format('M d, Y') }}</span></td>
-                    <td class="text-white fw-black">${{ number_format($order->total_amount, 2) }}</td>
+                    <td class="text-white fw-black">₱{{ number_format($order->total_amount, 2) }}</td>
                     <td>
                         <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="d-flex gap-2">
                             @csrf

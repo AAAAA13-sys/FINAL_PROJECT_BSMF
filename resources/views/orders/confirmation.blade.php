@@ -40,14 +40,14 @@
                                 <span style="color: var(--secondary); font-size: 0.8rem; font-weight: 900; text-transform: uppercase;">Qty: {{ $item->quantity }}</span>
                             </div>
                         </div>
-                        <span style="font-size: 1.2rem; font-weight: 800; color: white;">${{ number_format($item->price * $item->quantity, 2) }}</span>
+                        <span style="font-size: 1.2rem; font-weight: 800; color: white;">₱{{ number_format($item->price * $item->quantity, 2) }}</span>
                     </div>
                 @endforeach
             </div>
 
             <div style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; background: rgba(251, 191, 36, 0.1); padding: 2.5rem 3rem; border-radius: 30px; border: 1px solid rgba(251, 191, 36, 0.2);">
                 <span style="font-size: 1.8rem; font-weight: 900; font-style: italic; color: white; letter-spacing: -1px;">TOTAL <span>SETTLED</span></span>
-                <span style="font-size: 2.5rem; color: var(--secondary); font-weight: 900; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);">${{ number_format($order->total_amount, 2) }}</span>
+                <span style="font-size: 2.5rem; color: var(--secondary); font-weight: 900; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);">₱{{ number_format($order->total_amount, 2) }}</span>
             </div>
         </div>
 

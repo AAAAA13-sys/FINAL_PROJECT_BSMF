@@ -260,7 +260,7 @@
                                 </div>
                                 <div class="card-footer border-secondary bg-transparent p-0">
                                     <a href="{{ route('products.show', $product->id) }}"
-                                        class="btn btn-warning w-100 rounded-0">VIEW DETAILS</a>
+                                        class="btn btn-primary w-100 rounded-0" style="box-shadow: none !important;">VIEW DETAILS</a>
                                 </div>
                             </div>
                         </div>

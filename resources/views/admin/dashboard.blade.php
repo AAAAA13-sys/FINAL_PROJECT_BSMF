@@ -16,15 +16,15 @@
         <div class="col-md-3">
             <div class="stat-card p-3 glass border-secondary">
                 <p class="text-secondary small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Total Revenue</p>
-                <h2 class="text-warning fw-black mb-0">${{ number_format($totalSales, 2) }}</h2>
+                <h2 class="text-warning fw-black mb-0">₱{{ number_format($totalSales, 2) }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-warning" style="width: 100%"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card p-3 glass border-primary">
-                <p class="text-white opacity-75 small text-uppercase ls-2 mb-1" style="font-size: 0.65rem; font-weight: 800;">Total Orders</p>
+            <div class="stat-card p-3 glass" style="border: 1px solid #0d6efd;">
+                <p style="color: #0d6efd; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; font-weight: 800;">Total Orders</p>
                 <h2 class="text-white fw-black mb-0">{{ $totalOrders }}</h2>
                 <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-primary" style="width: 100%"></div>
@@ -94,7 +94,7 @@
                                     <td class="ps-4 text-warning fw-bold"><a href="{{ route('admin.orders.show', $order->id) }}" class="text-warning text-decoration-none hover-underline">{{ $order->order_number }}</a></td>
                                     <td class="text-white fw-bold">{{ $order->customer_name }}</td>
                                     <td class="text-muted small">{{ $order->created_at->format('M d, Y') }}</td>
-                                    <td class="text-white fw-bold">${{ number_format($order->total_amount, 2) }}</td>
+                                    <td class="text-white fw-bold">₱{{ number_format($order->total_amount, 2) }}</td>
                                     <td class="pe-4">
                                         @php
                                             $badgeClass = match($order->status) {

@@ -52,7 +52,7 @@
             @foreach($cartItems as $item)
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
                     <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
-                    <span>${{ number_format($item->product->price * $item->quantity, 2) }}</span>
+                    <span>₱{{ number_format($item->product->price * $item->quantity, 2) }}</span>
                 </div>
             @endforeach
             
@@ -60,19 +60,19 @@
             
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: var(--text-muted);">
                 <span>Subtotal</span>
-                <span>${{ number_format($total, 2) }}</span>
+                <span>₱{{ number_format($total, 2) }}</span>
             </div>
 
             @if($discount > 0)
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #10b981;">
                     <span>Discount ({{ $couponCode }})</span>
-                    <span>-${{ number_format($discount, 2) }}</span>
+                    <span>-₱{{ number_format($discount, 2) }}</span>
                 </div>
             @endif
 
             <div style="display: flex; justify-content: space-between; font-weight: 900; font-size: 1.5rem; margin-top: 1rem; border-top: 2px solid var(--secondary); padding-top: 1rem;">
                 <span>TOTAL</span>
-                <span style="color: var(--secondary);">${{ number_format($total - $discount, 2) }}</span>
+                <span style="color: var(--secondary);">₱{{ number_format($total - $discount, 2) }}</span>
             </div>
         </div>
 
