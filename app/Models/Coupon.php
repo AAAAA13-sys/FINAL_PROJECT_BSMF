@@ -56,4 +56,15 @@ final class Coupon extends Model
 
         return true;
     }
+
+    /**
+     * Check if the specific user has already used this coupon.
+     */
+    public function isUsedByUser($userId): bool
+    {
+        return \App\Models\Order::where('user_id', $userId)
+            ->where('coupon_code', $this->code)
+            ->where('status', '!=', 'cancelled')
+            ->exists();
+    }
 }

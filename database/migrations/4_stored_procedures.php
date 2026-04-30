@@ -14,18 +14,18 @@ return new class extends Migration
     {
         // 1. Stored Procedure for Processing Orders
         DB::unprepared("
-            DROP PROCEDURE IF EXISTS Procedure_ProcessOrder;
-            CREATE PROCEDURE Procedure_ProcessOrder(
+            DROP PROCEDURE IF EXISTS sp_ProcessOrder;
+            CREATE PROCEDURE sp_ProcessOrder(
                 IN parameter_user_id INT,
-                IN parameter_shipping_address TEXT,
-                IN parameter_payment_method VARCHAR(50),
-                IN parameter_customer_name VARCHAR(255),
-                IN parameter_customer_email VARCHAR(255),
-                IN parameter_customer_phone VARCHAR(20),
-                IN parameter_coupon_code VARCHAR(50),
+                IN parameter_shipping_address TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                IN parameter_payment_method VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                IN parameter_customer_name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                IN parameter_customer_email VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                IN parameter_customer_phone VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                IN parameter_coupon_code VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                 IN parameter_discount_amount DECIMAL(12,2),
                 IN parameter_shipping_fee DECIMAL(10,2),
-                IN parameter_notes TEXT,
+                IN parameter_notes TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                 IN parameter_extra_packaging BOOLEAN,
                 OUT parameter_order_id INT
             )
@@ -109,8 +109,9 @@ return new class extends Migration
                 DELETE FROM cart_items WHERE cart_id = variable_cart_id;
                 
                 -- Update Coupon usage
-                IF parameter_coupon_code IS NOT NULL THEN
-                    UPDATE coupons SET times_used = times_used + 1 WHERE code = parameter_coupon_code;
+                IF parameter_coupon_code IS NOT NULL AND parameter_coupon_code != '' THEN
+                    UPDATE coupons SET times_used = times_used + 1 
+                    WHERE code COLLATE utf8mb4_unicode_ci = parameter_coupon_code COLLATE utf8mb4_unicode_ci;
                 END IF;
 
                 COMMIT;
@@ -185,7 +186,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::unprepared("DROP PROCEDURE IF EXISTS Procedure_ProcessOrder;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS sp_ProcessOrder;");
         DB::unprepared("DROP VIEW IF EXISTS View_BestSellingProducts;");
         DB::unprepared("DROP VIEW IF EXISTS View_CustomerSpending;");
         DB::unprepared("DROP TRIGGER IF EXISTS Trigger_AfterUserRegistration;");

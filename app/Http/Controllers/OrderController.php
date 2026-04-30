@@ -38,7 +38,7 @@ final class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with(['items.product', 'disputes'])
+        $order = Order::with(['items.product'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
             
@@ -157,6 +157,38 @@ final class OrderController extends Controller
             }
             return back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Apply a promotional code to the session.
+     */
+    public function applyCoupon(Request $request)
+    {
+        $request->validate(['code' => 'required|string']);
+
+        $coupon = Coupon::where('code', $request->code)->first();
+
+        if (!$coupon || !$coupon->isValid()) {
+            return back()->with('error', 'Invalid or expired promotional code.');
+        }
+
+        // Enforce 1-time use per user for specific coupons like WELCOME10
+        if ($coupon->isUsedByUser(Auth::id())) {
+            return back()->with('error', 'You have already used this promotional code on a previous acquisition.');
+        }
+
+        session(['coupon_code' => $coupon->code]);
+
+        return back()->with('success', 'Promo code applied to your order!');
+    }
+
+    /**
+     * Remove the promotional code from the session.
+     */
+    public function removeCoupon()
+    {
+        session()->forget('coupon_code');
+        return back()->with('success', 'Promo code removed.');
     }
 
     /**

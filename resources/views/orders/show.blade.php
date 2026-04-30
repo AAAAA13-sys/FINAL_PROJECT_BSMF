@@ -9,7 +9,7 @@
         <p class="tracking-subtitle">Placed on {{ $order->created_at->format('F d, Y') }}</p>
 
         @if($order->extra_packaging_requested)
-            <div class="alert alert-info border-0 mb-5 text-center" style="background: rgba(251, 191, 36, 0.1); color: var(--secondary); border-radius: 12px; font-weight: 800;">
+            <div class="alert alert-info border-0 mb-3 text-center" style="background: rgba(251, 191, 36, 0.1); color: var(--secondary); border-radius: 10px; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px; padding: 0.5rem;">
                 <i class="fas fa-box me-2"></i> EXTRA CARE PACKAGING ENABLED
             </div>
         @endif
@@ -43,27 +43,27 @@
 
         <div class="tracking-info-grid">
             <div>
-                <h4 style="color: var(--secondary); margin-bottom: 1rem;">SHIPPING TO</h4>
-                <p style="white-space: pre-line;">{{ $order->shipping_address }}</p>
+                <h4 style="color: var(--secondary); margin-bottom: 0.75rem; font-size: 0.9rem;">SHIPPING TO</h4>
+                <p style="white-space: pre-line; font-size: 0.85rem; color: var(--text-muted);">{{ $order->shipping_address }}</p>
             </div>
             <div>
-                <h4 style="color: var(--secondary); margin-bottom: 1rem;">ORDER SUMMARY</h4>
+                <h4 style="color: var(--secondary); margin-bottom: 0.75rem; font-size: 0.9rem;">ORDER SUMMARY</h4>
                 @foreach($order->items as $item)
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.85rem;">
                         <span>{{ $item->product_name }} x {{ $item->quantity }}</span>
                         <span>₱{{ number_format($item->price * $item->quantity, 2) }}</span>
                     </div>
                 @endforeach
                 <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 1rem 0;">
-                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem;">
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1rem;">
                     <span>TOTAL</span>
                     <span style="color: var(--secondary);">₱{{ number_format($order->total_amount, 2) }}</span>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 4rem; text-align: center;">
-            <a href="{{ route('orders.index') }}" class="btn btn-primary">BACK TO HISTORY</a>
+        <div style="margin-top: 3rem; text-align: center;">
+            <a href="{{ route('orders.index') }}" class="btn btn-primary" style="padding: 0.8rem 3rem; font-size: 0.9rem;">BACK TO HISTORY</a>
         </div>
     </div>
 </section>

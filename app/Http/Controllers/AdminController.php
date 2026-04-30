@@ -11,8 +11,10 @@ use App\Models\Brand;
 use App\Models\Scale;
 use App\Models\Series;
 use App\Models\Coupon;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 final class AdminController extends Controller
@@ -74,7 +76,7 @@ final class AdminController extends Controller
      */
     public function products()
     {
-        $products = Product::with(['brand', 'scale', 'series'])->latest()->paginate(10);
+        $products = Product::with(['brand', 'scale', 'series', 'gallery'])->latest()->paginate(10);
         $brands = Brand::all();
         $scales = Scale::all();
         $series = Series::all();
@@ -82,9 +84,6 @@ final class AdminController extends Controller
         return view('admin.products', compact('products', 'brands', 'scales', 'series'));
     }
 
-    /**
-     * Store a new die-cast product.
-     */
     public function productStore(Request $request)
     {
         $validated = $request->validate([
@@ -95,16 +94,41 @@ final class AdminController extends Controller
             'series_id' => 'nullable|exists:series,id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
-            'year' => 'nullable|integer',
             'description' => 'nullable|string',
-            // ... other fields
+            'main_image' => 'nullable|image|max:2048',
+            'additional_images' => 'nullable|array|max:4',
+            'additional_images.*' => 'image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($request->name . '-' . Str::random(5));
-        
-        Product::create($validated);
 
-        return back()->with('success', 'Product added successfully!');
+        // Extract files before creation to avoid JSON storage issues
+        $mainImage = $request->file('main_image');
+        $secondaryImages = $request->file('additional_images');
+        
+        // Remove from validated array
+        unset($validated['main_image'], $validated['additional_images']);
+
+        // Handle Main Image
+        if ($mainImage) {
+            $path = $mainImage->store('products/main', 'public');
+            $validated['main_image'] = 'storage/' . $path;
+        }
+        
+        $product = Product::create($validated);
+
+        // Handle Secondary Images (Gallery Table)
+        if ($secondaryImages) {
+            foreach ($secondaryImages as $image) {
+                $path = $image->store('products/gallery', 'public');
+                $product->gallery()->create([
+                    'image_path' => 'storage/' . $path,
+                    'type' => 'gallery'
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Product added to the garage!');
     }
 
     /**
@@ -174,9 +198,6 @@ final class AdminController extends Controller
         return view('admin.edit-product', compact('product', 'brands', 'scales', 'series'));
     }
 
-    /**
-     * Update an existing product.
-     */
     public function productUpdate(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -189,11 +210,85 @@ final class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
+            'main_image' => 'nullable|image|max:2048',
+            'additional_images' => 'nullable|array|max:4',
+            'additional_images.*' => 'image|max:2048',
         ]);
+
+        // Extract files
+        $mainImage = $request->file('main_image');
+        $secondaryImages = $request->file('additional_images');
+        
+        // Remove from validated array
+        unset($validated['main_image'], $validated['additional_images']);
+
+        // Handle Main Image Update
+        if ($mainImage) {
+            $path = $mainImage->store('products/main', 'public');
+            $validated['main_image'] = 'storage/' . $path;
+        }
 
         $product->update($validated);
 
-        return redirect()->route('admin.products')->with('success', 'Model updated in the garage!');
+        // Handle Secondary Images (Append to Gallery)
+        if ($secondaryImages) {
+            foreach ($secondaryImages as $image) {
+                $path = $image->store('products/gallery', 'public');
+                $product->gallery()->create([
+                    'image_path' => 'storage/' . $path,
+                    'type' => 'gallery'
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Model updated in the garage!');
+    }
+
+    /**
+     * Delete a gallery image.
+     */
+    public function productImageDestroy($id)
+    {
+        try {
+            $image = ProductImage::findOrFail($id);
+            
+            // Delete physical file
+            $filePath = str_replace('storage/', '', $image->image_path);
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+            
+            $image->delete();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Delete the main product image.
+     */
+    public function productMainImageDestroy($id)
+    {
+        try {
+            $product = Product::findOrFail($id);
+            
+            if ($product->main_image) {
+                // Delete physical file
+                $filePath = str_replace('storage/', '', $product->main_image);
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+                
+                $product->main_image = null;
+                $product->save();
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -203,7 +298,8 @@ final class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return back()->with('success', 'Model ejected from the garage.');
+        
+        return redirect()->route('admin.products')->with('success', 'Model ejected from the garage.');
     }
 
     /**

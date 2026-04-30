@@ -86,6 +86,14 @@ final class Product extends Model
 
 
     /**
+     * Get the gallery images for the product.
+     */
+    public function gallery(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    /**
      * Get the images for the product.
      */
     public function images(): HasMany

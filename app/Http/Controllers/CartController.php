@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,13 +19,31 @@ final class CartController extends Controller
     public function index(Request $request)
     {
         $cart = Cart::with(['items.product.brand'])->firstOrCreate(['user_id' => Auth::id()]);
+        
+        $subtotal = $cart->subtotal();
+        $discount = 0;
+        $couponCode = session('coupon_code');
+
+        if ($couponCode) {
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if ($coupon && $coupon->isValid()) {
+                if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
+                    $discount = $subtotal * ($coupon->discount_value / 100);
+                } else {
+                    $discount = $coupon->discount_value;
+                }
+            }
+        }
+
+        $shipping = $subtotal >= 50 ? 0 : 5.00;
+        $total = $subtotal - $discount + $shipping;
 
         if ($request->wantsJson() || $request->is('api/*')) {
             $cart->load('items.product.images');
             return new \App\Http\Resources\CartResource($cart);
         }
 
-        return view('cart.index', compact('cart'));
+        return view('cart.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode'));
     }
 
     /**

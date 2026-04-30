@@ -233,7 +233,7 @@ nav.scrolled {
 
 /* Product Listing */
 .section-padding {
-    padding: 2rem 5%;
+    padding: 1.5rem 5%;
 }
 
 .section-header {
@@ -613,43 +613,44 @@ nav.scrolled {
 
 /* Tracking */
 .tracking-card {
-    max-width: 900px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 4rem;
+    padding: 1.5rem 2rem;
 }
 
 .tracking-header {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
 }
 
 .tracking-subtitle {
     color: var(--text-muted);
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
 }
 
 .tracking-progress-container {
     display: flex;
     justify-content: space-between;
     position: relative;
-    margin-bottom: 4rem;
+    margin-bottom: 1.5rem;
 }
 
 .tracking-line {
     position: absolute;
-    top: 15px;
+    top: 13px;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 3px;
     background: var(--glass-border);
     z-index: 1;
 }
 
 .tracking-line-active {
     position: absolute;
-    top: 15px;
+    top: 13px;
     left: 0;
-    height: 4px;
+    height: 3px;
     background: var(--primary);
     z-index: 2;
     transition: width 1s ease;
@@ -662,27 +663,28 @@ nav.scrolled {
 }
 
 .tracking-dot {
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    margin: 0 auto 1rem;
+    margin: 0 auto 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
+    font-size: 0.75rem;
 }
 
 .tracking-label {
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
 }
 
 .tracking-info-grid {
-    padding-top: 3rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--glass-border);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 1.5rem;
 }
 
 /* Footer */
@@ -765,7 +767,7 @@ footer {
 
 .admin-main {
     margin-left: 240px;
-    padding: 4rem;
+    padding: 1.5rem 2rem;
     width: calc(100% - 240px);
     flex-grow: 1;
 }
@@ -773,11 +775,11 @@ footer {
 .admin-nav-link {
     color: var(--text-muted);
     text-decoration: none;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     display: block;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     letter-spacing: 2px;
     transition: 0.3s;
 }
@@ -791,8 +793,8 @@ footer {
 .stat-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--glass-border);
-    padding: 2rem;
-    border-radius: 16px;
+    padding: 1.25rem;
+    border-radius: 12px;
     transition: 0.3s;
 }
 
@@ -809,16 +811,16 @@ footer {
 
 .admin-table th {
     text-align: left;
-    padding: 1.5rem;
+    padding: 0.75rem 1rem;
     color: var(--secondary);
     text-transform: uppercase;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 2px;
     border-bottom: 2px solid var(--glass-border);
 }
 
 .admin-table td {
-    padding: 1.5rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--glass-border);
 }
 
