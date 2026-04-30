@@ -7,16 +7,15 @@
         <div class="row">
             <!-- Sidebar Filters -->
             <div class="col-md-3">
-                <div class="card bg-dark text-white border-secondary mb-4">
-                    <div class="card-header border-secondary py-3">
-                        <h5 class="mb-0 text-warning" style="font-weight: 800; letter-spacing: 1px;">FILTERS</h5>
+                <div class="card bg-dark text-white border-secondary" style="margin-bottom: 1.5rem;">
+                    <div class="card-header border-secondary" style="padding-top: 1rem; padding-bottom: 1rem;">
+                        <h5 style="margin-bottom: 0; color: #fbbf24; font-weight: 800; letter-spacing: 1px;">FILTERS</h5>
                     </div>
-                    <div class="card-body p-3">
+                    <div class="card-body" style="padding: 1rem;">
                         <form action="{{ route('products.index') }}" method="GET">
                             <!-- Search -->
-                            <div class="mb-4" style="position: relative;">
-                                <label class="form-label small text-muted text-uppercase mb-2"
-                                    style="font-weight: 700;">Search</label>
+                            <div style="margin-bottom: 1.5rem; position: relative;">
+                                <label style="font-size: 0.875rem; color: #cbd5e1; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700; display: block;">Search</label>
                                 <input type="text" name="search" id="sidebarSearchInput" autocomplete="off"
                                     class="form-control bg-transparent text-white border-secondary"
                                     placeholder="Try 'Skyline' or 'Camaro'..." value="{{ request('search') }}">
@@ -26,9 +25,8 @@
                             </div>
 
                             <!-- Brand Filter -->
-                            <div class="mb-4">
-                                <label class="form-label small text-muted text-uppercase mb-2"
-                                    style="font-weight: 700;">Brand</label>
+                            <div style="margin-bottom: 1.5rem;">
+                                <label style="font-size: 0.875rem; color: #cbd5e1; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700; display: block;">Brand</label>
                                 <div class="row g-2">
                                     @foreach($brands as $brand)
                                         <div class="col-6">
@@ -245,11 +243,10 @@
                                         <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ $product->scale->name }}</span>
                                         <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ strtoupper($product->card_condition) }}</span>
                                     </div>
-                                    <p class="card-text small text-muted mb-3">{{ Str::limit($product->casting_name, 50) }}</p>
+                                    <p style="font-size: 0.875rem; color: #cbd5e1; margin-bottom: 1rem;">{{ Str::limit($product->casting_name, 50) }}</p>
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="h5 mb-0 text-warning"
-                                            style="font-weight: 700;">₱{{ number_format($product->price, 2) }}</span>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-size: 1.25rem; margin-bottom: 0; color: #fbbf24; font-weight: 700;">₱{{ number_format($product->price, 2) }}</span>
 
                                         @php $status = $product->stock_status; @endphp
                                         <span
