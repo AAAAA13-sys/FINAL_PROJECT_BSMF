@@ -32,31 +32,42 @@ final class AdminController extends Controller
         $totalCustomers = User::where('is_admin', false)->count();
 
         // Dynamic Sales for Chart
-        $filter = request('revenue_filter', 'month');
+        $filter = request('revenue_filter', 'week');
         $query = Order::where('status', '!=', Order::STATUS_CANCELLED);
 
         if ($filter === 'week') {
-            $salesData = $query->where('created_at', '>=', now()->subDays(7))
+            // Start from Monday of the current week
+            $startOfWeek = now()->startOfWeek();
+            $data = $query->where('created_at', '>=', $startOfWeek)
                 ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%a') as label"))
                 ->groupBy('label')
-                ->orderBy('created_at')
-                ->get();
-        } elseif ($filter === 'year') {
-            $salesData = $query->where('created_at', '>=', now()->subYears(5))
-                ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%Y') as label"))
-                ->groupBy('label')
-                ->orderBy('label')
-                ->get();
+                ->get()
+                ->pluck('total', 'label');
+
+            $salesData = collect();
+            $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            foreach ($days as $day) {
+                $salesData->push((object)[
+                    'label' => $day,
+                    'total' => $data[$day] ?? 0
+                ]);
+            }
         } else {
-            $salesData = $query->where('created_at', '>=', now()->subMonths(6))
+            $data = $query->where('created_at', '>=', now()->subMonths(5))
                 ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%m') as month_num"))
                 ->groupBy('month_num')
-                ->orderBy('month_num')
                 ->get()
-                ->map(function($item) {
-                    $item->label = date("M", mktime(0, 0, 0, (int)$item->month_num, 1));
-                    return $item;
-                });
+                ->pluck('total', 'month_num');
+
+            $salesData = collect();
+            for ($i = 5; $i >= 0; $i--) {
+                $month = now()->subMonths($i);
+                $monthNum = $month->format('m');
+                $salesData->push((object)[
+                    'label' => $month->format('M'),
+                    'total' => $data[$monthNum] ?? 0
+                ]);
+            }
         }
 
         return view('admin.dashboard', compact(

@@ -213,25 +213,28 @@
                 <div class="row g-4">
                     @forelse($products as $product)
                         <div class="col-6 col-md-4">
-                            <div class="card h-100 bg-dark text-white border-secondary product-card-diecast">
-                                <!-- Rarity Badge -->
-                                @if($product->is_super_treasure_hunt)
-                                    <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2"
-                                        title="Super Treasure Hunt">⭐ STH</span>
-                                @elseif($product->is_treasure_hunt)
-                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2" title="Treasure Hunt">🔥
-                                        TH</span>
-                                @endif
-
-                                @if($product->is_chase)
-                                    <span class="badge bg-purple position-absolute top-0 end-0 m-2"
-                                        style="background-color: #6f42c1;">CHASE</span>
-                                @endif
-
+                            <div class="card h-100 bg-dark text-white product-card-diecast">
                                 <div class="product-image-container overflow-hidden position-relative">
+                                    <!-- Rarity Badge -->
+                                    @if($product->is_super_treasure_hunt)
+                                        <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 d-flex align-items-center gap-1"
+                                            style="z-index: 10; font-weight: 900; border: 1px solid rgba(0,0,0,0.2);" title="Super Treasure Hunt">
+                                            <i class="fas fa-star" style="color: #000; font-size: 0.7rem;"></i> STH
+                                        </span>
+                                    @elseif($product->is_treasure_hunt)
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 d-flex align-items-center gap-1" 
+                                            style="z-index: 10; font-weight: 900; border: 1px solid rgba(255,255,255,0.2);" title="Treasure Hunt">
+                                            <i class="fas fa-fire" style="color: #fff; font-size: 0.7rem;"></i> TH
+                                        </span>
+                                    @endif
+
+                                    @if($product->is_chase)
+                                        <span class="badge bg-purple position-absolute top-0 end-0 m-2"
+                                            style="background-color: #6f42c1; z-index: 10; font-weight: 900; border: 1px solid rgba(255,255,255,0.2);">CHASE</span>
+                                    @endif
+
                                     <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}"
                                         class="card-img-top zoom-on-hover" alt="{{ $product->name }}" loading="lazy">
-                                    
                                 </div>
 
                                 <div class="card-body">

@@ -3,7 +3,7 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="card-title-premium fs-4">PRODUCT <span>MANAGEMENT</span></h1>
+        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">PRODUCT <span style="color: var(--secondary);">MANAGEMENT</span></h2>
         <button type="button" class="btn btn-warning px-3 py-2 rounded-pill fw-black ls-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#productModal" onclick="prepareProductModal('add')">+ ADD NEW MODEL</button>
     </div>
 

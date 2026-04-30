@@ -72,7 +72,7 @@
 
 .admin-main {
     margin-left: var(--sidebar-width);
-    padding: 1.5rem 2.5rem;
+    padding: 40px;
     width: calc(100% - var(--sidebar-width));
     flex-grow: 1;
     background: radial-gradient(circle at top right, #00122e 0%, #000814 100%);

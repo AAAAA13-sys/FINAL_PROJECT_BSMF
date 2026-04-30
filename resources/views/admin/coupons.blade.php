@@ -3,7 +3,7 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1 class="card-title-premium fs-2">COUPON <span>VAULT</span></h1>
+        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">COUPON <span style="color: var(--secondary);">VAULT</span></h2>
         <button onclick="document.getElementById('addCouponModal').style.display='flex'" class="btn btn-warning px-4 py-2 rounded-pill fw-black ls-1">+ NEW COUPON</button>
     </div>
 

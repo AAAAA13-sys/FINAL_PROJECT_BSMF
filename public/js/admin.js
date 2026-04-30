@@ -42,8 +42,15 @@ window.initRevenueChart = function(labels, data) {
             },
             scales: {
                 y: {
+                    beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: 1000,
                     grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: '#94a3b8', font: { weight: 'bold' } }
+                    ticks: { 
+                        color: '#94a3b8', 
+                        font: { weight: 'bold' },
+                        callback: function(value) { return '₱' + value.toLocaleString(); }
+                    }
                 },
                 x: {
                     grid: { display: false },

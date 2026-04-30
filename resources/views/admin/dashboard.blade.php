@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="fade-in" style="padding: 1rem;">
+<div class="fade-in">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h2 style="font-size: 1.25rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">BSMF <span style="color: var(--secondary);">GARAGE CONTROL</span></h2>
+        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">BSMF <span style="color: var(--secondary);">DASHBOARD</span></h2>
         <div style="text-align: right;">
             <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem; font-style: italic; font-weight: bold;">{{ now()->format('l, jS F Y') }}</div>
             <div style="color: var(--secondary); font-size: 0.75rem; font-weight: 900; text-transform: uppercase;">Admin: {{ Auth::user()->name }}</div>
@@ -12,39 +12,39 @@
 
 
     <!-- Stats Grid -->
-    <div class="row" style="gap: 1rem; margin-bottom: 1.5rem;">
+    <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="stat-card glass border-secondary" style="padding: 0.75rem 1rem;">
-                <p style="color: var(--secondary); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.15rem; font-weight: 800;">Total Revenue</p>
-                <h3 style="color: var(--secondary); font-weight: 900; margin-bottom: 0; font-size: 1.2rem;">₱{{ number_format($totalSales, 2) }}</h3>
-                <div class="progress mt-2" style="height: 3px; background: rgba(255,255,255,0.05);">
+            <div class="stat-card glass border-secondary" style="padding: 1.25rem 1.5rem;">
+                <p style="color: var(--secondary); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-weight: 800;">Total Revenue</p>
+                <h3 style="color: var(--secondary); font-weight: 900; margin-bottom: 0; font-size: 1.75rem; letter-spacing: -0.5px;">₱{{ number_format($totalSales, 2) }}</h3>
+                <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-warning" style="width: 100%"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card glass" style="border: 1px solid #0d6efd; padding: 0.75rem 1rem;">
-                <p style="color: #0d6efd; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.15rem; font-weight: 800;">Total Orders</p>
-                <h3 style="color: white; font-weight: 900; margin-bottom: 0; font-size: 1.2rem;">{{ $totalOrders }}</h3>
-                <div class="progress mt-2" style="height: 3px; background: rgba(255,255,255,0.05);">
+            <div class="stat-card glass" style="border: 1px solid #0d6efd; padding: 1.25rem 1.5rem;">
+                <p style="color: #0d6efd; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-weight: 800;">Total Orders</p>
+                <h3 style="color: white; font-weight: 900; margin-bottom: 0; font-size: 1.75rem; letter-spacing: -0.5px;">{{ $totalOrders }}</h3>
+                <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-primary" style="width: 100%"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card glass border-info" style="padding: 0.75rem 1rem;">
-                <p style="color: #0dcaf0; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.15rem; font-weight: 800;">Inventory (SKUs)</p>
-                <h3 style="color: #0dcaf0; font-weight: 900; margin-bottom: 0; font-size: 1.2rem;">{{ $totalProducts }}</h3>
-                <div class="progress mt-2" style="height: 3px; background: rgba(255,255,255,0.05);">
+            <div class="stat-card glass border-info" style="padding: 1.25rem 1.5rem;">
+                <p style="color: #0dcaf0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-weight: 800;">Inventory (SKUs)</p>
+                <h3 style="color: #0dcaf0; font-weight: 900; margin-bottom: 0; font-size: 1.75rem; letter-spacing: -0.5px;">{{ $totalProducts }}</h3>
+                <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-info" style="width: 100%"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card glass border-success" style="padding: 0.75rem 1rem;">
-                <p style="color: #198754; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.15rem; font-weight: 800;">Active Collectors</p>
-                <h3 style="color: white; font-weight: 900; margin-bottom: 0; font-size: 1.2rem;">{{ $totalCustomers }}</h3>
-                <div class="progress mt-2" style="height: 3px; background: rgba(255,255,255,0.05);">
+            <div class="stat-card glass border-success" style="padding: 1.25rem 1.5rem;">
+                <p style="color: #198754; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-weight: 800;">Active Collectors</p>
+                <h3 style="color: white; font-weight: 900; margin-bottom: 0; font-size: 1.75rem; letter-spacing: -0.5px;">{{ $totalCustomers }}</h3>
+                <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
                     <div class="progress-bar bg-success" style="width: 100%"></div>
                 </div>
             </div>
@@ -57,9 +57,8 @@
             <h6 style="color: white; text-transform: uppercase; font-style: italic; margin-bottom: 0; font-size: 0.85rem;">REVENUE <span>PERFORMANCE</span></h6>
             <form action="{{ route('admin.dashboard') }}" method="GET" id="revenueFilterForm">
                 <select name="revenue_filter" class="badge bg-dark border border-secondary p-1 px-2 text-uppercase fw-bold cursor-pointer" onchange="this.form.submit()" style="font-size: 0.65rem;">
-                    <option value="week" {{ $filter === 'week' ? 'selected' : '' }}>LAST 7 DAYS</option>
+                    <option value="week" {{ $filter === 'week' ? 'selected' : '' }}>THIS WEEK</option>
                     <option value="month" {{ $filter === 'month' ? 'selected' : '' }}>LAST 6 MONTHS</option>
-                    <option value="year" {{ $filter === 'year' ? 'selected' : '' }}>LAST 5 YEARS</option>
                 </select>
             </form>
         </div>
