@@ -25,7 +25,7 @@ final class CartController extends Controller
         $couponCode = session('coupon_code');
 
         if ($couponCode) {
-            $coupon = Coupon::where('code', $couponCode)->first();
+            $coupon = Coupon::where('coupon_code', $couponCode)->first();
             if ($coupon && $coupon->isValid()) {
                 if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
                     $discount = $subtotal * ($coupon->discount_value / 100);

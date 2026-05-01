@@ -4,7 +4,9 @@
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">PRODUCT <span style="color: var(--secondary);">MANAGEMENT</span></h2>
+        @if(Auth::user()->isAdmin())
         <button type="button" class="btn btn-warning px-3 py-2 rounded-pill fw-black ls-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#productModal" onclick="prepareProductModal('add')">+ ADD NEW MODEL</button>
+        @endif
     </div>
 
     <div class="admin-table-container">
@@ -25,7 +27,9 @@
                     <th>Casting</th>
                     <th>Price</th>
                     <th>Stock</th>
+                    @if(Auth::user()->isAdmin())
                     <th class="pe-4 text-end">Actions</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +51,7 @@
                             {{ $product->stock_quantity }}
                         </span>
                     </td>
+                    @if(Auth::user()->isAdmin())
                     <td class="pe-4 text-end">
                         <div class="d-flex justify-content-end gap-2">
                             <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3 edit-product-btn" style="font-size: 0.65rem;" 
@@ -59,6 +64,7 @@
                             </form>
                         </div>
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

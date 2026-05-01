@@ -45,7 +45,7 @@ final class AuthController extends Controller
 
             $request->session()->regenerate();
             
-            if ($user->is_admin) {
+            if ($user->isAdmin()) {
                 return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Administrator!');
             }
             
@@ -88,7 +88,7 @@ final class AuthController extends Controller
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'is_admin' => false,
+            'role' => 'customer',
         ]);
 
         if ($request->wantsJson() || $request->is('api/*')) {

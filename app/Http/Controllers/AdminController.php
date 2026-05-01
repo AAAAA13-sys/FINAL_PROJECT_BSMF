@@ -16,9 +16,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Traits\LogsActions;
 
 final class AdminController extends Controller
 {
+    use LogsActions;
+
     /**
      * Display the admin dashboard with collector-specific widgets.
      */
@@ -29,7 +32,7 @@ final class AdminController extends Controller
         $totalProducts = Product::count();
         $recentOrders = Order::with('user')->latest()->limit(5)->get();
         $lowStockProducts = Product::whereColumn('stock_quantity', '<=', 'low_stock_threshold')->limit(5)->get();
-        $totalCustomers = User::where('is_admin', false)->count();
+        $totalCustomers = User::where('role', 'customer')->count();
 
         // Dynamic Sales for Chart
         $filter = request('revenue_filter', 'week');
@@ -97,6 +100,9 @@ final class AdminController extends Controller
 
     public function productStore(Request $request)
     {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot add new products.');
+        }
         $validated = $request->validate([
             'name' => 'required|string|max:200',
             'casting_name' => 'required|string|max:200',
@@ -127,6 +133,9 @@ final class AdminController extends Controller
         }
         
         $product = Product::create($validated);
+
+        $this->logAction('PRODUCT_CREATE', "Added new product: {$product->name}", $product, null, $product->toArray());
+
 
         // Handle Secondary Images (Gallery Table)
         if ($secondaryImages) {
@@ -175,8 +184,11 @@ final class AdminController extends Controller
         if ($status === Order::STATUS_OUT_FOR_DELIVERY) $updateData['out_for_delivery_at'] = now();
         if ($status === Order::STATUS_DELIVERED) $updateData['delivered_at'] = now();
 
+        $oldStatus = $order->status;
         $order->update($updateData);
         
+        $this->logAction('ORDER_STATUS_UPDATE', "Changed order #{$order->order_number} status from {$oldStatus} to {$status}", $order, ['status' => $oldStatus], ['status' => $status]);
+
         return back()->with('success', 'Order status updated!');
     }
 
@@ -211,6 +223,9 @@ final class AdminController extends Controller
 
     public function productUpdate(Request $request, $id)
     {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot modify products.');
+        }
         $product = Product::findOrFail($id);
         $validated = $request->validate([
             'name' => 'required|string|max:200',
@@ -239,7 +254,11 @@ final class AdminController extends Controller
             $validated['main_image'] = 'storage/' . $path;
         }
 
+        $oldProduct = $product->getOriginal();
         $product->update($validated);
+        
+        $this->logAction('PRODUCT_UPDATE', "Updated product: {$product->name}", $product, $oldProduct, $product->getChanges());
+
 
         // Handle Secondary Images (Append to Gallery)
         if ($secondaryImages) {
@@ -307,7 +326,11 @@ final class AdminController extends Controller
      */
     public function productDestroy($id)
     {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot delete products.');
+        }
         $product = Product::findOrFail($id);
+        $this->logAction('PRODUCT_DELETE', "Deleted product: {$product->name}", $product, $product->toArray(), null);
         $product->delete();
         
         return redirect()->route('admin.products')->with('success', 'Model ejected from the garage.');
@@ -327,10 +350,14 @@ final class AdminController extends Controller
      */
     public function userDestroy($id)
     {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot eject collectors.');
+        }
         if ($id == auth()->id()) {
             return back()->with('error', 'You cannot eject yourself!');
         }
         $user = User::findOrFail($id);
+        $this->logAction('USER_DELETE', "Deleted user: {$user->username}", $user, $user->toArray(), null);
         $user->delete();
         return back()->with('success', 'Collector ejected from the garage.');
     }
@@ -347,8 +374,11 @@ final class AdminController extends Controller
 
     public function couponStore(Request $request)
     {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot create coupons.');
+        }
         $validated = $request->validate([
-            'code' => 'required|string|unique:coupons,code',
+            'code' => 'required|string|unique:coupons,coupon_code',
             'name' => 'nullable|string',
             'discount_type' => 'required|string',
             'discount_value' => 'required|numeric|min:0',
@@ -356,16 +386,36 @@ final class AdminController extends Controller
             'expires_at' => 'nullable|date',
         ]);
 
-        $validated['name'] = $validated['name'] ?? $validated['code'];
-        Coupon::create($validated);
+        $validated['coupon_code'] = $validated['code'];
+        $validated['name'] = $validated['name'] ?? $validated['coupon_code'];
+        unset($validated['code']);
+        $coupon = Coupon::create($validated);
+        $this->logAction('COUPON_CREATE', "Activated new promo code: {$coupon->coupon_code}", $coupon, null, $coupon->toArray());
         return back()->with('success', 'Promo code activated!');
     }
 
     public function couponDestroy($id)
     {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot delete coupons.');
+        }
         $coupon = Coupon::findOrFail($id);
+        $this->logAction('COUPON_DELETE', "Deactivated promo code: {$coupon->coupon_code}", $coupon, $coupon->toArray(), null);
         $coupon->delete();
         return back()->with('success', 'Promo code deactivated.');
+    }
+
+    /**
+     * Display the audit log list for the Owner.
+     */
+    public function auditLogs()
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized access to Audit Logs.');
+        }
+
+        $logs = \App\Models\AuditLog::with('user')->latest()->paginate(50);
+        return view('admin.audit-logs', compact('logs'));
     }
 
 

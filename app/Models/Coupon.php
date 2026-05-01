@@ -17,7 +17,7 @@ final class Coupon extends Model
     public const TYPE_BOGO = 'bogo';
 
     protected $fillable = [
-        'code',
+        'coupon_code',
         'name',
         'discount_type',
         'discount_value',
@@ -63,7 +63,7 @@ final class Coupon extends Model
     public function isUsedByUser($userId): bool
     {
         return \App\Models\Order::where('user_id', $userId)
-            ->where('coupon_code', $this->code)
+            ->where('coupon_code', $this->coupon_code)
             ->where('status', '!=', 'cancelled')
             ->exists();
     }

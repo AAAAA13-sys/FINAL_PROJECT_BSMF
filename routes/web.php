@@ -81,5 +81,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/coupons', [AdminController::class, 'coupons'])->name('coupons');
         Route::post('/coupons', [AdminController::class, 'couponStore'])->name('coupons.store');
         Route::delete('/coupons/{id}', [AdminController::class, 'couponDestroy'])->name('coupons.destroy');
+
+        // Audit Logs (Admin/Owner Only)
+        Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit-logs');
     });
 });

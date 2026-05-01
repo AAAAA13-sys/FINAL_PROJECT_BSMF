@@ -39,9 +39,21 @@
                 <a href="{{ route('admin.users') }}" class="admin-nav-link {{ Route::is('admin.users') ? 'active' : '' }}">
                     <i class="fas fa-users"></i> Users
                 </a>
+
+                @if(Auth::user()->isAdmin())
+                <a href="{{ route('admin.audit-logs') }}" class="admin-nav-link {{ Route::is('admin.audit-logs') ? 'active' : '' }}" style="color: #fbbf24;">
+                    <i class="fas fa-terminal"></i> Logs
+                </a>
+                @endif
                 
                 <div class="mt-auto pt-2 px-2">
                     <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 1rem;">
+                    
+                    <div class="px-3 mb-3">
+                        <div class="text-white fw-black small text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">{{ Auth::user()->name }}</div>
+                        <div class="text-warning fw-bold text-uppercase" style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.8;">ROLE: {{ Auth::user()->role }}</div>
+                    </div>
+
                     <a href="{{ route('home') }}" class="admin-nav-link mb-2" style="opacity: 0.8; font-size: 0.8rem; font-weight: 800; padding-left: 0.75rem;">
                         <i class="fas fa-external-link-alt"></i> VISIT SITE
                     </a>

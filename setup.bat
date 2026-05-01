@@ -23,30 +23,43 @@ echo [3/6] Generating application key...
 call php artisan key:generate
 
 :: 4. Run Migrations and Seed Database
-echo [4/6] Setting up database (Migrating and Seeding)...
+echo [4/7] Setting up database (Migrating and Seeding)...
 echo        Ensure you have created the database 'final_project_bsmf' in XAMPP/MySQL.
 call php artisan migrate:fresh --seed
-
-:: 5. Create Storage Link
-echo [5/6] Linking storage...
-call php artisan storage:link
-
-:: 6. Install Node Dependencies
-if exist package.json (
-    echo [6/7] Installing NPM dependencies...
-    call npm install
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Migration failed. Check your database connection.
+    pause
+    exit /b %ERRORLEVEL%
 )
 
-:: 7. Populate Product Images
-if exist scratch\populate_images.php (
-    echo [7/7] Populating product images...
-    call php scratch\populate_images.php
+:: 5. Clear Caches
+echo [5/7] Clearing application cache...
+call php artisan config:clear
+call php artisan cache:clear
+call php artisan view:clear
+
+:: 6. Create Storage Link
+echo [6/7] Linking storage...
+call php artisan storage:link
+
+:: 7. Install Node Dependencies
+if exist package.json (
+    echo [7/7] Installing NPM dependencies...
+    call npm install
 )
 
 echo.
 echo =======================================================
 echo          SETUP COMPLETE! READY FOR DRIFTING.
 echo =======================================================
+echo.
+echo  ADMIN CREDENTIALS:
+echo  Email: admin@bsmfgarage.com
+echo  Pass:  password
+echo.
+echo  STAFF CREDENTIALS:
+echo  Email: staff@bsmfgarage.com
+echo  Pass:  password
 echo.
 echo Launching the server at http://127.0.0.1:8000...
 echo (Press Ctrl+C to stop the server)

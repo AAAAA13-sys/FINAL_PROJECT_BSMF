@@ -116,7 +116,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-warning w-100 py-2 fw-black ls-1 mb-2">COMPLETE ACQUISITION</button>
-                        <p class="text-center small text-muted mb-0" style="font-size: 0.65rem;"><i class="fas fa-shield-alt me-1"></i> 256-BIT ENCRYPTED PIT STOP</p>
+                        {{-- Removed text --}}
                     </div>
                 </div>
             </div>

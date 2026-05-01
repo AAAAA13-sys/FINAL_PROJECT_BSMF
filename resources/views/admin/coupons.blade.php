@@ -4,7 +4,9 @@
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-5">
         <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">COUPON <span style="color: var(--secondary);">VAULT</span></h2>
+        @if(Auth::user()->isAdmin())
         <button onclick="document.getElementById('addCouponModal').style.display='flex'" class="btn btn-warning px-4 py-2 rounded-pill fw-black ls-1">+ NEW COUPON</button>
+        @endif
     </div>
 
     <div class="admin-table-container">
@@ -16,14 +18,16 @@
                     <th>Value</th>
                     <th>Usage Depth</th>
                     <th>Expiry Status</th>
+                    @if(Auth::user()->isAdmin())
                     <th class="pe-4 text-end">Actions</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach($coupons as $coupon)
                 <tr>
                     <td class="ps-4">
-                        <span class="text-warning fw-black ls-1 fs-5">{{ $coupon->code }}</span>
+                        <span class="text-warning fw-black ls-1 fs-5">{{ $coupon->coupon_code }}</span>
                     </td>
                     <td><span class="badge bg-dark border border-secondary text-muted px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">{{ strtoupper(str_replace('_', ' ', $coupon->discount_type)) }}</span></td>
                     <td>
@@ -53,6 +57,7 @@
                             </span>
                         @endif
                     </td>
+                    @if(Auth::user()->isAdmin())
                     <td class="pe-4 text-end">
                         <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" onsubmit="return confirm('Burn this coupon code?')" class="d-inline">
                             @csrf
@@ -60,6 +65,7 @@
                             <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" style="font-size: 0.65rem;">DELETE</button>
                         </form>
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

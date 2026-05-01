@@ -34,7 +34,7 @@
                 <li><a href="{{ route('cart.index') }}">CART</a></li>
                 <li><a href="{{ route('orders.index') }}">ORDERS</a></li>
                 <li><a href="{{ route('profile.index') }}">PROFILE</a></li>
-                @if(Auth::user()->is_admin)
+                @if(Auth::user()->isAdministrative())
                     <li><a href="{{ route('admin.dashboard') }}">DASHBOARD</a></li>
                 @endif
                 <li>

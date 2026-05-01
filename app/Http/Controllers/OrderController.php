@@ -65,7 +65,7 @@ final class OrderController extends Controller
         $couponCode = session('coupon_code');
 
         if ($couponCode) {
-            $coupon = Coupon::where('code', $couponCode)->first();
+            $coupon = Coupon::where('coupon_code', $couponCode)->first();
             if ($coupon && $coupon->isValid()) {
                 // Simplified discount calculation
                 if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
@@ -108,7 +108,7 @@ final class OrderController extends Controller
             $couponCode = session('coupon_code');
 
             if ($couponCode) {
-                $coupon = Coupon::where('code', $couponCode)->first();
+                $coupon = Coupon::where('coupon_code', $couponCode)->first();
                 if ($coupon && $coupon->isValid()) {
                     if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
                         $discount = $subtotal * ($coupon->discount_value / 100);
@@ -166,7 +166,7 @@ final class OrderController extends Controller
     {
         $request->validate(['code' => 'required|string']);
 
-        $coupon = Coupon::where('code', $request->code)->first();
+        $coupon = Coupon::where('coupon_code', $request->code)->first();
 
         if (!$coupon || !$coupon->isValid()) {
             return back()->with('error', 'Invalid or expired promotional code.');
@@ -177,7 +177,7 @@ final class OrderController extends Controller
             return back()->with('error', 'You have already used this promotional code on a previous acquisition.');
         }
 
-        session(['coupon_code' => $coupon->code]);
+        session(['coupon_code' => $coupon->coupon_code]);
 
         return back()->with('success', 'Promo code applied to your order!');
     }

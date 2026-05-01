@@ -88,7 +88,7 @@ return new class extends Migration
         // 6. Coupons
         Schema::create('coupons', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code', 50)->unique();
+            $table->string('coupon_code', 50)->unique();
             $table->string('name', 100);
             $table->enum('discount_type', ['percentage', 'fixed', 'free_shipping', 'bogo'])->default('percentage');
             $table->decimal('discount_value', 10, 2)->nullable();
@@ -179,7 +179,18 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
+        // Seed Global Welcome Coupon
+        \Illuminate\Support\Facades\DB::table('coupons')->insert([
+            'coupon_code' => 'WELCOME10',
+            'name' => 'First Acquisition Gift',
+            'discount_type' => 'percentage',
+            'discount_value' => 10.00,
+            'min_order_amount' => 0.00,
+            'usage_limit' => null, // Infinite global use, restricted per-user in SP logic
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**

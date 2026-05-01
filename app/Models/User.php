@@ -23,7 +23,7 @@ final class User extends Authenticatable
         'username',
         'email',
         'password',
-        'is_admin',
+        'role',
         'phone',
         'default_shipping_address',
         'newsletter_subscribed',
@@ -49,9 +49,32 @@ final class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
             'newsletter_subscribed' => 'boolean',
         ];
+    }
+
+    /**
+     * Check if user is admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is staff.
+     */
+    public function isStaff(): bool
+    {
+        return $this->role === 'staff';
+    }
+
+    /**
+     * Check if user is administrative (admin or staff).
+     */
+    public function isAdministrative(): bool
+    {
+        return in_array($this->role, ['admin', 'staff']);
     }
 
     /**

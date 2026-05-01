@@ -143,6 +143,19 @@
                     </div>
                 </div>
 
+                @if(Auth::user()->isAdmin())
+                <!-- Diagnostic Card -->
+                <div class="card glass border-warning rounded-4 shadow-lg overflow-hidden mt-4">
+                    <div class="card-header bg-warning text-dark p-3 text-center">
+                        <h6 class="text-uppercase italic mb-0 fw-black" style="font-size: 0.75rem;">SYSTEM <span class="fw-bold">DIAGNOSTICS</span></h6>
+                    </div>
+                    <div class="card-body p-3 text-center">
+                        <p class="text-muted small italic mb-3">Live tracking of garage security & inventory audit trails.</p>
+                        <a href="{{ route('admin.audit-logs') }}" class="btn btn-warning btn-sm w-100 fw-bold" style="letter-spacing: 1px; font-size: 0.7rem;">VIEW AUDIT TRACE</a>
+                    </div>
+                </div>
+                @endif
+
 
             </div>
         </div>

@@ -20,22 +20,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Users
-        User::create([
-            'name' => 'BSMF Admin',
-            'username' => 'bs_garage_admin',
-            'email' => 'admin@bsmfgarage.com',
-            'password' => Hash::make('password'),
-            'is_admin' => true,
-        ]);
+        // 1. Users are now seeded directly in 1_users_table migration for stability.
 
-        User::create([
-            'name' => 'John Collector',
-            'username' => 'johndiecast',
-            'email' => 'john@example.com',
-            'password' => Hash::make('password'),
-            'is_admin' => false,
-        ]);
 
         // 2. Brands
         $hw = Brand::create([
@@ -198,13 +184,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // 6. Coupons
-        Coupon::create([
-            'code' => 'WELCOME10',
-            'name' => 'Welcome to BSMF Garage',
-            'discount_type' => 'percentage',
-            'discount_value' => 10.00,
-            'min_order_amount' => 25.00,
-            'expires_at' => now()->addDays(30),
-        ]);
+        // Note: WELCOME10 coupon is seeded in migration 2026_04_30_114048_seed_welcome_coupon.php
+        // No need to create it here to avoid duplicates
     }
 }

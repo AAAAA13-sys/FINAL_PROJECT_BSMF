@@ -26,22 +26,24 @@
                     </td>
                     <td><code class="text-warning small fw-bold">{{ $user->username }}</code></td>
                     <td>
-                        @if($user->is_admin)
+                        @if($user->isAdmin())
                             <span class="badge bg-primary text-white px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">ADMIN</span>
+                        @elseif($user->isStaff())
+                            <span class="badge bg-warning text-dark px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">STAFF</span>
                         @else
                             <span class="badge bg-dark border border-secondary text-muted px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">COLLECTOR</span>
                         @endif
                     </td>
                     <td><span class="text-white-50 small">{{ $user->created_at->format('M d, Y') }}</span></td>
                     <td class="pe-4 text-end">
-                        @if($user->id !== Auth::id())
+                        @if($user->id === Auth::id())
+                            <span class="badge bg-secondary text-dark px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">YOU</span>
+                        @elseif(Auth::user()->isAdmin())
                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Eject this collector from the garage? This cannot be undone.')" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" style="font-size: 0.65rem;">DELETE</button>
                             </form>
-                        @else
-                            <span class="badge bg-secondary text-dark px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">YOU</span>
                         @endif
                     </td>
                 </tr>

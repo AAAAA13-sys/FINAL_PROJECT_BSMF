@@ -24,11 +24,42 @@ return new class extends Migration
             $table->string('username', 50)->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->boolean('is_admin')->default(false);
+            $table->enum('role', ['admin', 'staff', 'customer'])->default('customer');
             $table->string('phone', 20)->nullable();
             $table->text('default_shipping_address')->nullable();
             $table->timestamps();
         });
+
+        // Seed initial users
+        \Illuminate\Support\Facades\DB::table('users')->insert([
+            [
+                'name' => 'BSMF Admin',
+                'username' => 'bs_garage_admin',
+                'email' => 'admin@bsmfgarage.com',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Garage Staff',
+                'username' => 'staff_garage',
+                'email' => 'staff@bsmfgarage.com',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'staff',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'John Collector',
+                'username' => 'johndiecast',
+                'email' => 'john@example.com',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'customer',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        ]);
     }
 
     /**
