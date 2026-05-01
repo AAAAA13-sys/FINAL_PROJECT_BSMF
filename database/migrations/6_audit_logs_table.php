@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->string('action', 50); // e.g., STOCK_UPDATE, PRICE_CHANGE
-            $table->text('description'); // Human-readable summary
+            $table->text('description'); // Summary
             $table->string('model_type')->nullable(); // e.g., Product, Order
             $table->unsignedInteger('model_id')->nullable();
             $table->json('old_values')->nullable();

@@ -50,26 +50,56 @@
                             </button>
                         </td>
                     </tr>
-                    <tr id="details-{{ $log->id }}" class="d-none" style="background: rgba(0,0,0,0.4);">
+                    <tr id="details-{{ $log->id }}" class="d-none" style="background: rgba(0,0,0,0.5);">
                         <td colspan="5" class="p-4" style="border-left: 4px solid var(--secondary);">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="smaller text-muted fw-bold text-uppercase mb-2 d-block">Snapshot: PRE-ACTION</label>
-                                    <div class="p-3 rounded-3" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);">
-                                        <pre class="m-0 text-danger smaller" style="max-height: 150px; overflow: auto;">{{ json_encode($log->old_values, JSON_PRETTY_PRINT) }}</pre>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h6 class="smaller text-muted fw-bold text-uppercase mb-3 ls-1">ACTION MODIFICATIONS</h6>
+                                    
+                                    @php
+                                        $old = is_array($log->old_values) ? $log->old_values : [];
+                                        $new = is_array($log->new_values) ? $log->new_values : [];
+                                        $allKeys = array_unique(array_merge(array_keys($old), array_keys($new)));
+                                        $changesFound = false;
+                                    @endphp
+
+                                    <div class="d-flex flex-column gap-2">
+                                        @foreach($allKeys as $key)
+                                            @php
+                                                $oldVal = $old[$key] ?? 'null';
+                                                $newVal = $new[$key] ?? 'null';
+                                                // Skip timestamps and IDs unless they are the main focus
+                                                if(in_array($key, ['updated_at', 'created_at', 'id'])) continue;
+                                            @endphp
+
+                                            @if($oldVal != $newVal)
+                                                @php $changesFound = true; @endphp
+                                                <div class="p-2 rounded-3 d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+                                                    <span class="text-secondary fw-black small text-uppercase" style="font-size: 0.65rem; width: 150px;">{{ str_replace('_', ' ', $key) }}</span>
+                                                    <div class="flex-grow-1 d-flex align-items-center gap-3">
+                                                        <span class="text-danger small text-decoration-line-through opacity-50">{{ is_array($oldVal) ? 'DATA' : $oldVal }}</span>
+                                                        <i class="fas fa-long-arrow-alt-right text-warning"></i>
+                                                        <span class="text-success small fw-bold">{{ is_array($newVal) ? 'DATA' : $newVal }}</span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+
+                                        @if(!$changesFound)
+                                            <div class="text-muted small italic">Record created or no specific field changes tracked.</div>
+                                            @if(!empty($new))
+                                                <div class="mt-2 p-3 rounded-3 small text-white-50" style="background: rgba(0,0,0,0.3); font-family: monospace;">
+                                                    @foreach($new as $k => $v)
+                                                        @if(!is_array($v))
+                                                            <div><span class="text-secondary">{{ $k }}:</span> {{ $v }}</div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        @endif
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="smaller text-muted fw-bold text-uppercase mb-2 d-block">Snapshot: POST-ACTION</label>
-                                    <div class="p-3 rounded-3" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);">
-                                        <pre class="m-0 text-success smaller" style="max-height: 150px; overflow: auto;">{{ json_encode($log->new_values, JSON_PRETTY_PRINT) }}</pre>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-3">
-                                    <div class="d-flex gap-3 text-muted" style="font-size: 0.65rem;">
-                                        <span><i class="fas fa-network-wired me-1"></i> IP: {{ $log->ip_address }}</span>
-                                        <span><i class="fas fa-cube me-1"></i> MODEL: {{ $log->model_type }} #{{ $log->model_id }}</span>
-                                    </div>
+
+                                    {{-- Technical metadata removed for clarity --}}
                                 </div>
                             </div>
                         </td>

@@ -17,15 +17,15 @@ return new class extends Migration
             DROP PROCEDURE IF EXISTS sp_ProcessOrder;
             CREATE PROCEDURE sp_ProcessOrder(
                 IN parameter_user_id INT,
-                IN parameter_shipping_address TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                IN parameter_payment_method VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                IN parameter_customer_name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                IN parameter_customer_email VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                IN parameter_customer_phone VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-                IN parameter_coupon_code VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                IN parameter_shipping_address TEXT,
+                IN parameter_payment_method VARCHAR(50),
+                IN parameter_customer_name VARCHAR(255),
+                IN parameter_customer_email VARCHAR(255),
+                IN parameter_customer_phone VARCHAR(20),
+                IN parameter_coupon_code VARCHAR(50),
                 IN parameter_discount_amount DECIMAL(12,2),
                 IN parameter_shipping_fee DECIMAL(10,2),
-                IN parameter_notes TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                IN parameter_notes TEXT,
                 IN parameter_extra_packaging BOOLEAN,
                 OUT parameter_order_id INT
             )
@@ -33,7 +33,8 @@ return new class extends Migration
                 DECLARE variable_cart_id INT;
                 DECLARE variable_subtotal DECIMAL(12,2);
                 DECLARE variable_total DECIMAL(12,2);
-                DECLARE variable_order_number VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+                DECLARE variable_order_number VARCHAR(50);
+                DECLARE variable_day_seq INT;
                 
                 -- Error handling
                 DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -68,8 +69,20 @@ return new class extends Migration
 
                 SET variable_total = variable_subtotal - parameter_discount_amount + parameter_shipping_fee;
 
-                -- Generate Order Number
-                SET variable_order_number = CONCAT('BSG-', DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(parameter_user_id, 4, '0'), '-', LPAD(FLOOR(RAND() * 1000), 3, '0'));
+                -- Calculate Daily Sequence (Start with 1)
+                SELECT COUNT(*) + 1 INTO variable_day_seq 
+                FROM orders 
+                WHERE DATE(created_at) = CURDATE();
+
+                -- Generate Order Number: BSMF-YY/MM/DD-ID-000
+                SET variable_order_number = CONCAT(
+                    'BSMF-', 
+                    DATE_FORMAT(NOW(), '%y/%m/%d'), 
+                    '-', 
+                    parameter_user_id, 
+                    '-', 
+                    LPAD(variable_day_seq, 3, '0')
+                );
 
                 -- Create Order
                 INSERT INTO orders (
@@ -144,38 +157,7 @@ return new class extends Migration
             END;
         ");
 
-        // 2. View for Best Selling Products
-        DB::unprepared("
-            CREATE OR REPLACE VIEW View_BestSellingProducts AS
-            SELECT 
-                products.id, products.name, brands.name as brand_name, 
-                SUM(order_items.quantity) as total_sold,
-                SUM(order_items.total) as total_revenue,
-                products.stock_quantity as current_stock
-            FROM products
-            JOIN order_items ON products.id = order_items.product_id
-            JOIN orders ON order_items.order_id = orders.id
-            LEFT JOIN brands ON products.brand_id = brands.id
-            WHERE orders.status != 'cancelled'
-            GROUP BY products.id, products.name, brands.name, products.stock_quantity
-            ORDER BY total_sold DESC;
-        ");
-
-        // 3. View for Customer Spending
-        DB::unprepared("
-            CREATE OR REPLACE VIEW View_CustomerSpending AS
-            SELECT 
-                users.id, users.name, users.email,
-                COUNT(orders.id) as total_orders,
-                SUM(orders.total_amount) as lifetime_value
-            FROM users
-            LEFT JOIN orders ON users.id = orders.user_id
-            GROUP BY users.id, users.name, users.email
-            ORDER BY lifetime_value DESC;
-        ");
-
-
-        // No trigger needed for global WELCOME10 strategy
+        // No triggers or views needed at this stage.
     }
 
     /**
@@ -184,8 +166,5 @@ return new class extends Migration
     public function down(): void
     {
         DB::unprepared("DROP PROCEDURE IF EXISTS sp_ProcessOrder;");
-        DB::unprepared("DROP VIEW IF EXISTS View_BestSellingProducts;");
-        DB::unprepared("DROP VIEW IF EXISTS View_CustomerSpending;");
-        DB::unprepared("DROP TRIGGER IF EXISTS Trigger_AfterUserRegistration;");
     }
 };
