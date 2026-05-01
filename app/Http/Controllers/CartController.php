@@ -35,15 +35,20 @@ final class CartController extends Controller
             }
         }
 
-        $shipping = $subtotal >= 50 ? 0 : 5.00;
+        $shippingThreshold = 10000; // PHP threshold for free shipping
+        $shipping = $subtotal >= $shippingThreshold ? 0 : 250.00;
         $total = $subtotal - $discount + $shipping;
 
-        if ($request->wantsJson() || $request->is('api/*')) {
-            $cart->load('items.product.images');
-            return new \App\Http\Resources\CartResource($cart);
-        }
+        // Fetch recommendations (random products not in cart)
+        $cartProductIds = $cart->items->pluck('product_id')->toArray();
+        $recommendedProducts = Product::with(['brand', 'scale'])
+            ->active()
+            ->whereNotIn('id', $cartProductIds)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
 
-        return view('cart.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode'));
+        return view('cart.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode', 'shippingThreshold', 'recommendedProducts'));
     }
 
     /**

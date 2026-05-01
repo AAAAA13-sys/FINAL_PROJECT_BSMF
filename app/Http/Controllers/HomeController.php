@@ -19,7 +19,7 @@ final class HomeController extends Controller
             ->active()
             ->orderByDesc('is_super_treasure_hunt')
             ->latest()
-            ->limit(6)
+            ->limit(3)
             ->get();
             
 

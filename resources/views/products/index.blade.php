@@ -1,272 +1,130 @@
 @extends('layouts.app')
 
-@section('title', 'Die-Cast Collection - BSMF Garage')
+@section('title', 'Die-Cast Collection - BSMF GARAGE')
 
 @section('content')
-    <div class="container-fluid py-5" style="padding: 0 5%;">
-        <div class="row">
+<section class="section-padding" style="background: var(--bg-darker); min-height: 100vh; padding-top: 4rem;">
+    <div class="container-fluid" style="padding: 0 5%;">
+        <div class="row g-5">
             <!-- Sidebar Filters -->
-            <div class="col-md-3">
-                <div class="card bg-dark text-white border-secondary" style="margin-bottom: 1.5rem;">
-                    <div class="card-header border-secondary" style="padding-top: 1rem; padding-bottom: 1rem;">
-                        <h5 style="margin-bottom: 0; color: #fbbf24; font-weight: 800; letter-spacing: 1px;">FILTERS</h5>
-                    </div>
-                    <div class="card-body" style="padding: 1rem;">
-                        <form action="{{ route('products.index') }}" method="GET">
-                            <!-- Search -->
-                            <div style="margin-bottom: 1.5rem; position: relative;">
-                                <label style="font-size: 0.875rem; color: #cbd5e1; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700; display: block;">Search</label>
-                                <input type="text" name="search" id="sidebarSearchInput" autocomplete="off"
-                                    class="form-control bg-transparent text-white border-secondary"
-                                    placeholder="Try 'Skyline' or 'Camaro'..." value="{{ request('search') }}">
-                                <div id="sidebarSearchSuggestions" class="glass"
-                                    style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); background: var(--bg-darker);">
-                                </div>
+            <div class="col-lg-3">
+                <div class="filter-sidebar">
+                    <span class="filter-section-title">Archives Filter</span>
+                    
+                    <form action="{{ route('products.index') }}" method="GET">
+                        <!-- Search Box -->
+                        <div style="margin-bottom: 2.5rem;">
+                            <label class="filter-label">Archive Search</label>
+                            <input type="text" name="search" id="sidebarSearchInput" autocomplete="off"
+                                class="filter-input"
+                                placeholder="Search by model or series..." value="{{ request('search') }}">
+                            <div id="sidebarSearchSuggestions" class="glass"
+                                style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); background: var(--bg-darker);">
                             </div>
+                        </div>
 
-                            <!-- Brand Filter -->
-                            <div style="margin-bottom: 1.5rem;">
-                                <label style="font-size: 0.875rem; color: #cbd5e1; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700; display: block;">Brand</label>
-                                <div class="row g-2">
-                                    @foreach($brands as $brand)
-                                        <div class="col-6">
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input" type="checkbox" name="brand[]"
-                                                    value="{{ $brand->id }}" id="brand_{{ $brand->id }}" {{ in_array($brand->id, (array) request('brand')) ? 'checked' : '' }}>
-                                                <label class="form-check-label" style="font-size: 0.8rem; cursor: pointer;"
-                                                    for="brand_{{ $brand->id }}">
-                                                    {{ $brand->name }}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                        <!-- Brand Filter -->
+                        <div style="margin-bottom: 2.5rem;">
+                            <label class="filter-label">Manufacturer</label>
+                            <div class="custom-checkbox-group">
+                                @foreach($brands as $brand)
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="brand[]" value="{{ $brand->id }}" {{ in_array($brand->id, (array) request('brand')) ? 'checked' : '' }}>
+                                        <span class="checkbox-box"></span>
+                                        <span style="font-size: 0.85rem; font-weight: 600;">{{ $brand->name }}</span>
+                                    </label>
+                                @endforeach
                             </div>
+                        </div>
 
-                            <!-- Scale Filter -->
-                            <div class="mb-4">
-                                <label class="form-label small text-muted text-uppercase mb-2"
-                                    style="font-weight: 700;">Scale</label>
-                                <div class="row g-2">
-                                    @foreach($scales as $scale)
-                                        <div class="col-6">
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input" type="checkbox" name="scale[]"
-                                                    value="{{ $scale->id }}" id="scale_{{ $scale->id }}" {{ in_array($scale->id, (array) request('scale')) ? 'checked' : '' }}>
-                                                <label class="form-check-label" style="font-size: 0.8rem; cursor: pointer;"
-                                                    for="scale_{{ $scale->id }}">
-                                                    {{ $scale->name }}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                        <!-- Scale Filter -->
+                        <div style="margin-bottom: 2.5rem;">
+                            <label class="filter-label">Scale Ratio</label>
+                            <div class="custom-checkbox-group">
+                                @foreach($scales as $scale)
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="scale[]" value="{{ $scale->id }}" {{ in_array($scale->id, (array) request('scale')) ? 'checked' : '' }}>
+                                        <span class="checkbox-box"></span>
+                                        <span style="font-size: 0.85rem; font-weight: 600;">{{ $scale->name }}</span>
+                                    </label>
+                                @endforeach
                             </div>
+                        </div>
 
-                            <!-- Rarity Filter -->
-                            <div class="mb-4">
-                                <label class="form-label small text-muted text-uppercase mb-2" style="font-weight: 700;">
-                                    Rarity <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip"
-                                        title="How hard it is to find this specific model in the wild."></i>
-                                </label>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="rarity[]" value="sth"
-                                                id="sth" {{ in_array('sth', (array) request('rarity')) ? 'checked' : '' }}>
-                                            <label class="form-check-label d-flex align-items-center"
-                                                style="font-size: 0.8rem; cursor: pointer;" for="sth">
-                                                STH <i class="fas fa-info-circle ms-1 opacity-50" style="font-size: 0.6rem;"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Super Treasure Hunt: Rare variations with Spectraflame paint and rubber tires."></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="rarity[]" value="th"
-                                                id="th" {{ in_array('th', (array) request('rarity')) ? 'checked' : '' }}>
-                                            <label class="form-check-label d-flex align-items-center"
-                                                style="font-size: 0.8rem; cursor: pointer;" for="th">
-                                                TH <i class="fas fa-info-circle ms-1 opacity-50" style="font-size: 0.6rem;"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Treasure Hunt: Limited production runs marked with a flame logo."></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="rarity[]" value="rlc"
-                                                id="rlc" {{ in_array('rlc', (array) request('rarity')) ? 'checked' : '' }}>
-                                            <label class="form-check-label d-flex align-items-center"
-                                                style="font-size: 0.8rem; cursor: pointer;" for="rlc">
-                                                RLC <i class="fas fa-info-circle ms-1 opacity-50" style="font-size: 0.6rem;"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Red Line Club: Exclusive high-end models for members only."></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="rarity[]" value="chase"
-                                                id="chase" {{ in_array('chase', (array) request('rarity')) ? 'checked' : '' }}>
-                                            <label class="form-check-label d-flex align-items-center"
-                                                style="font-size: 0.8rem; cursor: pointer;" for="chase">
-                                                Chase <i class="fas fa-info-circle ms-1 opacity-50"
-                                                    style="font-size: 0.6rem;" data-bs-toggle="tooltip"
-                                                    title="Extremely rare models (often 0/5) in premium assortments."></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Price Range -->
+                        <div style="margin-bottom: 3rem;">
+                            <label class="filter-label">Valuation (₱)</label>
+                            <div class="d-flex gap-3">
+                                <input type="number" name="min_price" step="any" class="filter-input" placeholder="Min" value="{{ request('min_price') }}" style="padding: 0.8rem 1rem; font-size: 0.9rem;">
+                                <input type="number" name="max_price" step="any" class="filter-input" placeholder="Max" value="{{ request('max_price') }}" style="padding: 0.8rem 1rem; font-size: 0.9rem;">
                             </div>
+                        </div>
 
-                            <!-- Condition Filter -->
-                            <div class="mb-4">
-                                <label class="form-label small text-muted text-uppercase mb-2" style="font-weight: 700;">
-                                    Condition <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip"
-                                        title="The physical state of the car and its packaging."></i>
-                                </label>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="is_carded" value="1"
-                                                id="is_carded" {{ request('is_carded') ? 'checked' : '' }}>
-                                            <label class="form-check-label d-flex align-items-center"
-                                                style="font-size: 0.8rem; cursor: pointer;" for="is_carded">
-                                                Carded <i class="fas fa-info-circle ms-1 opacity-50"
-                                                    style="font-size: 0.6rem;" data-bs-toggle="tooltip"
-                                                    title="Product is still sealed in its original blister card packaging."></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="is_loose" value="1"
-                                                id="is_loose" {{ request('is_loose') ? 'checked' : '' }}>
-                                            <label class="form-check-label d-flex align-items-center"
-                                                style="font-size: 0.8rem; cursor: pointer;" for="is_loose">
-                                                Loose <i class="fas fa-info-circle ms-1 opacity-50"
-                                                    style="font-size: 0.6rem;" data-bs-toggle="tooltip"
-                                                    title="Product has been opened/unboxed from the packaging."></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Hidden Sort -->
+                        <input type="hidden" name="sort" id="hiddenSort" value="{{ request('sort', 'newest') }}">
 
-                            <!-- Price Range -->
-                            <div class="mb-4">
-                                <label class="form-label small text-muted text-uppercase mb-2"
-                                    style="font-weight: 700;">Price Range</label>
-                                <div class="d-flex gap-2">
-                                    <input type="number" name="min_price" step="any"
-                                        class="form-control bg-transparent text-white border-secondary form-control-sm no-spinner"
-                                        placeholder="Min" value="{{ request('min_price') }}">
-                                    <input type="number" name="max_price" step="any"
-                                        class="form-control bg-transparent text-white border-secondary form-control-sm no-spinner"
-                                        placeholder="Max" value="{{ request('max_price') }}">
-                                </div>
-                            </div>
-
-                            <!-- Hidden Sort (Updated by header select) -->
-                            <input type="hidden" name="sort" id="hiddenSort" value="{{ request('sort', 'newest') }}">
-
-                            <button type="submit" class="btn btn-warning w-100 btn-sm mb-2"
-                                style="font-weight: 800; font-size: 0.85rem;">APPLY FILTERS</button>
-                            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary w-100 btn-sm"
-                                style="font-size: 0.85rem;">RESET</a>
-                        </form>
-                    </div>
+                        <button type="submit" class="btn btn-primary w-100" style="padding: 1rem; border-radius: 12px; font-weight: 900; letter-spacing: 2px; margin-bottom: 1rem;">APPLY FILTERS</button>
+                        <a href="{{ route('products.index') }}" class="btn" style="width: 100%; border: 1px solid var(--glass-border); color: var(--text-muted); padding: 0.8rem; border-radius: 12px; font-size: 0.8rem; font-weight: 700;">RESET ARCHIVE</a>
+                    </form>
                 </div>
             </div>
 
-
-
             <!-- Product Listing -->
-            <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0 text-white" style="font-weight: 900; font-style: italic; letter-spacing: 1px;">THE
-                        GARAGE ({{ $products->total() }})</h5>
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-end mb-5">
+                    <div>
+                        <h2 class="section-title" style="font-size: 3rem;">THE <span>GARAGE</span></h2>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">{{ $products->total() }} pieces discovered in current view</p>
+                    </div>
 
-                    <div class="d-flex align-items-center gap-2">
-                        <label class="text-uppercase small mb-0"
-                            style="font-size: 0.7rem; font-weight: 800; white-space: nowrap; color: rgba(255,255,255,0.5); letter-spacing: 1px;">Sort
-                            By:</label>
-                        <select id="headerSort" class="form-select bg-dark text-white border-secondary form-select-sm"
-                            style="width: 160px; font-size: 0.8rem; cursor: pointer; border-color: rgba(255,255,255,0.2) !important;">
+                    <div class="d-flex align-items-center gap-3">
+                        <label style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted);">Sort By:</label>
+                        <select id="headerSort" class="filter-input" style="width: 200px; padding: 0.6rem 1rem; font-size: 0.8rem; cursor: pointer;">
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest Arrival</option>
-                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low-High
-                            </option>
-                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High-Low
-                            </option>
-                            <option value="alpha_asc" {{ request('sort') == 'alpha_asc' ? 'selected' : '' }}>Name: A-Z
-                            </option>
-                            <option value="alpha_desc" {{ request('sort') == 'alpha_desc' ? 'selected' : '' }}>Name: Z-A
-                            </option>
+                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="alpha_asc" {{ request('sort') == 'alpha_asc' ? 'selected' : '' }}>Name: A-Z</option>
                         </select>
                     </div>
                 </div>
 
-
-
                 <div class="row g-4">
                     @forelse($products as $product)
-                        <div class="col-6 col-md-4">
-                            <div class="card h-100 bg-dark text-white product-card-diecast">
-                                <div class="product-image-container overflow-hidden position-relative">
-                                    <!-- Rarity Badge -->
+                        <div class="col-md-4">
+                            <div class="product-card" style="background: var(--bg-dark); border: 1px solid var(--glass-border); color: white; height: 100%; display: flex; flex-direction: column;">
+                                <div style="position: relative; overflow: hidden; border-radius: 12px;">
                                     @if($product->is_super_treasure_hunt)
-                                        <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 d-flex align-items-center gap-1"
-                                            style="z-index: 10; font-weight: 900; border: 1px solid rgba(0,0,0,0.2);" title="Super Treasure Hunt">
-                                            <i class="fas fa-star" style="color: #000; font-size: 0.7rem;"></i> STH
-                                        </span>
-                                    @elseif($product->is_treasure_hunt)
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 d-flex align-items-center gap-1" 
-                                            style="z-index: 10; font-weight: 900; border: 1px solid rgba(255,255,255,0.2);" title="Treasure Hunt">
-                                            <i class="fas fa-fire" style="color: #fff; font-size: 0.7rem;"></i> TH
-                                        </span>
+                                        <div style="position: absolute; top: 15px; left: 15px; background: #fbbf24; color: black; padding: 4px 12px; border-radius: 50px; font-size: 0.6rem; font-weight: 900; z-index: 5; letter-spacing: 1px;">SUPER TH</div>
                                     @endif
-
-                                    @if($product->is_chase)
-                                        <span class="badge bg-purple position-absolute top-0 end-0 m-2"
-                                            style="background-color: #6f42c1; z-index: 10; font-weight: 900; border: 1px solid rgba(255,255,255,0.2);">CHASE</span>
-                                    @endif
-
                                     <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}"
-                                        class="card-img-top zoom-on-hover" alt="{{ $product->name }}" loading="lazy">
+                                        class="product-image" alt="{{ $product->name }}" loading="lazy" style="margin-bottom: 0;">
                                 </div>
 
-                                <div class="card-body">
-                                    <h5 class="card-title mb-1 text-white" style="font-weight: 800; letter-spacing: 0.5px;">
-                                        {{ $product->name }}
-                                    </h5>
-                                    <div style="display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap;">
-                                        <span style="font-size: 0.55rem; color: var(--secondary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(251, 191, 36, 0.3); padding: 2px 8px; border-radius: 4px;">{{ $product->brand->name }}</span>
-                                        <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ $product->scale->name }}</span>
-                                        <span style="font-size: 0.55rem; color: rgba(255,255,255,0.5); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{ strtoupper($product->card_condition) }}</span>
+                                <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column; padding-top: 1.5rem;">
+                                    <h3 style="color: white; font-size: 1.15rem; margin-bottom: 0.5rem; font-weight: 800;">{{ $product->name }}</h3>
+                                    
+                                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+                                        <span style="font-size: 0.55rem; color: var(--secondary); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; background: rgba(117, 152, 185, 0.1); padding: 3px 10px; border-radius: 50px;">{{ $product->brand->name }}</span>
+                                        <span style="font-size: 0.55rem; color: var(--text-muted); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 50px;">{{ $product->scale->name }}</span>
                                     </div>
-                                    <p style="font-size: 0.875rem; color: #cbd5e1; margin-bottom: 1rem;">{{ Str::limit($product->casting_name, 50) }}</p>
+                                    
+                                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1;">{{ Str::limit($product->casting_name, 60) }}</p>
 
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span style="font-size: 1.25rem; margin-bottom: 0; color: #fbbf24; font-weight: 700;">₱{{ number_format($product->price, 2) }}</span>
-
-                                        @php $status = $product->stock_status; @endphp
-                                        <span
-                                            class="badge {{ $status == 'In Stock' ? 'bg-success' : ($status == 'Low Stock' ? 'bg-warning text-dark' : 'bg-secondary') }}">
-                                            {{ $status }}
-                                        </span>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                                        <div class="product-price" style="font-size: 1.4rem; color: white; font-weight: 900;">₱{{ number_format($product->price, 2) }}</div>
+                                        <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.75rem; border-radius: 50px;">View</a>
                                     </div>
-                                </div>
-                                <div class="card-footer border-secondary bg-transparent p-0">
-                                    <a href="{{ route('products.show', $product->id) }}"
-                                        class="btn btn-primary w-100 rounded-0" style="box-shadow: none !important;">VIEW DETAILS</a>
                                 </div>
                             </div>
                         </div>
                     @empty
-                        <div class="col-12 text-center py-5">
-                            <p class="text-muted">No cars matching your filters were found in the garage.</p>
+                        <div class="col-12">
+                            <div style="text-align: center; padding: 8rem 2rem; color: var(--text-muted); background: var(--bg-dark); border-radius: 40px; border: 1px dashed var(--glass-border);">
+                                <i class="fas fa-search" style="font-size: 4rem; margin-bottom: 2rem; opacity: 0.2;"></i>
+                                <h3 style="color: white; margin-bottom: 1rem; font-weight: 800;">No Pieces Found</h3>
+                                <p style="font-size: 1.1rem; font-weight: 500;">The archives did not yield any results for your current filters.</p>
+                                <a href="{{ route('products.index') }}" class="btn btn-primary mt-4" style="border-radius: 50px; padding: 0.8rem 2.5rem;">Reset All Filters</a>
+                            </div>
                         </div>
                     @endforelse
                 </div>
@@ -277,6 +135,14 @@
             </div>
         </div>
     </div>
+</section>
 
-
+@push('scripts')
+<script>
+    document.getElementById('headerSort').addEventListener('change', function() {
+        document.getElementById('hiddenSort').value = this.value;
+        this.closest('form') ? this.closest('form').submit() : document.querySelector('form').submit();
+    });
+</script>
+@endpush
 @endsection

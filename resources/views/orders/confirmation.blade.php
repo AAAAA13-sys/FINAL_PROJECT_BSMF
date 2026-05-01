@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Order Confirmed - BSMF Garage')
+@section('title', 'Order Confirmed - COLLECTOR GARAGE')
 
 @section('content')
 <section class="section-padding" style="text-align: center; min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 2rem 0;">

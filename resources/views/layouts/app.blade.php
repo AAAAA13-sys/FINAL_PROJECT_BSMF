@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', config('app.name', 'FINAL_PROJECT_BSMF') . ' - Premium Die-Cast')</title>
+    <title>@yield('title', config('app.name', 'FINAL_PROJECT_COLLECTOR') . ' - Premium Die-Cast')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
                 <li><a href="{{ route('cart.index') }}">CART</a></li>
                 <li><a href="{{ route('orders.index') }}">ORDERS</a></li>
                 <li><a href="{{ route('profile.index') }}">PROFILE</a></li>
-                @if(Auth::user()->isAdministrative())
+                @if(Auth::user()->isAdmin())
                     <li><a href="{{ route('admin.dashboard') }}">DASHBOARD</a></li>
                 @endif
                 <li>
