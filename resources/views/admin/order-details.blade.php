@@ -48,10 +48,6 @@
                                             </div>
                                             <div>
                                                 <div class="text-white fw-bold small">{{ $item->product_name }}</div>
-                                                <div class="mt-1" style="line-height: 1.2;">
-                                                    <div class="text-secondary fw-black" style="font-size: 0.65rem; text-transform: uppercase;">Buyer: {{ $order->customer_name }}</div>
-                                                    <div class="text-muted italic" style="font-size: 0.6rem; max-width: 250px;">{{ $order->shipping_address }}</div>
-                                                </div>
                                             </div>
                                         </div>
                                     </td>

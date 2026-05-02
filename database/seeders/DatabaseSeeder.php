@@ -182,8 +182,5 @@ class DatabaseSeeder extends Seeder
                 'type' => 'gallery',
             ]);
         }
-
-        // 6. Demo Data
-        $this->call(PresentationSeeder::class);
     }
 }

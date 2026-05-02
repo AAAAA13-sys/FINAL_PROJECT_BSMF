@@ -5,13 +5,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="admin-header-title">PRODUCT <span>MANAGEMENT</span></h2>
         @if(Auth::user()->isAdmin())
-        <button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-black ls-1" style="font-size: 0.75rem; border: none; box-shadow: 0 4px 15px rgba(128, 12, 31, 0.4);" data-bs-toggle="modal" data-bs-target="#productModal" onclick="prepareProductModal('add')">+ ADD NEW MODEL</button>
+        <button type="button" class="btn-bsmf-primary" data-bs-toggle="modal" data-bs-target="#productModal" id="addNewModelBtn">+ ADD NEW MODEL</button>
         @endif
     </div>
 
     <div class="admin-table-container">
         @if($products->hasPages())
-            <div class="admin-pagination-section glass px-4 py-2 d-flex justify-content-between align-items-center" style="border: none; background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid var(--glass-border); border-radius: 0;">
+            <div class="glass-pagination">
                 <div class="small text-muted italic" style="font-size: 0.65rem;">
                     Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of {{ $products->total() }} results
                 </div>
@@ -37,7 +37,7 @@
                 <tr>
                     <td class="ps-4">
                         <div class="d-flex align-items-center">
-                            <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="" style="width: 60px; height: 40px; object-fit: contain; background: #000; border-radius: 8px; margin-right: 1.5rem; border: 1px solid var(--glass-border);">
+                            <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="" class="product-thumbnail-sm me-3">
                             <div>
                                 <div class="text-white fw-bold">{{ $product->name }}</div>
                                 <div class="text-muted small text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ $product->brand->name ?? 'Generic' }} • {{ $product->scale->name ?? '1:64' }}</div>
@@ -54,13 +54,13 @@
                     @if(Auth::user()->isAdmin())
                     <td class="pe-4 text-end">
                         <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3 edit-product-btn" style="font-size: 0.65rem;" 
+                            <button type="button" class="btn-bsmf-outline edit-product-btn" 
                                 data-bs-toggle="modal" data-bs-target="#productModal" 
                                 data-product='@json($product)'>EDIT</button>
                             <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this grail from the garage?')" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="font-size: 0.65rem;">DELETE</button>
+                                <button type="submit" class="btn-bsmf-outline border-danger text-danger">DELETE</button>
                             </form>
                         </div>
                     </td>
@@ -73,13 +73,13 @@
 
 @push('modals')
 <style>
-    /* Sleek File Input Styling */
+    /* Sleek File Input Styling - Left in style block as it's highly specific to this page's custom file inputs */
     input[type="file"] {
         font-size: 0.75rem;
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
-        color: transparent; /* Hide browser text */
+        color: transparent; 
         padding: 8px;
         width: 100%;
         cursor: pointer;
@@ -87,10 +87,10 @@
     }
     input[type="file"]:hover {
         background: rgba(255, 255, 255, 0.1);
-        border-color: var(--secondary);
+        border-color: var(--secondary-blue);
     }
     input[type="file"]::file-selector-button {
-        background: var(--secondary);
+        background: var(--secondary-blue);
         color: #000;
         border: none;
         padding: 6px 14px;
@@ -125,16 +125,12 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         z-index: 10;
     }
-    .delete-image-btn:hover {
-        background: #ff0000;
-        transform: scale(1.1);
-    }
 </style>
 <!-- Universal Product Modal (Floating Card) -->
-<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;">
-        <div class="modal-content bg-dark border-secondary shadow-lg" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1) !important; pointer-events: auto;">
-            <div class="modal-header border-secondary border-opacity-25 py-2 px-3">
+        <div class="modal-content bsmf-modal-content">
+            <div class="modal-header bsmf-modal-header">
                 <h6 class="modal-title text-white text-uppercase italic fw-black mb-0" id="productModalLabel" style="font-size: 0.9rem;">NEW <span>ACQUISITION</span></h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.6rem;"></button>
             </div>
@@ -146,43 +142,43 @@
                     <div class="row g-2">
                         <!-- a. Current Details -->
                         <div class="col-md-12">
-                            <h6 class="text-secondary text-uppercase italic fw-bold mb-2 pb-1 border-bottom border-secondary border-opacity-25" style="font-size: 0.7rem;">A. DETAILS</h6>
+                            <h6 class="section-divider">A. DETAILS</h6>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Model Name</label>
-                            <input type="text" name="name" id="input_name" class="form-control form-control-sm bg-black border-secondary text-white" required style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Model Name</label>
+                            <input type="text" name="name" id="input_name" class="form-control garage-input" required>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Casting</label>
-                            <input type="text" name="casting_name" id="input_casting_name" class="form-control form-control-sm bg-black border-secondary text-white" required style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Casting</label>
+                            <input type="text" name="casting_name" id="input_casting_name" class="form-control garage-input" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Brand</label>
-                            <select name="brand_id" id="input_brand_id" class="form-select form-select-sm bg-black border-secondary text-white" required style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Brand</label>
+                            <select name="brand_id" id="input_brand_id" class="form-select garage-select" required>
                                 @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Price (₱)</label>
-                            <input type="number" step="0.01" name="price" id="input_price" class="form-control form-control-sm bg-black border-secondary text-white" required style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Price (₱)</label>
+                            <input type="number" step="0.01" min="0" name="price" id="input_price" class="form-control garage-input" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Scale</label>
-                            <select name="scale_id" id="input_scale_id" class="form-select form-select-sm bg-black border-secondary text-white" required style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Scale</label>
+                            <select name="scale_id" id="input_scale_id" class="form-select garage-select" required>
                                 @foreach($scales as $scale)
                                     <option value="{{ $scale->id }}">{{ $scale->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Stock</label>
-                            <input type="number" name="stock_quantity" id="input_stock_quantity" class="form-control form-control-sm bg-black border-secondary text-white" required style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Stock</label>
+                            <input type="number" min="0" name="stock_quantity" id="input_stock_quantity" class="form-control garage-input" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Series</label>
-                            <select name="series_id" id="input_series_id" class="form-select form-select-sm bg-black border-secondary text-white" style="padding: 4px 10px; font-size: 0.85rem;">
+                            <label class="input-label-sm">Series</label>
+                            <select name="series_id" id="input_series_id" class="form-select garage-select">
                                 <option value="">None</option>
                                 @foreach($series as $s)
                                     <option value="{{ $s->id }}">{{ $s->name }}</option>
@@ -190,21 +186,21 @@
                             </select>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;">Description</label>
-                            <textarea name="description" id="input_description" class="form-control form-control-sm bg-black border-secondary text-white" rows="2" style="padding: 6px 10px; font-size: 0.8rem;"></textarea>
+                            <label class="input-label-sm">Description</label>
+                            <textarea name="description" id="input_description" class="form-control garage-textarea" rows="2"></textarea>
                         </div>
 
                         <!-- b. Main Image -->
                         <div class="col-md-6 mt-2">
-                            <h6 class="text-secondary text-uppercase italic fw-bold mb-1 pb-1 border-bottom border-secondary border-opacity-25" style="font-size: 0.7rem;">B. MAIN IMAGE (1)</h6>
-                            <input type="file" name="main_image" id="main_image_input" class="form-control form-control-sm bg-black border-secondary text-white" accept="image/*" onchange="previewImage(this, 'main_preview_container')">
+                            <h6 class="section-divider">B. MAIN IMAGE (1)</h6>
+                            <input type="file" name="main_image" id="main_image_input" class="form-control garage-input" accept="image/*" onchange="previewImage(this, 'main_preview_container')">
                             <div id="main_preview_container" class="mt-2 d-flex flex-wrap gap-1"></div>
                         </div>
 
                         <!-- c. Secondary Images -->
                         <div class="col-md-6 mt-2">
-                            <h6 class="text-secondary text-uppercase italic fw-bold mb-1 pb-1 border-bottom border-secondary border-opacity-25" style="font-size: 0.7rem;">C. GALLERY (MAX 4)</h6>
-                            <input type="file" name="additional_images[]" id="gallery_image_input" class="form-control form-control-sm bg-black border-secondary text-white" accept="image/*" multiple onchange="previewImages(this, 'gallery_preview_container')">
+                            <h6 class="section-divider">C. GALLERY (MAX 4)</h6>
+                            <input type="file" name="additional_images[]" id="gallery_image_input" class="form-control garage-input" accept="image/*" multiple onchange="previewImages(this, 'gallery_preview_container')">
                             <div id="gallery_preview_container" class="mt-2 d-flex flex-wrap gap-1"></div>
                         </div>
                     </div>
@@ -231,9 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle Add Button Click (Reset form)
-    const addBtn = document.querySelector('[onclick*="prepareProductModal(\'add\')"]');
+    const addBtn = document.getElementById('addNewModelBtn');
     if (addBtn) {
-        addBtn.removeAttribute('onclick'); // Switch to cleaner listener
         addBtn.addEventListener('click', () => prepareProductModal('add'));
     }
 });
@@ -276,7 +271,7 @@ function prepareProductModal(mode, product = null) {
         if (product.main_image) {
             mainPreview.innerHTML = `
                 <div class="image-preview-wrapper" id="main_img_container">
-                    <img src="/${product.main_image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--secondary);">
+                    <img src="/${product.main_image}" class="image-preview-square">
                     <button type="button" class="delete-image-btn" onclick="deleteMainImage(${product.id})">×</button>
                 </div>`;
         }
@@ -286,7 +281,7 @@ function prepareProductModal(mode, product = null) {
             product.gallery.forEach(img => {
                 galleryPreview.innerHTML += `
                     <div class="image-preview-wrapper" id="gallery_img_${img.id}">
-                        <img src="/${img.image_path}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);">
+                        <img src="/${img.image_path}" class="image-preview-square">
                         <button type="button" class="delete-image-btn" onclick="deleteGalleryImage(${img.id})">×</button>
                     </div>`;
             });
@@ -369,8 +364,8 @@ function previewImage(input, containerId) {
         reader.onload = function(e) {
             container.innerHTML = `
                 <div class="image-preview-wrapper">
-                    <img src="${e.target.result}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #fff;">
-                    <div class="position-absolute top-0 start-0 bg-warning text-black fw-bold px-1" style="font-size: 0.5rem; border-radius: 4px 0 4px 0;">NEW</div>
+                    <img src="${e.target.result}" class="image-preview-square border-white">
+                    <div class="badge-new-pill">NEW</div>
                 </div>`;
         };
         reader.readAsDataURL(input.files[0]);
@@ -387,8 +382,8 @@ function previewImages(input, containerId) {
             reader.onload = function(e) {
                 container.innerHTML += `
                     <div class="image-preview-wrapper">
-                        <img src="${e.target.result}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #fff;">
-                        <div class="position-absolute top-0 start-0 bg-warning text-black fw-bold px-1" style="font-size: 0.4rem; border-radius: 4px 0 4px 0;">NEW</div>
+                        <img src="${e.target.result}" class="image-preview-square border-white">
+                        <div class="badge-new-pill">NEW</div>
                     </div>`;
             };
             reader.readAsDataURL(file);

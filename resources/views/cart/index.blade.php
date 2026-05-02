@@ -118,7 +118,14 @@
                         
                         @if($discount > 0)
                             <div class="d-flex justify-content-between mb-3" style="font-size: 0.9rem; color: #ef4444; font-weight: 600;">
-                                <span>Discount Applied</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span>Discount Applied</span>
+                                    <form action="{{ route('coupon.remove') }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="background: none; border: none; color: var(--text-muted); font-size: 0.6rem; text-decoration: underline; padding: 0;">Remove</button>
+                                    </form>
+                                </div>
                                 <span>-₱{{ number_format($discount, 2) }}</span>
                             </div>
                         @endif
@@ -130,22 +137,12 @@
 
                         <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
 
-                        <div class="mb-4">
-                            <label style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); display: block; margin-bottom: 1rem;">Vault Key (Coupon)</label>
-                            <form action="{{ route('coupon.apply') }}" method="POST" class="d-flex gap-2">
-                                @csrf
-                                <input type="text" name="code" class="filter-input" placeholder="ENTER CODE" value="{{ $couponCode }}" style="padding: 0.7rem 1rem; font-size: 0.8rem; border-radius: 10px;">
-                                <button type="submit" class="btn" style="border: 1px solid var(--glass-border); color: white; padding: 0 1.5rem; border-radius: 10px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase;">Apply</button>
-                            </form>
-                        </div>
-
                         <div class="d-flex justify-content-between mb-5 align-items-end">
                             <span style="font-weight: 900; font-style: italic; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Total</span>
                             <span style="font-size: 2rem; font-weight: 900; color: white; line-height: 1;">₱{{ number_format($total, 2) }}</span>
                         </div>
 
                         <a href="{{ route('checkout') }}" class="btn btn-primary w-100 py-3" style="border-radius: 16px; font-weight: 900; letter-spacing: 2px; font-size: 0.9rem;">ACQUIRE ALL PIECES</a>
-                        <p class="text-center mt-4 mb-0" style="font-size: 0.65rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Taxes calculated at the next phase</p>
                     </div>
                 </div>
             </div>

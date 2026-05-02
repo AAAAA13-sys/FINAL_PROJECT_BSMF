@@ -76,10 +76,13 @@ final class OrderController extends Controller
             }
         }
 
-        $shipping = $subtotal >= 50 ? 0 : 5.00; // Sample shipping logic
+        $regions = \App\Services\ShippingService::getRegions();
+        $regionalCities = \App\Services\ShippingService::getRegionalCities();
+        $mmDistances = \App\Services\ShippingService::getMetroManilaDistances();
+        $shipping = 0; 
         $total = $subtotal - $discount + $shipping;
 
-        return view('checkout.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode'));
+        return view('checkout.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode', 'mmDistances', 'regions', 'regionalCities'));
     }
 
     /**
@@ -89,7 +92,9 @@ final class OrderController extends Controller
     {
         $request->validate([
             'shipping_address' => 'required|string',
-            'payment_method' => 'required|string',
+            'payment_method' => 'required|in:Cash on Delivery',
+            'shipping_region' => 'required|string',
+            'shipping_city' => 'required|string',
         ]);
 
         $user = Auth::user();
@@ -103,6 +108,7 @@ final class OrderController extends Controller
         }
 
         try {
+            $regions = \App\Services\ShippingService::getRegions();
             $subtotal = $cart->subtotal();
             $discount = 0;
             $couponCode = session('coupon_code');
@@ -118,13 +124,28 @@ final class OrderController extends Controller
                 }
             }
 
-            $shipping = $subtotal >= 50 ? 0 : 5.00;
+            $shipping = \App\Services\ShippingService::calculate(
+                $request->shipping_region ?? '', 
+                $request->shipping_city ? (\App\Services\ShippingService::getMetroManilaDistances()[$request->shipping_city] ?? 0) : 0
+            );
+
+            // Add 50 pesos packaging fee if requested
+            if ($request->has('extra_packaging')) {
+                $shipping += 50.00;
+            }
+
+            // Combine components into a full shipping address
+            $fullAddress = $request->shipping_address;
+            if ($request->shipping_city) {
+                $fullAddress .= ", " . $request->shipping_city;
+            }
+            $fullAddress .= ", " . ($regions[$request->shipping_region] ?? $request->shipping_region);
 
             // Call the Stored Procedure
             DB::statement("SET @p_order_id = 0;");
             DB::statement("CALL sp_ProcessOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_order_id)", [
                 $user->id,
-                $request->shipping_address,
+                $fullAddress,
                 $request->payment_method,
                 $request->customer_name ?? $user->name,
                 $request->customer_email ?? $user->email,

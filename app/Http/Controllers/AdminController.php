@@ -134,8 +134,6 @@ final class AdminController extends Controller
         
         $product = Product::create($validated);
 
-        $this->logAction('PRODUCT_CREATE', "Added new product: {$product->name}", $product, null, $product->toArray());
-
 
         // Handle Secondary Images (Gallery Table)
         if ($secondaryImages) {
@@ -201,9 +199,8 @@ final class AdminController extends Controller
         if ($newStatus === Order::STATUS_SHIPPED) $updateData['shipped_at'] = now();
         if ($newStatus === Order::STATUS_DELIVERED) $updateData['delivered_at'] = now();
 
-        // 3. Save and Audit
+        // 3. Save
         $order->update($updateData);
-        $this->logAction('ORDER_STATUS_UPDATE', "Changed order #{$order->order_number} status from {$oldStatus} to {$newStatus}", $order, ['status' => $oldStatus], ['status' => $newStatus]);
 
         return back()->with('success', "Order #{$order->order_number} shifted to {$newStatus}.");
     }
@@ -272,8 +269,6 @@ final class AdminController extends Controller
 
         $oldProduct = $product->getOriginal();
         $product->update($validated);
-        
-        $this->logAction('PRODUCT_UPDATE', "Updated product: {$product->name}", $product, $oldProduct, $product->getChanges());
 
 
         // Handle Secondary Images (Append to Gallery)
@@ -346,7 +341,6 @@ final class AdminController extends Controller
             return back()->with('error', 'Staff cannot delete products.');
         }
         $product = Product::findOrFail($id);
-        $this->logAction('PRODUCT_DELETE', "Deleted product: {$product->name}", $product, $product->toArray(), null);
         $product->delete();
         
         return redirect()->route('admin.products')->with('success', 'Model ejected from the garage.');
@@ -373,7 +367,6 @@ final class AdminController extends Controller
             return back()->with('error', 'You cannot eject yourself!');
         }
         $user = User::findOrFail($id);
-        $this->logAction('USER_DELETE', "Deleted user: {$user->username}", $user, $user->toArray(), null);
         $user->delete();
         return back()->with('success', 'Collector ejected from the garage.');
     }
@@ -406,7 +399,6 @@ final class AdminController extends Controller
         $validated['name'] = $validated['name'] ?? $validated['coupon_code'];
         unset($validated['code']);
         $coupon = Coupon::create($validated);
-        $this->logAction('COUPON_CREATE', "Activated new promo code: {$coupon->coupon_code}", $coupon, null, $coupon->toArray());
         return back()->with('success', 'Promo code activated!');
     }
 
@@ -416,7 +408,6 @@ final class AdminController extends Controller
             return back()->with('error', 'Staff cannot delete coupons.');
         }
         $coupon = Coupon::findOrFail($id);
-        $this->logAction('COUPON_DELETE', "Deactivated promo code: {$coupon->coupon_code}", $coupon, $coupon->toArray(), null);
         $coupon->delete();
         return back()->with('success', 'Promo code deactivated.');
     }
