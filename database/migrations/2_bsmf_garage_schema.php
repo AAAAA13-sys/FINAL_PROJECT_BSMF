@@ -107,7 +107,7 @@ return new class extends Migration
             $table->string('order_number', 50)->unique();
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('status', ['pending', 'processing', 'out_for_delivery', 'delivered', 'cancelled', 'refunded'])->default('pending');
+            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'])->default('pending');
             $table->decimal('subtotal', 12, 2);
             $table->decimal('discount_amount', 12, 2)->default(0);
             $table->decimal('shipping_fee', 10, 2)->default(0);
@@ -122,7 +122,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamp('placed_at')->useCurrent();
             $table->timestamp('processed_at')->nullable();
-            $table->timestamp('out_for_delivery_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->timestamps();
         });

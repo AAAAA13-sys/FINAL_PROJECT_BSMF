@@ -3,7 +3,7 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">ORDER <span style="color: var(--secondary);">MANAGEMENT</span></h2>
+        <h2 class="admin-header-title">ORDER <span>MANAGEMENT</span></h2>
     </div>
 
     <div class="admin-table-container">
@@ -39,7 +39,7 @@
                             <select name="status" class="form-select form-select-sm bg-dark border-secondary text-white w-auto" style="font-size: 0.7rem; font-weight: 700;">
                                 <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>PENDING</option>
                                 <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>PROCESSING</option>
-                                <option value="out_for_delivery" {{ $order->status == 'out_for_delivery' ? 'selected' : '' }}>SHIPPED</option>
+                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>SHIPPED</option>
                                 <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>DELIVERED</option>
                                 <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
                             </select>

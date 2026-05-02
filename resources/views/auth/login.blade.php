@@ -19,8 +19,8 @@
     <form action="{{ route('login.post') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label class="form-label small fw-bold text-uppercase mb-1" style="color: var(--text-muted); font-size: 0.65rem;">Email</label>
-            <input type="email" name="email" class="filter-input" placeholder="racer@example.com" value="{{ old('email') }}" required style="border-radius: 10px; font-size: 0.9rem;">
+            <label class="form-label small fw-bold text-uppercase mb-1" style="color: var(--text-muted); font-size: 0.65rem;">Username</label>
+            <input type="text" name="email" class="filter-input" placeholder="racer_name" value="{{ old('email') }}" required style="border-radius: 10px; font-size: 0.9rem;">
         </div>
 
         <div class="mb-3">
@@ -37,7 +37,7 @@
     </form>
     
     <div class="text-center mt-4">
-        <p class="small mb-0" style="font-size: 0.75rem; color: var(--text-muted);">New? <a href="{{ route('register') }}" class="fw-black text-decoration-underline ms-1" style="color: var(--secondary) !important;">JOIN CREW</a></p>
+        <p class="small mb-0" style="font-size: 0.75rem; color: var(--text-muted);">Not a member yet? <a href="{{ route('register') }}" class="fw-black text-decoration-underline ms-1" style="color: var(--secondary) !important;">JOIN CREW</a></p>
     </div>
 </div>
 </div>

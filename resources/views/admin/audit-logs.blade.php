@@ -3,10 +3,7 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="card-title-premium" style="font-size: 2rem;">SYSTEM <span style="color: var(--secondary);">AUDIT TRAIL</span></h2>
-        <div class="text-end">
-            <span class="badge bg-dark border border-secondary text-secondary px-3 py-2 fw-bold" style="font-size: 0.7rem; letter-spacing: 2px;">SECURED ACCESS</span>
-        </div>
+        <h2 class="card-title-premium" style="font-size: 2rem;">SYSTEM <span style="color: var(--secondary);">LOGS</span></h2>
     </div>
 
     <div class="admin-table-container shadow-lg">

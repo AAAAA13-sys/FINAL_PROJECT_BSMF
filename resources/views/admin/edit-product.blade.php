@@ -68,7 +68,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group mb-0">
-                            <label class="text-muted small fw-bold text-uppercase mb-2">Price ($)</label>
+                            <label class="text-muted small fw-bold text-uppercase mb-2">Price (₱)</label>
                             <input type="number" step="0.01" name="price" class="form-control bg-dark border-secondary text-white p-3" value="{{ $product->price }}" required>
                         </div>
                     </div>

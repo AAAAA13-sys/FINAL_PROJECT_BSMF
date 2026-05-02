@@ -183,8 +183,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 6. Coupons
-        // Note: WELCOME10 coupon is seeded in migration 2026_04_30_114048_seed_welcome_coupon.php
-        // No need to create it here to avoid duplicates
+        // 6. Demo Data
+        $this->call(PresentationSeeder::class);
     }
 }

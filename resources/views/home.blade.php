@@ -76,7 +76,11 @@
                 <div class="product-card">
                     <div style="position: relative; overflow: hidden; border-radius: 16px;">
                         <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" loading="lazy">
-                        <div style="position: absolute; top: 15px; left: 15px; background: var(--secondary); color: var(--bg-dark); padding: 6px 16px; border-radius: 50px; font-size: 0.65rem; font-weight: 900; letter-spacing: 2px;">NEW DROP</div>
+                        @if($product->is_super_treasure_hunt)
+                            <div style="position: absolute; top: 15px; left: 15px; background: #fbbf24; color: #000; padding: 5px 12px; border-radius: 50px; font-size: 0.6rem; font-weight: 900; z-index: 5; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);">
+                                <i class="fas fa-star"></i> STH
+                            </div>
+                        @endif
                     </div>
                     <div class="product-info" style="padding: 0.5rem 0.5rem 0;">
                         <h3 style="color: white; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 800;">{{ $product->name }}</h3>
@@ -96,117 +100,6 @@
                     <p style="font-size: 1.2rem; font-weight: 600;">The archives are being restocked. Check back at dawn.</p>
                 </div>
             @endforelse
-        </div>
-    </div>
-</section>
-
-<!-- Section 4: Collection Spotlights (Cinematic) -->
-<section class="section-padding reveal" style="background: linear-gradient(to bottom, #0a0e12, var(--bg-darker));">
-    <div class="container">
-        <div style="text-align: center; margin-bottom: 6rem;">
-            <h2 class="section-title stacked">THE <span>COLLECTION</span></h2>
-            <p style="color: var(--text-muted); margin-top: 1.5rem; font-size: 1.1rem; font-weight: 500;">Specialized archives for the discerning collector.</p>
-        </div>
-        <div class="row g-5">
-            <div class="col-md-6">
-                <div class="glass" style="position: relative; height: 600px; border-radius: 40px; overflow: hidden; group">
-                    <img src="{{ asset('images/jdm_spotlight.png') }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.8s;" class="spotlight-img">
-                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(5, 8, 10, 0.95), transparent 70%); display: flex; flex-direction: column; justify-content: flex-end; padding: 4rem;">
-                        <span style="color: var(--secondary); font-weight: 900; letter-spacing: 5px; font-size: 0.8rem; margin-bottom: 1.5rem; display: block;">JDM LEGENDS</span>
-                        <h3 style="font-size: 3rem; font-style: italic; text-transform: uppercase; margin-bottom: 1.5rem; font-weight: 900; line-height: 1;">Rising Sun <span>Performance</span></h3>
-                        <p style="color: rgba(255,255,255,0.6); max-width: 400px; margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">Precision-engineered 1:64 scale models of iconic Japanese legends.</p>
-                        <a href="{{ route('products.index') }}" class="btn btn-primary" style="width: fit-content; border-radius: 50px; padding: 1rem 2.5rem;">Explore JDM</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="glass" style="position: relative; height: 600px; border-radius: 40px; overflow: hidden;">
-                    <img src="{{ asset('images/muscle_spotlight.png') }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.8s;" class="spotlight-img">
-                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(5, 8, 10, 0.95), transparent 70%); display: flex; flex-direction: column; justify-content: flex-end; padding: 4rem;">
-                        <span style="color: var(--primary); font-weight: 900; letter-spacing: 5px; font-size: 0.8rem; margin-bottom: 1.5rem; display: block;">AMERICAN MUSCLE</span>
-                        <h3 style="font-size: 3rem; font-style: italic; text-transform: uppercase; margin-bottom: 1.5rem; font-weight: 900; line-height: 1;">V8 Heritage <span>Redefined</span></h3>
-                        <p style="color: rgba(255,255,255,0.6); max-width: 400px; margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">From the classic '69 Charger to the latest modern powerhouses.</p>
-                        <a href="{{ route('products.index') }}" class="btn btn-primary" style="width: fit-content; border-radius: 50px; padding: 1rem 2.5rem;">Explore Muscle</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Section 5: Trust & Services (Iconic) -->
-<section class="section-padding reveal">
-    <div class="container">
-        <div class="service-grid" style="gap: 4rem;">
-            <div class="service-card" style="padding: 4rem 2rem; background: var(--bg-darker); border-radius: 32px; box-shadow: var(--surface-raised);">
-                <i class="fas fa-gem service-icon" style="font-size: 3rem; margin-bottom: 2rem;"></i>
-                <h3 style="margin-bottom: 1.5rem; font-style: italic; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">Curated Archives</h3>
-                <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">Every model is hand-picked by experts for rarity and collector value.</p>
-            </div>
-            <div class="service-card" style="padding: 4rem 2rem; background: var(--bg-darker); border-radius: 32px; box-shadow: var(--surface-raised);">
-                <i class="fas fa-box-open service-icon" style="font-size: 3rem; margin-bottom: 2rem;"></i>
-                <h3 style="margin-bottom: 1.5rem; font-style: italic; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">Mint Obsession</h3>
-                <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">We use triple-layer protection to ensure your grails arrive in museum condition.</p>
-            </div>
-            <div class="service-card" style="padding: 4rem 2rem; background: var(--bg-darker); border-radius: 32px; box-shadow: var(--surface-raised);">
-                <i class="fas fa-users service-icon" style="font-size: 3rem; margin-bottom: 2rem;"></i>
-                <h3 style="margin-bottom: 1.5rem; font-style: italic; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">Global Community</h3>
-                <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">Join an elite network of collectors in over 50 countries worldwide.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Section 6: Brand Showcase -->
-<section class="brand-ticker-container reveal" style="padding: 5rem 0;">
-    <div class="brand-ticker">
-        <div class="brand-item">Hot Wheels</div>
-        <div class="brand-item">Matchbox</div>
-        <div class="brand-item">Mattel</div>
-        <div class="brand-item">Tarmac Works</div>
-        <div class="brand-item">Inno64</div>
-        <div class="brand-item">MiniGT</div>
-        <div class="brand-item">Hot Wheels</div>
-        <div class="brand-item">Matchbox</div>
-        <!-- Duplicates for loop -->
-        <div class="brand-item">Hot Wheels</div>
-        <div class="brand-item">Matchbox</div>
-        <div class="brand-item">Mattel</div>
-        <div class="brand-item">Tarmac Works</div>
-        <div class="brand-item">Inno64</div>
-        <div class="brand-item">MiniGT</div>
-    </div>
-</section>
-
-<!-- Section 7: Community & Newsletter (Consolidated) -->
-<section class="section-padding reveal">
-    <div class="container">
-        <div class="glass-section-card">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-6">
-                    <h2 style="font-size: clamp(2rem, 5vw, 3.5rem); font-style: italic; text-transform: uppercase; font-weight: 900; line-height: 1; margin-bottom: 1.5rem;">Join the <span>Inner Circle</span></h2>
-                    <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 2.5rem;">Get dawn-access to rare drops and member-only vault keys.</p>
-                    <form class="newsletter-form" style="max-width: 100%;">
-                        <input type="email" placeholder="Archive frequency email..." required style="background: var(--surface-inset); border-radius: 50px; padding: 1.2rem 2rem; color: white; border: 1px solid var(--glass-border);">
-                        <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 1.2rem 3rem;">Join Now</button>
-                    </form>
-                </div>
-                <div class="col-lg-6">
-                    <div style="background: rgba(255,255,255,0.02); border-radius: 32px; padding: 3rem; border: 1px solid var(--glass-border);">
-                        <h4 style="color: white; margin-bottom: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">Collector Support</h4>
-                        <div class="faq-container" style="margin: 0;">
-                            <div class="faq-item">
-                                <div class="faq-question">Shipping Protection? <i class="fas fa-chevron-down"></i></div>
-                                <div class="faq-answer">Double-walled boxes, bubble wrap, and moisture-proof seals on every grail.</div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Authenticity Check? <i class="fas fa-chevron-down"></i></div>
-                                <div class="faq-answer">Every piece is verified against our historical archives and supplier manifests.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>

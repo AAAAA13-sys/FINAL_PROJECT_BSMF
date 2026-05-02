@@ -26,11 +26,17 @@ final class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|string', // This field will hold the username
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Map 'email' field to 'username' for Auth::attempt
+        $authData = [
+            'username' => $credentials['email'],
+            'password' => $credentials['password'],
+        ];
+
+        if (Auth::attempt($authData)) {
             $user = Auth::user();
             
             if ($request->wantsJson() || $request->is('api/*')) {
@@ -45,8 +51,8 @@ final class AuthController extends Controller
 
             $request->session()->regenerate();
             
-            if ($user->isAdmin()) {
-                return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Administrator!');
+            if ($user->isAdministrative()) {
+                return redirect()->route('admin.dashboard')->with('success', "Welcome back, {$user->name}!");
             }
             
             return redirect()->intended(route('home'))->with('success', "Welcome back, {$user->name}!");

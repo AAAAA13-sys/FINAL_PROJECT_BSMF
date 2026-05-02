@@ -3,9 +3,9 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-5">
-        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">COUPON <span style="color: var(--secondary);">VAULT</span></h2>
+        <h2 class="admin-header-title">COUPON <span>VAULT</span></h2>
         @if(Auth::user()->isAdmin())
-        <button onclick="document.getElementById('addCouponModal').style.display='flex'" class="btn btn-warning px-4 py-2 rounded-pill fw-black ls-1">+ NEW COUPON</button>
+        <button onclick="document.getElementById('addCouponModal').style.display='flex'" class="btn btn-primary px-4 py-2 rounded-pill fw-black ls-1" style="border: none; box-shadow: 0 4px 15px rgba(128, 12, 31, 0.4);">+ NEW COUPON</button>
         @endif
     </div>
 
@@ -32,7 +32,7 @@
                     <td><span class="badge bg-dark border border-secondary text-muted px-3 py-2" style="font-size: 0.6rem; border-radius: 30px;">{{ strtoupper(str_replace('_', ' ', $coupon->discount_type)) }}</span></td>
                     <td>
                         <span class="text-white fw-black">
-                            {{ $coupon->discount_type == 'percentage' ? number_format($coupon->discount_value, 0) . '%' : ($coupon->discount_type == 'free_shipping' ? 'FREE SHIP' : '$' . number_format($coupon->discount_value, 2)) }}
+                            {{ $coupon->discount_type == 'percentage' ? number_format($coupon->discount_value, 0) . '%' : ($coupon->discount_type == 'free_shipping' ? 'FREE SHIP' : '₱' . number_format($coupon->discount_value, 2)) }}
                         </span>
                     </td>
                     <td>
@@ -88,7 +88,7 @@
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Type</label>
                     <select name="discount_type" class="form-select bg-dark border-secondary text-white p-3" required>
                         <option value="percentage">Percentage (%)</option>
-                        <option value="fixed">Fixed Amount ($)</option>
+                        <option value="fixed">Fixed Amount (₱)</option>
                         <option value="free_shipping">Free Shipping</option>
                     </select>
                 </div>
@@ -97,7 +97,7 @@
                     <input type="number" step="0.01" name="discount_value" class="form-control bg-dark border-secondary text-white p-3" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Min Order ($)</label>
+                    <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Min Order (₱)</label>
                     <input type="number" step="0.01" name="min_order_amount" class="form-control bg-dark border-secondary text-white p-3" value="0.00">
                 </div>
                 <div class="col-md-6">

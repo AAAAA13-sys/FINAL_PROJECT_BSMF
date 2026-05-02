@@ -93,11 +93,12 @@
                         <div class="col-md-4">
                             <div class="product-card" style="background: var(--bg-dark); border: 1px solid var(--glass-border); color: white; height: 100%; display: flex; flex-direction: column;">
                                 <div style="position: relative; overflow: hidden; border-radius: 12px;">
+                                    <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="{{ $product->name }}" class="product-image" loading="lazy">
                                     @if($product->is_super_treasure_hunt)
-                                        <div style="position: absolute; top: 15px; left: 15px; background: #fbbf24; color: black; padding: 4px 12px; border-radius: 50px; font-size: 0.6rem; font-weight: 900; z-index: 5; letter-spacing: 1px;">SUPER TH</div>
+                                        <div style="position: absolute; top: 15px; left: 15px; background: #fbbf24; color: #000; padding: 5px 12px; border-radius: 50px; font-size: 0.6rem; font-weight: 900; z-index: 5; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);">
+                                            <i class="fas fa-star"></i> STH
+                                        </div>
                                     @endif
-                                    <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}"
-                                        class="product-image" alt="{{ $product->name }}" loading="lazy" style="margin-bottom: 0;">
                                 </div>
 
                                 <div class="product-info" style="flex-grow: 1; display: flex; flex-direction: column; padding-top: 1.5rem;">

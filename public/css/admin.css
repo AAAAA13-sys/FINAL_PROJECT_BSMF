@@ -1,13 +1,18 @@
-/* BSMF Admin Styles */
+/* BSMF Admin Styles - Synchronized with Storefront Aesthetic */
 
 :root {
-    --sidebar-width: 240px;
+    --sidebar-width: 260px;
     --danger: #ff4d4d;
+    --primary-red: #800C1F;
+    --primary-red-hover: #b91c1c;
+    --secondary-blue: #7598B9;
+    --bg-deep: #05080a;
 }
 
 .admin-container {
     display: flex;
     min-height: 100vh;
+    background-color: var(--bg-deep);
 }
 
 .admin-sidebar {
@@ -23,12 +28,13 @@
     flex-direction: column;
     z-index: 1000;
     overflow-y: auto;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
 }
 
 .admin-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 5px;
     flex-grow: 1;
 }
 
@@ -36,37 +42,49 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    padding: 0.8rem 1rem;
-    color: rgba(255, 255, 255, 0.8);
+    padding: 0.6rem 1.25rem;
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 800;
     text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 12px;
-    margin-bottom: 0.4rem;
+    border: 1px solid transparent;
+    margin-bottom: 5 !important;
 }
 
 .admin-nav-link i {
     width: 24px;
     font-size: 1rem;
-    margin-right: 12px;
-    opacity: 0.7;
+    margin-right: 15px;
+    opacity: 0.5;
+    transition: all 0.3s;
 }
 
 .admin-nav-link:hover {
-    color: var(--secondary);
+    color: white;
     background: rgba(255, 255, 255, 0.05);
-    transform: translateX(5px);
+    transform: translateX(8px);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav-link:hover i {
+    color: var(--secondary-blue);
+    opacity: 1;
 }
 
 .admin-nav-link.active {
-    background: rgba(251, 191, 36, 0.1);
-    color: var(--secondary) !important;
-    border: 1px solid rgba(251, 191, 36, 0.2);
+    background: linear-gradient(90deg, rgba(128, 12, 31, 0.15) 0%, transparent 100%);
+    color: white !important;
+    border-left: 4px solid var(--primary-red);
+    border-radius: 0 12px 12px 0;
+    margin-left: -0.75rem;
+    padding-left: 1.75rem;
 }
 
 .admin-nav-link.active i {
+    color: var(--primary-red);
     opacity: 1;
 }
 
@@ -75,17 +93,17 @@
     padding: 40px;
     width: calc(100% - var(--sidebar-width));
     flex-grow: 1;
-    background: radial-gradient(circle at top right, #00122e 0%, #000814 100%);
+    background: radial-gradient(circle at top right, #0a1622 0%, #05080a 100%);
+    min-height: 100vh;
 }
 
 .admin-table-container {
-    background: rgba(0, 8, 20, 0.6);
-    backdrop-filter: blur(20px);
+    background: rgba(11, 17, 32, 0.4);
+    backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--surface-raised);
 }
 
 .admin-table {
@@ -96,21 +114,26 @@
 
 .admin-table th {
     text-align: left;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: var(--secondary);
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: var(--secondary-blue);
     text-transform: uppercase;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 900;
-    letter-spacing: 1.5px;
-    border-bottom: 2px solid var(--glass-border);
+    letter-spacing: 2px;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .admin-table td {
-    padding: 0.75rem 1rem;
+    padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--glass-border);
     vertical-align: middle;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
 }
 
 .admin-table tr:hover {
@@ -124,11 +147,13 @@
     letter-spacing: -1px;
     color: white;
     font-family: 'Outfit';
+    padding-right: 10px;
 }
 
 .modal-glass {
-    background: #000c1d !important;
-    border: 2px solid var(--secondary) !important;
+    background: rgba(5, 8, 10, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--primary-red) !important;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.9) !important;
     border-radius: 24px;
 }
@@ -141,69 +166,83 @@
 }
 
 .page-link {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.7) !important;
-    border-radius: 10px !important;
-    padding: 0.6rem 1.1rem;
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    border-radius: 12px !important;
+    padding: 0.6rem 1.2rem;
+    font-weight: 800;
     font-size: 0.8rem;
-    box-shadow: none !important;
+    transition: all 0.3s;
 }
 
 .page-item.active .page-link {
-    background: var(--secondary) !important;
-    border-color: var(--secondary) !important;
-    color: #000 !important;
+    background: var(--primary-red) !important;
+    border-color: var(--primary-red) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(128, 12, 31, 0.4);
 }
 
 .page-link:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
     color: white !important;
     transform: translateY(-2px);
+    border-color: var(--secondary-blue) !important;
 }
 
-.page-item.disabled .page-link {
-    background: rgba(255, 255, 255, 0.02) !important;
-    color: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-.admin-pagination-compact .page-link {
-    padding: 0.3rem 0.7rem !important;
-    font-size: 0.7rem !important;
-    border-radius: 6px !important;
-}
-
-.admin-pagination-section {
-    padding-top: 1rem !important;
-    padding-bottom: 1.5rem !important;
-    min-height: 91px;
-}
-
-/* Dashboard Specific */
-.fw-black {
-    font-weight: 900;
-}
-
-.ls-2 {
-    letter-spacing: 2px;
-}
-
-.italic {
-    font-style: italic;
-}
-
+/* Dashboard Specific Stat Cards */
 .stat-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: default;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--surface-raised);
 }
 
 .stat-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.05) !important;
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--primary-red);
+    box-shadow: var(--elv-4);
 }
 
-.hover-underline:hover {
-    text-decoration: underline !important;
+.admin-header-title {
+    font-size: 2.2rem;
+    color: white;
+    text-transform: uppercase;
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+.admin-header-title span {
+    background: linear-gradient(135deg, var(--secondary-blue) 0%, #ff4d4d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    padding-bottom: 8px;
+    /* Room for descenders */
+    padding-right: 15px;
+    /* Room for italic tilt */
+    margin-bottom: -8px;
+}
+
+/* Scrollbar Styling */
+.admin-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-red);
 }

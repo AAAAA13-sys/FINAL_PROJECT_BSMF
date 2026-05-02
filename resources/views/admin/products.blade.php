@@ -3,9 +3,9 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">PRODUCT <span style="color: var(--secondary);">MANAGEMENT</span></h2>
+        <h2 class="admin-header-title">PRODUCT <span>MANAGEMENT</span></h2>
         @if(Auth::user()->isAdmin())
-        <button type="button" class="btn btn-warning px-3 py-2 rounded-pill fw-black ls-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#productModal" onclick="prepareProductModal('add')">+ ADD NEW MODEL</button>
+        <button type="button" class="btn btn-primary px-4 py-2 rounded-pill fw-black ls-1" style="font-size: 0.75rem; border: none; box-shadow: 0 4px 15px rgba(128, 12, 31, 0.4);" data-bs-toggle="modal" data-bs-target="#productModal" onclick="prepareProductModal('add')">+ ADD NEW MODEL</button>
         @endif
     </div>
 

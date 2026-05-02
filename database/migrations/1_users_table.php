@@ -11,13 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Create Dedicated Database User (Non-Root)
-        \Illuminate\Support\Facades\DB::unprepared("
-            CREATE USER IF NOT EXISTS 'BSMF_User1'@'localhost' IDENTIFIED BY 'BSMF_Pass123!';
-            GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON `final_project_bsmf`.* TO 'BSMF_User1'@'localhost';
-            FLUSH PRIVILEGES;
-        ");
-
+        // Schema creation starts here
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -34,7 +28,7 @@ return new class extends Migration
         \Illuminate\Support\Facades\DB::table('users')->insert([
             [
                 'name' => 'BSMF Admin',
-                'username' => 'bs_garage_admin',
+                'username' => 'admin',
                 'email' => 'admin@bsmfgarage.com',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
                 'role' => 'admin',
@@ -43,7 +37,7 @@ return new class extends Migration
             ],
             [
                 'name' => 'Garage Staff',
-                'username' => 'staff_garage',
+                'username' => 'staff',
                 'email' => 'staff@bsmfgarage.com',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
                 'role' => 'staff',
@@ -52,7 +46,7 @@ return new class extends Migration
             ],
             [
                 'name' => 'John Collector',
-                'username' => 'johndiecast',
+                'username' => 'john',
                 'email' => 'john@example.com',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
                 'role' => 'customer',

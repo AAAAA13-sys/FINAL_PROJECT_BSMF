@@ -132,7 +132,7 @@
                         <select name="status" class="form-select bg-black border-secondary text-white fw-bold py-2" style="font-size: 0.85rem;">
                             <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>PENDING</option>
                             <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>PROCESSING</option>
-                            <option value="out_for_delivery" {{ $order->status == 'out_for_delivery' ? 'selected' : '' }}>SHIPPED</option>
+                            <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>SHIPPED</option>
                             <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>DELIVERED</option>
                             <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
                         </select>

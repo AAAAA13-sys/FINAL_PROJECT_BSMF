@@ -170,26 +170,42 @@ final class AdminController extends Controller
     }
 
     /**
-     * Update order status and record timestamps.
+     * Update order status with strict sequential enforcement.
      */
     public function orderUpdateStatus(Request $request, $id)
     {
         $request->validate(['status' => 'required|string']);
         $order = Order::findOrFail($id);
-        
-        $status = $request->status;
-        $updateData = ['status' => $status];
-
-        if ($status === Order::STATUS_PROCESSING) $updateData['processed_at'] = now();
-        if ($status === Order::STATUS_OUT_FOR_DELIVERY) $updateData['out_for_delivery_at'] = now();
-        if ($status === Order::STATUS_DELIVERED) $updateData['delivered_at'] = now();
-
+        $newStatus = $request->status;
         $oldStatus = $order->status;
-        $order->update($updateData);
-        
-        $this->logAction('ORDER_STATUS_UPDATE', "Changed order #{$order->order_number} status from {$oldStatus} to {$status}", $order, ['status' => $oldStatus], ['status' => $status]);
 
-        return back()->with('success', 'Order status updated!');
+        // Define strict sequence
+        $allowedTransitions = [
+            Order::STATUS_PENDING => [Order::STATUS_PROCESSING, Order::STATUS_CANCELLED],
+            Order::STATUS_PROCESSING => [Order::STATUS_SHIPPED, Order::STATUS_CANCELLED],
+            Order::STATUS_SHIPPED => [Order::STATUS_DELIVERED, Order::STATUS_CANCELLED],
+            Order::STATUS_DELIVERED => [Order::STATUS_REFUNDED],
+            Order::STATUS_CANCELLED => [], // Dead end
+            Order::STATUS_REFUNDED => [], // Dead end
+        ];
+
+        // 1. Skip check (No skipping gears)
+        if ($oldStatus !== $newStatus && !in_array($newStatus, $allowedTransitions[$oldStatus] ?? [])) {
+            $msg = "Illegal Shift! Orders in '{$oldStatus}' status can only move to: " . implode(', ', $allowedTransitions[$oldStatus] ?? ['None']);
+            return back()->with('error', $msg);
+        }
+
+        // 2. Prepare Update Data
+        $updateData = ['status' => $newStatus];
+        if ($newStatus === Order::STATUS_PROCESSING) $updateData['processed_at'] = now();
+        if ($newStatus === Order::STATUS_SHIPPED) $updateData['shipped_at'] = now();
+        if ($newStatus === Order::STATUS_DELIVERED) $updateData['delivered_at'] = now();
+
+        // 3. Save and Audit
+        $order->update($updateData);
+        $this->logAction('ORDER_STATUS_UPDATE', "Changed order #{$order->order_number} status from {$oldStatus} to {$newStatus}", $order, ['status' => $oldStatus], ['status' => $newStatus]);
+
+        return back()->with('success', "Order #{$order->order_number} shifted to {$newStatus}.");
     }
 
 

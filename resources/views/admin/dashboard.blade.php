@@ -3,7 +3,7 @@
 @section('content')
 <div class="fade-in">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">BSMF <span style="color: var(--secondary);">DASHBOARD</span></h2>
+        <h2 class="admin-header-title">BSMF <span>DASHBOARD</span></h2>
         <div style="text-align: right;">
             <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem; font-style: italic; font-weight: bold;">{{ now()->format('l, jS F Y') }}</div>
             <div style="color: var(--secondary); font-size: 0.75rem; font-weight: 900; text-transform: uppercase;">Admin: {{ Auth::user()->name }}</div>
@@ -70,9 +70,9 @@
     <div class="row g-3">
         <!-- Recent Orders -->
         <div class="col-md-8">
-            <div class="card glass border-secondary rounded-4 overflow-hidden shadow-lg">
-                <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center" style="padding: 0.75rem 1rem;">
-                    <h6 style="color: white; text-transform: uppercase; font-style: italic; margin-bottom: 0; font-size: 0.85rem;">RECENT <span>TRANSACTIONS</span></h6>
+            <div class="card glass border-secondary rounded-4 overflow-hidden shadow-lg" style="background: rgba(11, 17, 32, 0.4); border: 1px solid var(--glass-border) !important;">
+                <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--glass-border) !important;">
+                    <h6 style="color: white; text-transform: uppercase; font-style: italic; margin-bottom: 0; font-size: 0.85rem; letter-spacing: 1px;">RECENT <span style="color: var(--secondary);">TRANSACTIONS</span></h6>
                     <a href="{{ route('admin.orders') }}" style="color: #fbbf24; font-size: 0.75rem; text-decoration: none; font-weight: bold;">VIEW ALL →</a>
                 </div>
                 <div class="card-body p-0">

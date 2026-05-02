@@ -14,11 +14,11 @@
 </head>
 <body style="padding-top: 0 !important;">
     <div class="admin-container">
-        <aside class="admin-sidebar" style="padding: 3rem 0.75rem 1.5rem 0.75rem;">
-            <div class="px-3 mb-5">
-                <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-0 text-decoration-none" style="font-size: 1.6rem; white-space: nowrap;">BSMF ADMIN</a>
+        <aside class="admin-sidebar" style="padding: 1.5rem 0.75rem 1.5rem 0.75rem;">
+            <div class="px-3 mb-2">
+                <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-0 text-decoration-none" style="font-size: 1.6rem; white-space: nowrap; padding-right: 0;">BSMF ADMIN</a>
                 <div style="margin-top: 0.2rem;">
-                    <span style="color: var(--secondary); font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; font-family: 'Outfit';">Control Panel</span>
+                    <span style="color: var(--primary); font-weight: 900; letter-spacing: 2px; font-size: 0.7rem; text-transform: uppercase; font-family: 'Outfit';">Control Panel</span>
                 </div>
             </div>
 
@@ -41,25 +41,25 @@
                 </a>
 
                 @if(Auth::user()->isAdmin())
-                <a href="{{ route('admin.audit-logs') }}" class="admin-nav-link {{ Route::is('admin.audit-logs') ? 'active' : '' }}" style="color: #fbbf24;">
+                <a href="{{ route('admin.audit-logs') }}" class="admin-nav-link {{ Route::is('admin.audit-logs') ? 'active' : '' }}">
                     <i class="fas fa-terminal"></i> Logs
                 </a>
                 @endif
                 
                 <div class="mt-auto pt-2 px-2">
-                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 1rem;">
+                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 0.5rem;">
                     
                     <div class="px-3 mb-3">
                         <div class="text-white fw-black small text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">{{ Auth::user()->name }}</div>
                         <div class="text-warning fw-bold text-uppercase" style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.8;">ROLE: {{ Auth::user()->role }}</div>
                     </div>
 
-                    <a href="{{ route('home') }}" class="admin-nav-link mb-2" style="opacity: 0.8; font-size: 0.8rem; font-weight: 800; padding-left: 0.75rem;">
+                    <a href="{{ route('home') }}" class="admin-nav-link mb-2" style="opacity: 0.8; font-size: 0.75rem; font-weight: 800; padding-left: 1.25rem;">
                         <i class="fas fa-external-link-alt"></i> VISIT SITE
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn w-100" style="background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 2px solid rgba(255, 77, 77, 0.4); padding: 0.6rem 1rem; font-weight: 900; text-transform: uppercase; border-radius: 12px; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button type="submit" class="btn w-100" style="background: rgba(128, 12, 31, 0.15); color: var(--primary); border: 1px solid rgba(128, 12, 31, 0.3); padding: 0.75rem 1rem; font-weight: 900; text-transform: uppercase; border-radius: 12px; font-size: 0.75rem; letter-spacing: 1.5px; display: flex; align-items: center; justify-content: center; gap: 10px;">
                             <i class="fas fa-sign-out-alt"></i> LOGOUT
                         </button>
                     </form>

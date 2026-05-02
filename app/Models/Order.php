@@ -15,7 +15,7 @@ final class Order extends Model
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_PROCESSING = 'processing';
-    public const STATUS_OUT_FOR_DELIVERY = 'out_for_delivery';
+    public const STATUS_SHIPPED = 'shipped';
     public const STATUS_DELIVERED = 'delivered';
     public const STATUS_CANCELLED = 'cancelled';
     public const STATUS_REFUNDED = 'refunded';
@@ -46,7 +46,7 @@ final class Order extends Model
         'notes',
         'placed_at',
         'processed_at',
-        'out_for_delivery_at',
+        'shipped_at',
         'delivered_at',
     ];
 
@@ -56,7 +56,7 @@ final class Order extends Model
         'payment_simulated' => 'boolean',
         'placed_at' => 'datetime',
         'processed_at' => 'datetime',
-        'out_for_delivery_at' => 'datetime',
+        'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
         'subtotal' => 'decimal:2',
         'discount_amount' => 'decimal:2',

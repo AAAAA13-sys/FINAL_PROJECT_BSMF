@@ -3,7 +3,7 @@
 @section('content')
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="font-size: 2rem; color: white; text-transform: uppercase; font-style: italic; font-weight: 900;">USER <span style="color: var(--secondary);">MANAGEMENT</span></h2>
+        <h2 class="admin-header-title">USER <span>MANAGEMENT</span></h2>
     </div>
 
     <div class="admin-table-container">

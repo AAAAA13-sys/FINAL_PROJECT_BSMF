@@ -3,7 +3,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Admin Dashboard Initialized');
+    // Admin Dashboard Initialized
 });
 
 /**
@@ -21,14 +21,14 @@ window.initRevenueChart = function(labels, data) {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Revenue ($)',
+                label: 'Revenue (₱)',
                 data: data,
-                borderColor: '#fbbf24',
-                backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                borderColor: '#800C1F',
+                backgroundColor: 'rgba(128, 12, 31, 0.1)',
                 borderWidth: 4,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#e11d48',
+                pointBackgroundColor: '#7598B9',
                 pointBorderColor: '#fff',
                 pointHoverRadius: 8,
                 pointRadius: 5
