@@ -113,9 +113,11 @@ window.moveSlider = function(index) {
 };
 
 // Password Visibility Toggle
-window.togglePassword = function(btn) {
-    const input = btn.parentElement.querySelector('input');
-    const icon = btn.querySelector('i');
+window.togglePassword = function(element) {
+    const container = element.closest('.position-relative') || element.parentElement;
+    const input = container.querySelector('input');
+    const icon = element.tagName === 'I' ? element : element.querySelector('i');
+    
     if (input.type === 'password') {
         input.type = 'text';
         icon.classList.remove('fa-eye');

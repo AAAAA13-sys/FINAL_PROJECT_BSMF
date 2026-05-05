@@ -10,6 +10,12 @@
         <p class="auth-subtitle" style="color: var(--text-muted); opacity: 0.8; letter-spacing: 4px; font-size: 0.75rem;">JOIN THE ELITE</p>
     </div>
 
+    @if($errors->any())
+        <div class="alert alert-danger border-0 py-2 mb-3" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 12px; font-size: 0.75rem;">
+            <i class="fas fa-exclamation-triangle me-2"></i> {{ $errors->first() }}
+        </div>
+    @endif
+
     <form action="{{ route('register.post') }}" method="POST">
         @csrf
         <div class="mb-2">
@@ -31,13 +37,15 @@
             <div class="col-md-6">
                 <label class="form-label small fw-bold text-uppercase mb-1" style="color: var(--secondary); font-size: 0.65rem;">Password</label>
                 <div class="position-relative">
-                    <input type="password" name="password" class="filter-input" placeholder="••••••••" required style="border-radius: 8px; font-size: 0.85rem;">
+                    <input type="password" name="password" id="password" class="filter-input" placeholder="••••••••" required style="border-radius: 8px; font-size: 0.85rem; padding-right: 40px;">
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-muted); font-size: 0.8rem;"></i>
                 </div>
             </div>
             <div class="col-md-6">
                 <label class="form-label small fw-bold text-uppercase mb-1" style="color: var(--secondary); font-size: 0.65rem;">Confirm</label>
                 <div class="position-relative">
-                    <input type="password" name="password_confirmation" class="filter-input" placeholder="••••••••" required style="border-radius: 8px; font-size: 0.85rem;">
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="filter-input" placeholder="••••••••" required style="border-radius: 8px; font-size: 0.85rem; padding-right: 40px;">
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-muted); font-size: 0.8rem;"></i>
                 </div>
             </div>
         </div>

@@ -23,7 +23,6 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'default_shipping_address' => 'nullable|string',
-            'newsletter_subscribed' => 'boolean',
             'password' => 'nullable|min:8|confirmed',
         ]);
 
@@ -31,7 +30,6 @@ class ProfileController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->default_shipping_address = $request->default_shipping_address;
-        $user->newsletter_subscribed = $request->has('newsletter_subscribed');
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);

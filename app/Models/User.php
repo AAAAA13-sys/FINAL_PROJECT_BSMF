@@ -9,7 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-final class User extends Authenticatable
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+final class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
@@ -27,6 +29,10 @@ final class User extends Authenticatable
         'phone',
         'default_shipping_address',
         'newsletter_subscribed',
+        'otp',
+        'otp_expires_at',
+        'reset_otp',
+        'reset_otp_expires_at',
     ];
 
     /**
@@ -50,6 +56,8 @@ final class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'newsletter_subscribed' => 'boolean',
+            'otp_expires_at' => 'datetime',
+            'reset_otp_expires_at' => 'datetime',
         ];
     }
 
@@ -102,5 +110,29 @@ final class User extends Authenticatable
         return $this->hasMany(RestockRequest::class);
     }
 
+    /**
+     * Determine if the user has verified their email address.
+     * Administrative accounts bypass this during development.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->isAdministrative() || ! is_null($this->email_verified_at);
+    }
 
+    /**
+     * Generate and send a new OTP.
+     */
+    public function sendVerificationOtp(): void
+    {
+        $otp = (string) random_int(100000, 999999);
+        
+        $this->update([
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        $this->notify(new \App\Notifications\VerifyEmailOtp($otp));
+    }
 }

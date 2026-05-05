@@ -27,12 +27,17 @@ final class AdminController extends Controller
      */
     public function dashboard()
     {
-        $totalSales = Order::where('status', '!=', Order::STATUS_CANCELLED)->sum('total_amount');
-        $totalOrders = Order::count();
-        $totalProducts = Product::count();
+        // Use the new stored procedure for consolidated stats retrieval
+        DB::statement('CALL sp_GetAdminDashboardStats(@total_rev, @total_ord, @total_prod, @total_cust, @low_stock, @pending)');
+        $stats = DB::selectOne('SELECT @total_rev as totalSales, @total_ord as totalOrders, @total_prod as totalProducts, @total_cust as totalCustomers, @low_stock as lowStockCount, @pending as pendingOrdersCount');
+
+        $totalSales = $stats->totalSales;
+        $totalOrders = $stats->totalOrders;
+        $totalProducts = $stats->totalProducts;
+        $totalCustomers = $stats->totalCustomers;
+        
         $recentOrders = Order::with('user')->latest()->limit(5)->get();
         $lowStockProducts = Product::whereColumn('stock_quantity', '<=', 'low_stock_threshold')->limit(5)->get();
-        $totalCustomers = User::where('role', 'customer')->count();
 
         // Dynamic Sales for Chart
         $filter = request('revenue_filter', 'week');
@@ -172,12 +177,26 @@ final class AdminController extends Controller
      */
     public function orderUpdateStatus(Request $request, $id)
     {
-        $request->validate(['status' => 'required|string']);
+        $request->validate(['status' => 'required|string', 'reason' => 'nullable|string']);
         $order = Order::findOrFail($id);
         $newStatus = $request->status;
         $oldStatus = $order->status;
 
-        // Define strict sequence
+        // If cancelling, use the stored procedure to handle stock and audits
+        if ($newStatus === Order::STATUS_CANCELLED) {
+            try {
+                DB::statement('CALL sp_CancelOrder(?, ?, ?)', [
+                    $id, 
+                    auth()->id(), 
+                    $request->reason ?? 'Cancelled by Staff'
+                ]);
+                return back()->with('success', "Order #{$order->order_number} has been cancelled and stock restored.");
+            } catch (\Exception $e) {
+                return back()->with('error', "Cancellation failed: " . $e->getMessage());
+            }
+        }
+
+        // Define strict sequence for other transitions
         $allowedTransitions = [
             Order::STATUS_PENDING => [Order::STATUS_PROCESSING, Order::STATUS_CANCELLED],
             Order::STATUS_PROCESSING => [Order::STATUS_SHIPPED, Order::STATUS_CANCELLED],

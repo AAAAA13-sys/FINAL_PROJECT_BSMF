@@ -1,78 +1,64 @@
-BSMF Garage Project Development Log
+# BSMF Garage - Premium Die-Cast Collector Series
 
-I. Project Scaffolding and Schema Definition (April 23, 2026)
+## Development Log & Roadmap
+
+### I. Project Scaffolding and Schema Definition (April 23, 2026)
 *   Initialized the Laravel 11 framework environment and core directory structure.
 *   Created 12 migrations to define the database schema, including Users, Categories, Products, Carts, Orders, OrderItems, Reviews, Wishlists, and Coupons.
 *   Established foundational models with Eloquent relationships for order tracking and inventory management.
 *   Integrated the initial public stylesheets and base layout templates for the storefront.
-*   Developed initial controllers for authentication, home navigation, and basic product listing.
 
-II. Infrastructure Migration and Configuration (April 25, 2026)
+### II. Infrastructure Migration and Configuration (April 25, 2026)
 *   Migrated the database engine from SQLite to a production-grade MySQL 8.0 configuration.
 *   Updated config/database.php to standardize connection strings and persistence settings.
 *   Configured global charset and collation settings to ensure compatibility with localized data.
-*   Optimized server-side caching and session management settings for the new database environment.
 
-III. Administrative Interface and Branding Overhaul (April 25, 2026)
-*   Redesigned the Admin Dashboard using a premium dark-glass aesthetic in resources/views/layouts/admin.blade.php.
+### III. Administrative Interface and Branding Overhaul (April 25, 2026)
+*   Redesigned the Admin Dashboard using a premium dark-glass aesthetic.
 *   Updated the AdminController to support complex administrative tasks such as multi-image product uploads.
-*   Replaced placeholder assets with authentic die-cast model photography in the public/images directory.
 *   Implemented a dynamic, filterable sales revenue chart on the administrative dashboard.
-*   Enhanced the product management UI with modal-based forms for creating and editing models.
 
-IV. Architectural Refactoring and Performance Optimization (April 27, 2026)
-*   Unified Web and API controllers to consolidate business logic and reduce code redundancy.
-*   Performed a comprehensive audit of routes/web.php to resolve naming collisions and dead-end routes.
+### IV. Architectural Refactoring and Performance Optimization (April 27, 2026)
+*   Unified Web and API controllers to consolidate business logic.
+*   Performed a comprehensive audit of routes/web.php to resolve naming collisions.
 *   Modularized the CSS and JavaScript assets into separate, cacheable components.
-*   Fixed critical bugs related to scroll-position restoration and overlapping toast notifications.
-*   Purged the repository of redundant folders, including the default Laravel tests directory, as per production requirements.
 
-V. Feature Simplification and Database Integrity (April 29, 2026)
-*   Decommissioned the Dispute Management system, removing the DisputeController, models, and associated migration files.
+### V. Feature Simplification and Database Integrity (April 29, 2026)
+*   Decommissioned the Dispute Management system.
 *   Verified and hardened all foreign key constraints between Products, Brands, and OrderItems.
-*   Implemented cascading delete logic to ensure that orphan records are not left in the database when products are removed.
-*   Validated the "Database Shenanigans" phase to confirm a stable state for the next phase of development.
-*   Updated the Product model to handle specific brand and scale relationships more efficiently.
+*   Implemented cascading delete logic for inventory safety.
 
-VI. Localization and Visual Design Finalization (April 30, 2026)
-*   Localized the entire application for the Philippine market, implementing the Peso (₱) symbol and formatting for all price displays.
-*   Standardized the global container padding at 40px across all administrative and storefront pages.
-*   Introduced the high-fidelity red-to-yellow hover transition for all primary call-to-action buttons.
-*   Refined the Admin Dashboard's color palette to improve readability and visual hierarchy.
-*   Adjusted the storefront product cards to ensure consistent image aspect ratios and alignment.
+### VI. Localization and Visual Design Finalization (April 30, 2026)
+*   Localized the application for the Philippine market (₱ symbol and formatting).
+*   Standardized global container padding at 40px across all pages.
+*   Introduced high-fidelity red-to-yellow hover transitions.
 
-VII. Security Hardening and Role-Based Access Control (May 01, 2026)
-*   Replaced the legacy is_admin boolean with a comprehensive string-based role system (admin, staff, customer).
-*   Integrated isAdmin() and isStaff() helper methods into the User model for streamlined authorization checks.
-*   Locked down the User management and Coupon Vault interfaces to restrict deletion and creation privileges to the Admin role only.
-*   Implemented role-based visibility in the sidebar to ensure staff only see relevant management tools.
-*   Established a personalized account block in the sidebar displaying the logged-in user's name and role.
+### VII. Security Hardening and Role-Based Access Control (May 01, 2026)
+*   Replaced legacy is_admin boolean with a comprehensive role system (admin, staff, customer).
+*   Integrated isAdmin() and isStaff() helper methods into the User model.
+*   Locked down User management and Coupon Vault interfaces.
 
- VIII. Audit Logging and Operational Intelligence (May 01, 2026)
-*   Created a custom Audit Logging system that records all administrative actions in a dedicated audit_logs table.
-*   Refactored the audit log display to translate raw JSON data into human-readable "Before" and "After" state changes.
-*   Implemented a metadata scrubbing layer to remove technical noise such as IP addresses and internal database IDs from the logs.
-*   Added a detailed audit log viewer that allows owners to review the history of product, order, and coupon changes.
+### VIII. Audit Logging and Operational Intelligence (May 01, 2026)
+*   Created a custom Audit Logging system recording all administrative actions.
+*   Refactored log display to show "Before" and "After" state changes.
+*   Implemented a metadata scrubbing layer for technical data privacy.
 
-IX. Procedural Optimization and Sequential Numbering (May 01, 2026)
-*   Updated the sp_ProcessOrder stored procedure to explicitly enforce utf8mb4_general_ci collation for all parameters.
-*   Implemented a new daily sequential order numbering format: BSMF-YY/MM/DD-ID-000.
-*   Developed logic within the stored procedure to ensure the sequence counter resets at midnight every day.
-*   Removed unused database views (View_BestSellingProducts, View_CustomerSpending) to simplify the schema and improve performance.
-*   Enforced a strict linear order status workflow to prevent skipping operational steps (e.g., jumping from Pending to Delivered).
+### IX. Procedural Optimization and Sequential Numbering (May 01, 2026)
+*   Implemented new daily sequential order numbering format: BSMF-YY/MM/DD-ID-000.
+*   Developed midnight reset logic for the order sequence counter.
+*   Enforced a strict linear order status workflow.
 
-X. System Integration and Final Sanitization (May 01, 2026)
-*   Successfully integrated the team member's storefront UI components, including the Cart, Checkout, and Profile modules.
-*   Corrected a significant data-binding mismatch where the new UI referenced "code" instead of the database's "coupon_code" field.
-*   Synchronized the main application layouts to use the new role-based authorization methods.
+### X. OTP Security and Identity Recovery (May 05, 2026) - [COMPLETED]
+*   **OTP Security Engine**: Implemented 6-digit One-Time Password (OTP) verification for both Registration (Join) and Password Recovery.
+*   **Gmail SMTP Integration**: Established a secure connection with Google SMTP using App Passwords for reliable local mail delivery.
+*   **Multi-Step Recovery UI**: Overhauled the Forgot Password flow into a high-fidelity, single-page 3-step AJAX transition (Email -> OTP -> New Password).
+*   **Administrative Bypass**: Implemented an automated verification bypass for Admin and Staff roles to streamline development.
+*   **Branding Synchronization**: Rebranded the entire application from "FINAL_PROJECT" to **BSMF Garage** across all emails and system notifications.
+*   **Queue Optimization**: Configured a Database Queue system to ensure instant UI responsiveness during email dispatch.
+*   **UX Polishing**: Fixed OTP input visibility, added success toast notifications on the login screen, and implemented automated URL cleaning.
 
-    XI. Next Sprint Goals (Planned)
-    *   Implementation of an Email Verification system using One-Time Passwords (OTP) sent via the local mail server to ensure collector authenticity.
-    *   Enforcement of enhanced Password Security requirements, including minimum length, character complexity, and mandatory symbols.
-    *   Profile/index.blade.php overhaul.
-    *   Forgot Password functionality using email notification as a fallback since we are using local mail server, OTP is not applicable.
-    *   Development of a comprehensive Order Cancellation system that allows users to cancel pending orders while providing specific reasons for the action.
-    *   Implementation of an automated Email Notification engine to send confirmation receipts and itemized acquisition lists upon successful checkout.
-    *   Integration of a user-facing Error Handling layer that intercepts SQL exceptions and displays thematic, non-technical notifications to prevent sensitive data leaks.
-    *   Enhancement of the order cancellation logic to include automatic stock restoration and audit logging for every cancelled transaction.
-    *   Implementation of an automated Email Notification engine to send confirmation receipts and itemized acquisition lists upon successful checkout.
+### XI. Future Roadmap (Planned)
+*   **UI Overhaul**: A comprehensive redesign of the storefront to match the premium "Identity Dossier" aesthetic of the recovery flow.
+*   **Inventory Expansion**: Adding a wider variety of die-cast models and categories to the garage.
+*   **Accurate Database Seeding**: Refining the initial data injection to include more realistic product descriptions, specifications, and collector metadata.
+*   **Review System**: Implementation of a community feedback loop allowing racers to leave ratings and text reviews on their acquisitions.

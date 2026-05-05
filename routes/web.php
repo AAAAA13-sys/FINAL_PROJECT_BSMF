@@ -22,8 +22,20 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Password Reset
+Route::get('/forgot-password', [\App\Http\Controllers\ForgotPasswordController::class, 'show'])->name('password.request');
+Route::post('/forgot-password', [\App\Http\Controllers\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('/forgot-password/verify-otp', [\App\Http\Controllers\ForgotPasswordController::class, 'verifyOtp'])->name('password.otp.verify');
+Route::get('/reset-password/{token}', [\App\Http\Controllers\ResetPasswordController::class, 'show'])->name('password.reset');
+Route::post('/reset-password', [\App\Http\Controllers\ResetPasswordController::class, 'reset'])->name('password.update');
+
+// Email Verification
+Route::get('/verify-email', [\App\Http\Controllers\VerificationController::class, 'show'])->middleware('auth')->name('verification.notice');
+Route::post('/verify-email', [\App\Http\Controllers\VerificationController::class, 'verify'])->middleware(['auth', 'throttle:6,1'])->name('verification.verify');
+Route::post('/verify-email/resend', [\App\Http\Controllers\VerificationController::class, 'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
+
 // Protected Routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'store'])->name('cart.add');
@@ -35,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.process');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/confirmation/{id}', [OrderController::class, 'confirmation'])->name('orders.confirmation');
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 
 

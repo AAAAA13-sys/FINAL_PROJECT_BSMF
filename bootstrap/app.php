@@ -19,5 +19,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Database\QueryException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'The BSMF database encountered a synchronization issue. Our mechanics are on it.',
+                ], 500);
+            }
+
+            return back()->withInput()->with('error', 'SYSTEM ALERT: A database synchronization error occurred. The garage mechanics have been notified.');
+        });
     })->create();

@@ -62,9 +62,62 @@
             </div>
         </div>
 
-        <div style="margin-top: 3rem; text-align: center;">
-            <a href="{{ route('orders.index') }}" class="btn btn-primary" style="padding: 0.8rem 3rem; font-size: 0.9rem;">BACK TO HISTORY</a>
+        <div style="margin-top: 3rem; text-align: center; display: flex; justify-content: center; gap: 1rem;">
+            <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary" style="padding: 0.8rem 3rem; font-size: 0.9rem; border-radius: 12px; font-weight: 700;">BACK TO HISTORY</a>
+            
+            @if($order->status == \App\Models\Order::STATUS_PENDING)
+                <button type="button" class="btn btn-danger" style="padding: 0.8rem 3rem; font-size: 0.9rem; border-radius: 12px; font-weight: 700;" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                    CANCEL ORDER
+                </button>
+            @endif
         </div>
     </div>
 </section>
+
+@if($order->status == \App\Models\Order::STATUS_PENDING)
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: var(--bg-dark); border: 1px solid var(--glass-border); border-radius: 24px; overflow: hidden;">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h5 class="modal-title text-white fw-black italic">CANCEL ACQUISITION</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
+                @csrf
+                <div class="modal-body p-4">
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Please provide a reason for cancelling this acquisition. The items will be returned to the general stock.</p>
+                    <div class="form-group">
+                        <label for="cancellation_reason" style="color: white; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; display: block;">Cancellation Reason</label>
+                        <select name="cancellation_reason" id="cancellation_reason" class="form-select filter-input" required style="background: var(--bg-darker); color: white; border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem;">
+                            <option value="" disabled selected>Select a reason...</option>
+                            <option value="Changed my mind">Changed my mind</option>
+                            <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                            <option value="Duplicate order">Duplicate order</option>
+                            <option value="Shipping time too long">Shipping time too long</option>
+                            <option value="Financial reasons">Financial reasons</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 700;">KEEP ORDER</button>
+                    <button type="submit" class="btn btn-danger" style="border-radius: 10px; font-weight: 700;">CONFIRM CANCELLATION</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+<style>
+    .btn-outline-secondary {
+        border-color: var(--glass-border);
+        color: var(--text-muted);
+    }
+    .btn-outline-secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: white;
+        color: white;
+    }
+</style>
 @endsection

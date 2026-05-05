@@ -1,31 +1,28 @@
 @echo off
-echo =======================================================
-echo          BSMF GARAGE - QUICK START (DRIFT MODE)
-echo =======================================================
+title BSMF GARAGE - QUICK START
+color 0C
 
-:: 1. Try to start MySQL if it's not running
+echo [BSMF] Checking Engine...
+
+:: 1. MySQL Check
 tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
 if "%ERRORLEVEL%"=="1" (
-    echo [!] MySQL is off. Attempting to ignite...
+    echo [!] MySQL is off. Starting...
     if exist "C:\xampp\mysql_start.bat" (
         start /min "" "C:\xampp\mysql_start.bat"
         timeout /t 5 >nul
     ) else (
-        echo [!] Could not find XAMPP mysql_start.bat. Please start MySQL manually.
+        echo [!] MySQL Start script not found. Start it manually!
         pause
         exit /b
     )
-) else (
-    echo [OK] MySQL Engine is already purring.
 )
 
-:: 2. Clear Cache (Optional but helpful)
-echo [OK] Clearing track debris (cache)...
+:: 2. Cache Clear
+echo [BSMF] Clearing Track Debris...
 php artisan config:clear >nul
 php artisan view:clear >nul
 
 :: 3. Launch
-echo.
-echo Launching the garage at http://127.0.0.1:8000...
-echo.
+echo [BSMF] Launching at http://127.0.0.1:8000
 php artisan serve

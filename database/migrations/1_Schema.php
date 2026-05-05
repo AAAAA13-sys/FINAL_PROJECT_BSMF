@@ -23,6 +23,11 @@ return new class extends Migration
             $table->enum('role', ['admin', 'staff', 'customer'])->default('customer');
             $table->string('phone', 20)->nullable();
             $table->text('default_shipping_address')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->string('reset_otp')->nullable();
+            $table->timestamp('reset_otp_expires_at')->nullable();
             $table->timestamps();
         });
 
@@ -164,6 +169,8 @@ return new class extends Migration
             $table->timestamp('processed_at')->nullable();
             $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
+            $table->text('cancellation_reason')->nullable();
             $table->timestamps();
         });
 
@@ -216,194 +223,45 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 15. SQL Constraints
+        // 15. Jobs Table
+        Schema::create('jobs', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('queue')->index();
+            $table->longText('payload');
+            $table->unsignedTinyInteger('attempts');
+            $table->unsignedInteger('reserved_at')->nullable();
+            $table->unsignedInteger('available_at');
+            $table->unsignedInteger('created_at');
+        });
+
+        // 16. Failed Jobs Table
+        Schema::create('failed_jobs', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('uuid')->unique();
+            $table->text('connection');
+            $table->text('queue');
+            $table->longText('payload');
+            $table->longText('exception');
+            $table->timestamp('failed_at')->useCurrent();
+        });
+
+        // 17. Wishlists Table
+        Schema::create('wishlists', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('product_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        // 18. SQL Constraints
         DB::unprepared("
             ALTER TABLE products ADD CONSTRAINT check_price_non_negative CHECK (price >= 0);
             ALTER TABLE products ADD CONSTRAINT check_stock_non_negative CHECK (stock_quantity >= 0);
         ");
 
-        // 16. Stored Procedures (Consolidated & Robust)
-        DB::unprepared("
-            DROP PROCEDURE IF EXISTS sp_ProcessOrder;
-            CREATE PROCEDURE sp_ProcessOrder(
-                IN parameter_user_id INT,
-                IN parameter_shipping_address TEXT,
-                IN parameter_payment_method VARCHAR(50),
-                IN parameter_customer_name VARCHAR(255),
-                IN parameter_customer_email VARCHAR(255),
-                IN parameter_customer_phone VARCHAR(20),
-                IN parameter_coupon_code VARCHAR(50),
-                IN parameter_discount_amount DECIMAL(12,2),
-                IN parameter_shipping_fee DECIMAL(10,2),
-                IN parameter_notes TEXT,
-                IN parameter_extra_packaging BOOLEAN,
-                OUT parameter_order_id INT
-            )
-            BEGIN
-                DECLARE variable_cart_id INT;
-                DECLARE variable_subtotal DECIMAL(12,2);
-                DECLARE variable_total DECIMAL(12,2);
-                DECLARE variable_order_number VARCHAR(50);
-                
-                DECLARE EXIT HANDLER FOR SQLEXCEPTION
-                BEGIN
-                    ROLLBACK;
-                    RESIGNAL;
-                END;
-
-                START TRANSACTION;
-
-                SELECT id INTO variable_cart_id FROM carts WHERE user_id = parameter_user_id FOR UPDATE;
-                
-                IF variable_cart_id IS NULL THEN
-                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cart not found';
-                END IF;
-
-                SELECT COUNT(*) INTO @product_lock_count 
-                FROM products 
-                JOIN cart_items ON products.id = cart_items.product_id 
-                WHERE cart_items.cart_id = variable_cart_id FOR UPDATE;
-
-                IF EXISTS (
-                    SELECT 1 FROM cart_items 
-                    JOIN products ON cart_items.product_id = products.id 
-                    WHERE cart_items.cart_id = variable_cart_id AND products.stock_quantity < cart_items.quantity
-                ) THEN
-                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient stock for one or more items';
-                END IF;
-
-                SELECT IFNULL(SUM(products.price * cart_items.quantity), 0) INTO variable_subtotal
-                FROM cart_items
-                JOIN products ON cart_items.product_id = products.id
-                WHERE cart_items.cart_id = variable_cart_id;
-
-                SET variable_total = variable_subtotal - parameter_discount_amount + parameter_shipping_fee;
-
-                SET variable_order_number = CONCAT('BSG-', DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(parameter_user_id, 4, '0'), '-', LPAD(FLOOR(RAND() * 1000), 3, '0'));
-
-                INSERT INTO orders (
-                    order_number, user_id, status, subtotal, discount_amount, 
-                    shipping_fee, total_amount, coupon_code, customer_name, 
-                    customer_email, customer_phone, shipping_address, payment_method, 
-                    extra_packaging_requested, notes, placed_at, created_at, updated_at
-                ) VALUES (
-                    variable_order_number, parameter_user_id, 'pending', variable_subtotal, parameter_discount_amount,
-                    parameter_shipping_fee, variable_total, parameter_coupon_code, parameter_customer_name,
-                    parameter_customer_email, parameter_customer_phone, parameter_shipping_address, parameter_payment_method,
-                    parameter_extra_packaging, parameter_notes, NOW(), NOW(), NOW()
-                );
-
-                SET parameter_order_id = LAST_INSERT_ID();
-
-                INSERT INTO order_items (
-                    order_id, product_id, product_name, product_brand, 
-                    product_image, quantity, price, total, created_at, updated_at
-                )
-                SELECT 
-                    parameter_order_id, cart_items.product_id, products.name, brands.name, 
-                    products.main_image, cart_items.quantity, products.price, (products.price * cart_items.quantity), NOW(), NOW()
-                FROM cart_items
-                JOIN products ON cart_items.product_id = products.id
-                LEFT JOIN brands ON products.brand_id = brands.id
-                WHERE cart_items.cart_id = variable_cart_id;
-
-                UPDATE products
-                JOIN cart_items ON products.id = cart_items.product_id
-                SET products.stock_quantity = products.stock_quantity - cart_items.quantity
-                WHERE cart_items.cart_id = variable_cart_id;
-
-                DELETE FROM cart_items WHERE cart_id = variable_cart_id;
-                
-                IF parameter_coupon_code IS NOT NULL AND parameter_coupon_code != '' THEN
-                    SELECT id INTO @coupon_id FROM coupons 
-                    WHERE coupon_code = parameter_coupon_code 
-                    FOR UPDATE;
-                    
-                    IF @coupon_id IS NULL THEN
-                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid coupon code';
-                    END IF;
-                    
-                    SELECT is_active, expires_at, usage_limit, times_used INTO @is_active, @expires_at, @usage_limit, @times_used 
-                    FROM coupons WHERE id = @coupon_id;
-                    
-                    IF @is_active = 0 OR (@expires_at IS NOT NULL AND @expires_at < NOW()) OR (@usage_limit IS NOT NULL AND @times_used >= @usage_limit) THEN
-                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Coupon is no longer valid';
-                    END IF;
-                    
-                    IF EXISTS (
-                        SELECT 1 FROM orders 
-                        WHERE user_id = parameter_user_id 
-                        AND coupon_code = parameter_coupon_code 
-                        AND status != 'cancelled'
-                    ) THEN
-                        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You have already used this coupon';
-                    END IF;
-                    
-                    UPDATE coupons SET times_used = times_used + 1 WHERE id = @coupon_id;
-                END IF;
-
-                COMMIT;
-            END;
-        ");
-
-        // 17. Audit Triggers
-        DB::unprepared("
-            CREATE TRIGGER trig_AuditProductInsert AFTER INSERT ON products FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'PRODUCT_CREATED', CONCAT('Created product: ', NEW.name), 'App\\\\Models\\\\Product', NEW.id, 
-                JSON_OBJECT('name', NEW.name, 'price', NEW.price, 'stock', NEW.stock_quantity), @current_ip, NOW(), NOW());
-            END;
-
-            CREATE TRIGGER trig_AuditProductUpdate AFTER UPDATE ON products FOR EACH ROW
-            BEGIN
-                IF OLD.stock_quantity <> NEW.stock_quantity OR OLD.price <> NEW.price OR OLD.name <> NEW.name THEN
-                    INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, new_values, ip_address, created_at, updated_at)
-                    VALUES (@current_user_id, 'PRODUCT_UPDATED', CONCAT('Updated product: ', NEW.name), 'App\\\\Models\\\\Product', NEW.id, 
-                    JSON_OBJECT('name', OLD.name, 'price', OLD.price, 'stock', OLD.stock_quantity),
-                    JSON_OBJECT('name', NEW.name, 'price', NEW.price, 'stock', NEW.stock_quantity), @current_ip, NOW(), NOW());
-                END IF;
-            END;
-
-            CREATE TRIGGER trig_AuditProductDelete AFTER DELETE ON products FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'PRODUCT_DELETED', CONCAT('Deleted product: ', OLD.name), 'App\\\\Models\\\\Product', OLD.id, 
-                JSON_OBJECT('name', OLD.name, 'price', OLD.price, 'stock', OLD.stock_quantity), @current_ip, NOW(), NOW());
-            END;
-
-            CREATE TRIGGER trig_AuditOrderUpdate AFTER UPDATE ON orders FOR EACH ROW
-            BEGIN
-                IF OLD.status <> NEW.status THEN
-                    INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, new_values, ip_address, created_at, updated_at)
-                    VALUES (@current_user_id, 'ORDER_STATUS_UPDATE', CONCAT('Updated order #', NEW.order_number, ' status from ', OLD.status, ' to ', NEW.status), 
-                    'App\\\\Models\\\\Order', NEW.id, JSON_OBJECT('status', OLD.status), JSON_OBJECT('status', NEW.status), @current_ip, NOW(), NOW());
-                END IF;
-            END;
-
-            CREATE TRIGGER trig_AuditCouponInsert AFTER INSERT ON coupons FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'COUPON_CREATED', CONCAT('Created coupon: ', NEW.coupon_code), 'App\\\\Models\\\\Coupon', NEW.id, 
-                JSON_OBJECT('code', NEW.coupon_code, 'discount', NEW.discount_value), @current_ip, NOW(), NOW());
-            END;
-
-            CREATE TRIGGER trig_AuditUserDelete AFTER DELETE ON users FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'USER_DELETED', CONCAT('Deleted user: ', OLD.username), 'App\\\\Models\\\\User', OLD.id, 
-                JSON_OBJECT('username', OLD.username, 'email', OLD.email), @current_ip, NOW(), NOW());
-            END;
-
-            CREATE TRIGGER trig_AuditCouponDelete AFTER DELETE ON coupons FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'COUPON_DELETED', CONCAT('Deleted coupon: ', OLD.coupon_code), 'App\\\\Models\\\\Coupon', OLD.id, 
-                JSON_OBJECT('code', OLD.coupon_code, 'discount', OLD.discount_value), @current_ip, NOW(), NOW());
-            END;
-        ");
-
-        // 18. Seed Data
+        // 19. Seed Core Data
         DB::table('users')->insert([
             [
                 'name' => 'BSMF Admin',
@@ -420,15 +278,6 @@ return new class extends Migration
                 'email' => 'staff@bsmfgarage.com',
                 'password' => Hash::make('password'),
                 'role' => 'staff',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'John Collector',
-                'username' => 'john',
-                'email' => 'john@example.com',
-                'password' => Hash::make('password'),
-                'role' => 'customer',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
@@ -452,15 +301,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditProductInsert;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditProductUpdate;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditProductDelete;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditOrderUpdate;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditCouponInsert;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditUserDelete;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditCouponDelete;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS sp_ProcessOrder;");
-        
+        Schema::dropIfExists('wishlists');
+        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('jobs');
         Schema::dropIfExists('reviews');
         Schema::dropIfExists('cart_items');
         Schema::dropIfExists('carts');

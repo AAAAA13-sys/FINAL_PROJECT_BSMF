@@ -50,6 +50,29 @@ final class OrderController extends Controller
     }
 
     /**
+     * Cancel a pending order (Collector-side).
+     */
+    public function cancel(Request $request, $id)
+    {
+        $order = Order::where('user_id', Auth::id())->findOrFail($id);
+        
+        if ($order->status !== Order::STATUS_PENDING) {
+            return back()->with('error', 'Only pending orders can be cancelled from your garage.');
+        }
+
+        try {
+            DB::statement('CALL sp_CancelOrder(?, ?, ?)', [
+                $id, 
+                Auth::id(), 
+                $request->cancellation_reason ?? 'No reason provided'
+            ]);
+            return redirect()->route('orders.index')->with('success', 'Order cancelled successfully. Items returned to stock.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
      * Show checkout page with collector options.
      */
     public function checkout()
@@ -171,7 +194,10 @@ final class OrderController extends Controller
                 return (new \App\Http\Resources\OrderResource($order))->response()->setStatusCode(201);
             }
 
-            return redirect()->route('orders.confirmation', $orderId)->with('success', 'Order placed successfully!');
+            $order = Order::find($orderId);
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderConfirmation($order));
+
+            return redirect()->route('orders.confirmation', $orderId)->with('success', 'Order placed successfully! A confirmation receipt has been sent to your email.');
         } catch (\Exception $e) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return response()->json(['message' => $e->getMessage()], 400);

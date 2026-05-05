@@ -25,9 +25,12 @@
 
         <div class="mb-3">
             <label class="form-label small fw-bold text-uppercase mb-1" style="color: var(--text-muted); font-size: 0.65rem;">Password</label>
-            <input type="password" name="password" class="filter-input" placeholder="••••••••" required style="border-radius: 10px; font-size: 0.9rem;">
+            <div class="position-relative">
+                <input type="password" name="password" id="password" class="filter-input" placeholder="••••••••" required style="border-radius: 10px; font-size: 0.9rem; padding-right: 40px;">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-muted); font-size: 0.8rem;"></i>
+            </div>
             <div class="text-end mt-1">
-                <a href="#" class="small fw-bold text-decoration-none" style="font-size: 0.65rem; color: var(--secondary) !important;">Forgot Password?</a>
+                <a href="{{ route('password.request') }}" class="small fw-bold text-decoration-none" style="font-size: 0.65rem; color: var(--secondary) !important;">Forgot Password?</a>
             </div>
         </div>
 
@@ -41,4 +44,30 @@
     </div>
 </div>
 </div>
+
+<!-- Success Notification Pop-up -->
+<div id="reset-success-alert" class="auth-alert auth-alert-info" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 9999;">
+    <i class="fas fa-check-circle"></i>
+    <span>REINITIALIZATION SUCCESSFUL. LOG IN WITH YOUR NEW CREDENTIALS.</span>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('reset') === 'success') {
+        const alert = document.getElementById('reset-success-alert');
+        alert.style.display = 'flex';
+        
+        // Remove the ?reset=success from the URL without reloading
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            alert.style.transition = 'opacity 1s ease';
+            setTimeout(() => alert.style.display = 'none', 1000);
+        }, 5000);
+    }
+});
+</script>
 @endsection

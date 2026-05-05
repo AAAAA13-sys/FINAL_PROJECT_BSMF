@@ -94,13 +94,29 @@ final class AuthController extends Controller
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'customer',
+            'role' => $request->role ?? 'customer', // Allow setting role if needed, default to customer
         ]);
+
+        $mailStatus = '';
+        // BYPASS: Admin and Staff don't need OTP during development
+        if ($user->isAdministrative()) {
+            $user->email_verified_at = now();
+            $user->save();
+            $mailStatus = 'Administrative account active. OTP bypassed.';
+        } else {
+            try {
+                $user->sendVerificationOtp();
+                $mailStatus = 'Verification code sent to your email.';
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Mail Error: " . $e->getMessage());
+                $mailStatus = 'Account created! However, we had trouble sending the verification code. Please try resending it from this page.';
+            }
+        }
 
         if ($request->wantsJson() || $request->is('api/*')) {
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
-                'message' => 'User registered successfully',
+                'message' => 'User registered successfully. ' . $mailStatus,
                 'user' => new \App\Http\Resources\UserResource($user),
                 'access_token' => $token,
                 'token_type' => 'Bearer',
@@ -109,7 +125,7 @@ final class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home')->with('success', 'Welcome to BSMF Garage!');
+        return redirect()->route('verification.notice')->with('success', $mailStatus);
     }
 
     /**
