@@ -11,7 +11,9 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('profile.index', compact('user'));
+        $regions = \App\Services\ShippingService::getRegions();
+        $regionalCities = \App\Services\ShippingService::getRegionalCities();
+        return view('profile.index', compact('user', 'regions', 'regionalCities'));
     }
 
     public function update(Request $request)
@@ -19,16 +21,28 @@ class ProfileController extends Controller
         $user = Auth::user();
         
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:11|regex:/^[0-9]+$/',
+            'region' => 'nullable|string',
+            'city' => 'nullable|string',
             'default_shipping_address' => 'nullable|string',
             'password' => 'nullable|min:8|confirmed',
         ]);
 
-        $user->name = $request->name;
+        if ($request->filled('name')) {
+            $user->name = $request->name;
+        }
         $user->email = $request->email;
-        $user->phone = $request->phone;
+        
+        $phone = $request->phone;
+        if ($phone && !str_starts_with($phone, '+63')) {
+            $phone = '+63' . ltrim($phone, '0');
+        }
+        $user->phone = $phone;
+
+        $user->region = $request->region;
+        $user->city = $request->city;
         $user->default_shipping_address = $request->default_shipping_address;
 
         if ($request->filled('password')) {

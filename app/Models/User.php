@@ -27,6 +27,8 @@ final class User extends Authenticatable implements MustVerifyEmail
         'password',
         // 'role', // REMOVED: Prevent mass assignment of user roles
         'phone',
+        'region',
+        'city',
         'default_shipping_address',
         'newsletter_subscribed',
         'otp',

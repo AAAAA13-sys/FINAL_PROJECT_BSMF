@@ -40,14 +40,21 @@
                     <div class="glass-card mb-5">
                         <div class="card-header">
                             <i class="fas fa-id-card"></i>
-                            <h3>IDENTITY PROFILE</h3>
+                            <h3>USER'S INFORMATION</h3>
                         </div>
                         <div class="card-body">
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="form-floating-custom">
-                                        <input type="text" name="name" id="name" class="custom-input" value="{{ old('name', $user->name) }}" placeholder="Full Name" required>
-                                        <label for="name">FULL NAME</label>
+                                        <div class="phone-input-group d-flex align-items-center">
+                                            <span class="phone-prefix">+63</span>
+                                            <input type="text" name="phone" id="phone" class="custom-input ps-5" 
+                                                value="{{ old('phone', preg_replace('/^\+63/', '', $user->phone)) }}" 
+                                                placeholder="9XXXXXXXXX" 
+                                                maxlength="11"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').substring(0, 11)">
+                                        </div>
+                                        <label for="phone">PHONE NUMBER</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -58,14 +65,32 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating-custom">
-                                        <input type="text" name="phone" id="phone" class="custom-input" value="{{ old('phone', $user->phone) }}" placeholder="Phone Number">
-                                        <label for="phone">PHONE NUMBER</label>
+                                        <select name="region" id="region" class="custom-input custom-select" onchange="handleRegionChange()">
+                                            <option value="" disabled {{ !old('region', $user->region) ? 'selected' : '' }}>Select Region</option>
+                                            @foreach($regions as $code => $name)
+                                                <option value="{{ $code }}" {{ old('region', $user->region) == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label for="region">REGION</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating-custom">
+                                        <select name="city" id="city" class="custom-input custom-select">
+                                            <option value="" disabled {{ !old('city', $user->city) ? 'selected' : '' }}>Select City</option>
+                                            @if(old('region', $user->region) && isset($regionalCities[old('region', $user->region)]))
+                                                @foreach($regionalCities[old('region', $user->region)] as $cityName => $km)
+                                                    <option value="{{ $cityName }}" {{ old('city', $user->city) == $cityName ? 'selected' : '' }}>{{ $cityName }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                        <label for="city">CITY / MUNICIPALITY</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating-custom">
-                                        <textarea name="default_shipping_address" id="address" class="custom-input profile-textarea" placeholder="Shipping Address">{{ old('default_shipping_address', $user->default_shipping_address) }}</textarea>
-                                        <label for="address">DEFAULT SHIPPING ADDRESS</label>
+                                        <textarea name="default_shipping_address" id="address" class="custom-input profile-textarea" placeholder="Unit / Street / House No. / Barangay">{{ old('default_shipping_address', $user->default_shipping_address) }}</textarea>
+                                        <label for="address">HOUSE NO. / STREET / BARANGAY</label>
                                     </div>
                                 </div>
                             </div>
@@ -112,6 +137,23 @@
 
 @push('scripts')
 <script>
+    const regionalCities = @json($regionalCities);
+
+    function handleRegionChange() {
+        const region = document.getElementById('region').value;
+        const citySelect = document.getElementById('city');
+        citySelect.innerHTML = '<option value="" disabled selected>Select City</option>';
+        if (regionalCities[region]) {
+            const cities = regionalCities[region];
+            for (const city in cities) {
+                const option = document.createElement('option');
+                option.value = city;
+                option.text = city;
+                citySelect.appendChild(option);
+            }
+        }
+    }
+
     function togglePassword(inputId, icon) {
         const input = document.getElementById(inputId);
         if (input.type === 'password') {

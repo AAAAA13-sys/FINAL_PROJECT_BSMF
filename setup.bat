@@ -1,9 +1,42 @@
 @echo off
 setlocal enabledelayedexpansion
 title BSMF GARAGE - SETUP
-color 0C
+color 0B
 
 echo [BSMF] Initializing Setup...
+
+:: 0. Environment Checks
+echo [0/8] Checking System Prerequisites...
+
+:: Check PHP
+where php >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] PHP not found in PATH.
+    if exist "C:\xampp\php\php.exe" (
+        echo [INFO] Found PHP in XAMPP. Adding to temporary PATH...
+        set "PATH=%PATH%;C:\xampp\php"
+    ) else (
+        echo [FATAL] PHP is required but not found. Please install XAMPP or PHP.
+        pause
+        exit /b 1
+    )
+)
+
+:: Check Composer
+where composer >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo [FATAL] Composer not found. Please install Composer.
+    pause
+    exit /b 1
+)
+
+:: Check NPM
+where npm >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo [FATAL] NPM not found. Please install Node.js.
+    pause
+    exit /b 1
+)
 
 :: 1. .env Verification
 echo [1/8] Verifying configuration files...
@@ -15,8 +48,29 @@ if not exist .env (
     echo [SKIP] Configuration already active.
 )
 
-:: 2. Dependencies
-echo [2/8] Synchronizing PHP dependencies (Composer)...
+:: 2. MySQL Status
+echo [2/8] Ensuring Database Engine is running...
+tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
+if "%ERRORLEVEL%"=="1" (
+    echo [INFO] MySQL is not running. Attempting to start...
+    if exist "C:\xampp\mysql_start.bat" (
+        start /min "" "C:\xampp\mysql_start.bat"
+        echo [WAIT] Waiting for MySQL to initialize (5s)...
+        timeout /t 5 >nul
+    ) else (
+        echo [WARNING] Could not auto-start MySQL. Please start it via XAMPP Control Panel.
+    )
+) else (
+    echo [OK] MySQL is active.
+)
+
+:: 3. Database Creation
+echo [3/8] Preparing database schema...
+:: Use a PHP snippet to create the database if it doesn't exist
+php -r "$e=file_exists('.env')?parse_ini_file('.env'):[]; $db=$e['DB_DATABASE']??'final_project_bsmf'; $u=$e['DB_USERNAME']??'root'; $p=$e['DB_PASSWORD']??''; try { $pdo = new PDO('mysql:host=127.0.0.1', $u, $p); $pdo->exec(\"CREATE DATABASE IF NOT EXISTS `$db`\"); echo \"[OK] Database `$db` ready.\n\"; } catch (Exception $ex) { echo \"[WARNING] Auto-creation failed: \" . $ex->getMessage() . \"\n\"; }"
+
+:: 4. Dependencies
+echo [4/8] Synchronizing PHP dependencies (Composer)...
 call composer install --no-interaction
 if %ERRORLEVEL% NEQ 0 (
     echo [FATAL] Composer synchronization failed.
@@ -25,32 +79,18 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo [OK] Backend synchronized.
 
-:: 3. App Key
-echo [3/8] Generating security signatures...
+:: 5. App Key & Database Refresh
+echo [5/8] Finalizing application state...
 call php artisan key:generate --force
-echo [OK] Encryption keys generated.
-
-:: 4. Database Setup
-echo [4/8] Rebuilding database architecture...
-echo       (Refreshing all tables and seeding collector data)
 call php artisan migrate:fresh --seed --force
 if %ERRORLEVEL% NEQ 0 (
-    echo [FATAL] Database migration failed. 
-    echo         Please ensure MySQL is running and 'final_project_bsmf' exists.
+    echo [FATAL] Migration failed. Check your DB credentials in .env.
     pause
     exit /b %ERRORLEVEL%
 )
-echo [OK] Database is online.
+echo [OK] Database is online and seeded.
 
-:: 5. Optimization
-echo [5/8] Optimizing system cache...
-call php artisan config:clear
-call php artisan cache:clear
-call php artisan view:clear
-call php artisan route:clear
-echo [OK] Cache purged.
-
-:: 6. Assets
+:: 6. Assets & Storage
 echo [6/8] Linking storage assets...
 if exist public\storage (
     rmdir /s /q public\storage 2>&1
@@ -61,16 +101,22 @@ echo [OK] Asset links established.
 :: 7. Frontend Build
 echo [7/8] Compiling frontend assets (NPM)...
 if not exist node_modules (
-    echo [INFO] Installing Node modules...
+    echo [INFO] Installing Node modules (this may take a while)...
     call npm install
 )
 echo [INFO] Building production assets...
 call npm run build
+if %ERRORLEVEL% NEQ 0 (
+    echo [WARNING] Frontend build failed. Check for errors above.
+)
 echo [OK] UI Engine compiled.
 
-:: 8. Final Checks
-echo [8/8] Finalizing deployment...
-ping -n 2 127.0.0.1 >nul
+:: 8. Cache Cleanup
+echo [8/8] Optimizing system performance...
+call php artisan config:clear
+call php artisan cache:clear
+call php artisan view:clear
+call php artisan route:clear
 echo [OK] System is nominal.
 
 echo.
