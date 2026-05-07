@@ -3,28 +3,35 @@
 @section('title', 'Your Cart - BSMF GARAGE')
 
 @section('content')
-<section class="section-padding" style="background: var(--bg-darker); min-height: 100vh; padding-top: 4rem;">
+<section class="section-padding bg-surface-base min-vh-100 pt-5">
     <div class="container">
         <div class="mb-5">
-            <a href="javascript:history.back()" style="display: inline-flex; align-items: center; gap: 10px; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 10px 20px; background: var(--bg-dark); border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--surface-raised); transition: 0.3s;" onmouseover="this.style.color='white'; this.style.borderColor='var(--secondary)'" onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--glass-border)'">
-                <i class="fas fa-chevron-left" style="font-size: 0.6rem;"></i> RETURN TO PREVIOUS
+            <a href="javascript:history.back()" class="text-muted text-decoration-none text-xs fw-black text-uppercase tracking-wider px-4 py-2 bg-glass border-glass rounded-pill shadow-raised transition-300 hover-text-white hover-border-slate d-inline-flex align-items-center gap-2">
+                <i class="fas fa-chevron-left icon-sm"></i> RETURN TO PREVIOUS
             </a>
         </div>
         <div class="d-flex align-items-center gap-3 mb-5">
-            <h2 class="text-white text-uppercase italic fw-black mb-0">YOUR <span>GARAGE</span></h2>
-            <span style="font-size: 0.7rem; color: var(--secondary); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; background: rgba(117, 152, 185, 0.1); padding: 5px 15px; border-radius: 50px; border: 1px solid rgba(117, 152, 185, 0.2);">{{ $cart->items->count() }} MODELS</span>
+            <h2 class="text-white text-uppercase italic fw-black mb-0">YOUR <span>CART</span></h2>
+            <span class="text-xs text-cool-slate fw-black text-uppercase tracking-wider bg-slate-subtle px-3 py-1 rounded-pill border-slate-subtle">{{ $cart->items->count() }} MODELS</span>
         </div>
 
         @if($cart->items->count() > 0)
+            <form action="{{ route('checkout') }}" method="GET" id="cartForm">
             <div class="row g-5">
                 <div class="col-md-8">
                     <!-- Cart Items Table -->
-                    <div style="background: var(--bg-dark); border: 1px solid var(--glass-border); border-radius: 24px; overflow: hidden; box-shadow: var(--surface-raised); margin-bottom: 4rem;">
+                    <div class="bg-surface-elevated border-glass rounded-24 overflow-hidden shadow-raised mb-5">
                         <div class="table-responsive">
-                            <table class="table table-dark table-hover mb-0" style="--bs-table-bg: transparent;">
+                            <table class="table table-dark table-hover mb-0 bg-transparent">
                                 <thead>
-                                    <tr style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); border-bottom: 1px solid var(--glass-border);">
-                                        <th class="ps-4 py-4">Collector Model</th>
+                                    <tr class="text-xs text-uppercase tracking-wider text-muted border-bottom-glass">
+                                        <th class="ps-4 py-4" style="width: 50px;">
+                                            <label class="custom-checkbox m-0">
+                                                <input type="checkbox" id="selectAllItems" checked>
+                                                <span class="checkbox-box"></span>
+                                            </label>
+                                        </th>
+                                        <th class="py-4">Collector Model</th>
                                         <th class="py-4">Price</th>
                                         <th class="py-4">Quantity</th>
                                         <th class="py-4 text-end pe-4">Subtotal</th>
@@ -32,32 +39,48 @@
                                 </thead>
                                 <tbody>
                                     @foreach($cart->items as $item)
-                                        <tr class="align-middle" style="border-bottom: 1px solid rgba(255,255,255,0.02);">
+                                        <tr class="align-middle border-bottom-glass-subtle cart-item-row" data-price="{{ $item->price_at_time ?? $item->product->price }}" data-quantity="{{ $item->quantity }}">
                                             <td class="ps-4 py-4">
+                                                <label class="custom-checkbox m-0">
+                                                    <input type="checkbox" name="selected_items[]" value="{{ $item->id }}" class="item-checkbox" checked>
+                                                    <span class="checkbox-box"></span>
+                                                </label>
+                                            </td>
+                                            <td class="py-4">
                                                 <div class="d-flex align-items-center gap-4">
-                                                    <div style="background: var(--bg-darker); border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px; width: 90px; box-shadow: var(--surface-inset);">
+                                                    <div class="bg-surface-base border-glass rounded-12 p-2 w-90 shadow-inset">
                                                         <img src="{{ $item->product->main_image ?? asset('images/placeholder-car.webp') }}" class="img-fluid" alt="{{ $item->product->name }}">
                                                     </div>
                                                     <div>
-                                                        <h6 class="text-white mb-1" style="font-weight: 800; font-size: 1rem;">{{ $item->product->name }}</h6>
-                                                        <span style="font-size: 0.6rem; color: var(--secondary); font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">{{ $item->product->brand->name }}</span>
-                                                        <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="mt-2">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" style="background: none; border: none; color: #ef4444; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 0;">Remove Piece</button>
-                                                        </form>
+                                                        <h6 class="text-white mb-1 fw-bolder fs-6">{{ $item->product->name }}</h6>
+                                                        <span class="text-xs text-cool-slate fw-black text-uppercase tracking-wide">{{ $item->product->brand->name }}</span>
+                                                        <div class="mt-2">
+                                                            <button type="button" class="btn-link-destructive p-0" onclick="removeItem({{ $item->id }})">Remove Piece</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="py-4 text-white" style="font-weight: 600;">₱{{ number_format($item->price_at_time ?? $item->product->price, 2) }}</td>
+                                            <td class="py-4 text-white fw-semibold">₱{{ number_format($item->price_at_time ?? $item->product->price, 2) }}</td>
                                             <td class="py-4">
-                                                <form action="{{ route('cart.update', $item->id) }}" method="POST" class="d-flex align-items-center gap-2">
-                                                    @csrf
-                                                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock_quantity }}" class="filter-input" style="width: 70px; padding: 0.5rem; text-align: center; font-size: 0.85rem; border-radius: 8px;">
-                                                    <button type="submit" style="background: none; border: none; color: var(--secondary);"><i class="fas fa-sync-alt"></i></button>
-                                                </form>
+                                                <div class="quantity-selector-bsmf">
+                                                    <button type="button" class="qty-btn" onclick="decrementQty({{ $item->id }}, {{ $item->product->stock_quantity }})">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" 
+                                                        name="quantities[{{ $item->id }}]" 
+                                                        value="{{ $item->quantity }}" 
+                                                        min="1" 
+                                                        max="{{ $item->product->stock_quantity }}" 
+                                                        class="qty-input-field quantity-input" 
+                                                        id="qty-{{ $item->id }}"
+                                                        readonly
+                                                        onchange="updateQuantity({{ $item->id }}, this.value)">
+                                                    <button type="button" class="qty-btn" onclick="incrementQty({{ $item->id }}, {{ $item->product->stock_quantity }})">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
                                             </td>
-                                            <td class="py-4 text-end pe-4 text-white" style="font-weight: 900; font-size: 1.1rem;">₱{{ number_format(($item->price_at_time ?? $item->product->price) * $item->quantity, 2) }}</td>
+                                            <td class="py-4 text-end pe-4 text-white fw-black fs-5 item-subtotal">₱{{ number_format(($item->price_at_time ?? $item->product->price) * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -66,19 +89,40 @@
                     </div>
 
                     <div class="reveal">
-                        <h3 class="text-white text-uppercase italic mb-4" style="font-weight: 900; font-size: 1.4rem; letter-spacing: 1px;">VAULT <span>RECOMMENDATIONS</span></h3>
+                        <h3 class="text-white text-uppercase italic mb-4 fw-black fs-4 tracking-wide">VAULT <span>RECOMMENDATIONS</span></h3>
                         <div class="row g-4">
                             @foreach($recommendedProducts as $rec)
                                 <div class="col-md-3">
                                     <a href="{{ route('products.show', $rec->id) }}" class="text-decoration-none">
-                                        <div class="product-card" style="background: var(--bg-dark); border: 1px solid var(--glass-border); border-radius: 20px; padding: 1.5rem; box-shadow: var(--surface-raised); transition: 0.3s transform ease;">
-                                            <div style="background: var(--bg-darker); border-radius: 12px; padding: 10px; margin-bottom: 1.25rem; box-shadow: var(--surface-inset);">
+                                        <div class="product-card bg-surface-elevated border-glass rounded-20 p-4 shadow-raised transition-transform-300">
+                                            <div class="bg-surface-base rounded-12 p-2 mb-4 shadow-inset">
                                                 <img src="{{ $rec->main_image ?? asset('images/placeholder-car.webp') }}" class="img-fluid" alt="{{ $rec->name }}">
                                             </div>
-                                            <h6 class="text-white mb-1" style="font-weight: 800; font-size: 0.85rem; height: 2.2rem; overflow: hidden;">{{ $rec->name }}</h6>
+                                            <h6 class="text-white mb-1 fw-bolder text-sm h-2-2-rem overflow-hidden">{{ $rec->name }}</h6>
+                                            <div class="mb-2 text-xs text-warm-bronze">
+                                                @php
+                                                    $rating = $rec->reviews_avg_rating ?? 0;
+                                                    $fullStars = floor($rating);
+                                                    $halfStar = ($rating - $fullStars) >= 0.5;
+                                                @endphp
+                                                @for($i = 0; $i < $fullStars; $i++)
+                                                    <i class="fas fa-star"></i>
+                                                @endfor
+                                                @if($halfStar)
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                    @for($i = 0; $i < 4 - $fullStars; $i++)
+                                                        <i class="far fa-star text-muted"></i>
+                                                    @endfor
+                                                @else
+                                                    @for($i = 0; $i < 5 - $fullStars; $i++)
+                                                        <i class="far fa-star text-muted"></i>
+                                                    @endfor
+                                                @endif
+                                                <span class="text-muted ms-1 text-xs">({{ $rec->reviews_count ?? 0 }})</span>
+                                            </div>
                                             <div class="d-flex justify-content-between align-items-center mt-3">
-                                                <span style="color: var(--secondary); font-weight: 900; font-size: 0.8rem;">₱{{ number_format($rec->price, 2) }}</span>
-                                                <span style="color: var(--text-muted); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">View <i class="fas fa-chevron-right ms-1"></i></span>
+                                                <span class="text-cool-slate fw-black text-sm">₱{{ number_format($rec->price, 2) }}</span>
+                                                <span class="text-muted text-xs fw-bolder text-uppercase">View <i class="fas fa-chevron-right ms-1"></i></span>
                                             </div>
                                         </div>
                                     </a>
@@ -89,71 +133,152 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div style="background: var(--bg-dark); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2.5rem; box-shadow: var(--surface-raised); position: sticky; top: 120px;">
-                        <h4 class="text-white text-uppercase italic mb-4" style="font-weight: 900; letter-spacing: 1px;">GARAGE <span>SUMMARY</span></h4>
-                        
-                        <!-- Shipping Progress (Persuasion Feature) -->
-                        <div class="mb-5">
-                            @php 
-                                $percent = min(100, ($subtotal / $shippingThreshold) * 100);
-                                $remaining = max(0, $shippingThreshold - $subtotal);
-                            @endphp
-                            <div class="d-flex justify-content-between align-items-end mb-2">
-                                <span style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">Shipment Optimization</span>
-                                @if($remaining > 0)
-                                    <span style="font-size: 0.65rem; font-weight: 900; color: var(--secondary);">₱{{ number_format($remaining, 0) }} TO FREE SHIPPING</span>
-                                @else
-                                    <span style="font-size: 0.65rem; font-weight: 900; color: #22c55e;">FREE SHIPPING UNLOCKED</span>
-                                @endif
-                            </div>
-                            <div style="height: 8px; background: var(--bg-darker); border-radius: 10px; box-shadow: var(--surface-inset); overflow: hidden;">
-                                <div style="width: {{ $percent }}%; height: 100%; background: linear-gradient(to right, var(--primary), var(--secondary)); transition: 1s ease-in-out;"></div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-3" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
-                            <span>Archives Value</span>
-                            <span style="color: white;">₱{{ number_format($subtotal, 2) }}</span>
-                        </div>
+                    <div class="bg-surface-elevated border-glass rounded-24 p-5 shadow-raised sticky-top-120">
+                        <h4 class="text-white text-uppercase italic mb-4 fw-black tracking-wide">GARAGE <span>SUMMARY</span></h4>
                         
                         @if($discount > 0)
-                            <div class="d-flex justify-content-between mb-3" style="font-size: 0.9rem; color: #ef4444; font-weight: 600;">
+                            <div class="d-flex justify-content-between mb-3 text-sm text-brand-red fw-semibold">
                                 <div class="d-flex align-items-center gap-2">
                                     <span>Discount Applied</span>
-                                    <form action="{{ route('coupon.remove') }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('coupon.remove') }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" style="background: none; border: none; color: var(--text-muted); font-size: 0.6rem; text-decoration: underline; padding: 0;">Remove</button>
+                                        <button type="submit" class="btn-link-muted text-xs text-decoration-underline p-0">Remove</button>
                                     </form>
                                 </div>
                                 <span>-₱{{ number_format($discount, 2) }}</span>
                             </div>
                         @endif
 
-                        <div class="d-flex justify-content-between mb-3" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
-                            <span>Secure Shipping</span>
-                            <span style="color: {{ $shipping == 0 ? '#22c55e' : 'white' }};">{{ $shipping == 0 ? 'COMPLIMENTARY' : '₱' . number_format($shipping, 2) }}</span>
-                        </div>
 
-                        <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+                        <hr class="hr-glass">
 
                         <div class="d-flex justify-content-between mb-5 align-items-end">
-                            <span style="font-weight: 900; font-style: italic; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Total</span>
-                            <span style="font-size: 2rem; font-weight: 900; color: white; line-height: 1;">₱{{ number_format($total, 2) }}</span>
+                            <span class="fw-black fst-italic text-muted text-uppercase tracking-wide">Total</span>
+                            <span class="fs-2 fw-black text-white lh-1" id="cartTotalDisplay">₱{{ number_format($total, 2) }}</span>
                         </div>
 
-                        <a href="{{ route('checkout') }}" class="btn btn-primary w-100 py-3" style="border-radius: 16px; font-weight: 900; letter-spacing: 2px; font-size: 0.9rem;">ACQUIRE ALL PIECES</a>
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-16 fw-black tracking-wider text-sm" id="checkoutBtn">ACQUIRE PIECES</button>
                     </div>
                 </div>
             </div>
+            </form>
         @else
-            <div style="text-align: center; padding: 8rem 2rem; background: var(--bg-dark); border: 1px solid var(--glass-border); border-radius: 40px; box-shadow: var(--surface-inset);">
-                <i class="fas fa-box-open" style="font-size: 5rem; color: var(--secondary); margin-bottom: 2.5rem; opacity: 0.2;"></i>
-                <h2 class="text-white mb-2" style="font-weight: 900; text-transform: uppercase; font-style: italic;">Your Garage is Empty</h2>
-                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 3rem; font-weight: 500;">Start building your legendary collection today.</p>
-                <a href="{{ route('products.index') }}" class="btn btn-primary" style="padding: 1rem 4rem; border-radius: 50px; font-weight: 900; letter-spacing: 2px;">DISCOVER MODELS</a>
+            <div class="text-center py-5 px-4 bg-surface-elevated border-glass rounded-40 shadow-inset">
+                <i class="fas fa-box-open fs-huge text-cool-slate mb-5 opacity-20"></i>
+                <h2 class="text-white mb-2 fw-black text-uppercase fst-italic">Your Garage is Empty</h2>
+                <p class="text-muted fs-5 mb-5 fw-medium">Start building your legendary collection today.</p>
+                <a href="{{ route('products.index') }}" class="btn btn-primary px-5 py-3 rounded-pill fw-black tracking-wider">DISCOVER MODELS</a>
             </div>
         @endif
     </div>
 </section>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAll = document.getElementById('selectAllItems');
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        const totalDisplay = document.getElementById('cartTotalDisplay');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        function calculateTotal() {
+            let total = 0;
+            let checkedCount = 0;
+            
+            document.querySelectorAll('.cart-item-row').forEach(row => {
+                const checkbox = row.querySelector('.item-checkbox');
+                if (checkbox.checked) {
+                    const price = parseFloat(row.dataset.price);
+                    const qty = parseInt(row.querySelector('.quantity-input').value);
+                    total += price * qty;
+                    checkedCount++;
+                }
+            });
+
+            totalDisplay.innerText = '₱' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            // Disable button if nothing selected
+            checkoutBtn.disabled = checkedCount === 0;
+            checkoutBtn.style.opacity = checkedCount === 0 ? '0.5' : '1';
+        }
+
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            calculateTotal();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                const allChecked = Array.from(checkboxes).every(c => c.checked);
+                selectAll.checked = allChecked;
+                calculateTotal();
+            });
+        });
+
+        // Initial calculation
+        calculateTotal();
+
+        // Expose functions to window for global access
+        window.removeItem = function(id) {
+            if (confirm('Are you sure you want to remove this piece from your garage?')) {
+                fetch(`/cart/remove/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                }).then(res => {
+                    if (res.ok) window.location.reload();
+                    else alert('Failed to remove item.');
+                });
+            }
+        };
+
+        window.updateQuantity = function(id, qty) {
+            fetch(`/cart/update/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ quantity: qty })
+            }).then(res => {
+                if (res.ok) {
+                    calculateTotal();
+                    const checkbox = document.querySelector(`.item-checkbox[value="${id}"]`);
+                    if (checkbox) {
+                        const row = checkbox.closest('tr');
+                        const price = parseFloat(row.dataset.price);
+                        row.querySelector('.item-subtotal').innerText = '₱' + (price * qty).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
+                } else {
+                    alert('Stock limit reached or error updating quantity.');
+                    window.location.reload();
+                }
+            });
+        };
+
+        window.incrementQty = function(id, max) {
+            const input = document.getElementById('qty-' + id);
+            let val = parseInt(input.value);
+            if (val < max) {
+                input.value = val + 1;
+                updateQuantity(id, input.value);
+            }
+        };
+
+        window.decrementQty = function(id, max) {
+            const input = document.getElementById('qty-' + id);
+            let val = parseInt(input.value);
+            if (val > 1) {
+                input.value = val - 1;
+                updateQuantity(id, input.value);
+            }
+        };
+    });
+</script>
+@endpush
 @endsection

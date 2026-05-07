@@ -26,3 +26,7 @@ Thumbs.db
 .gemini/
 acceptance_criteria.md
 /tests
+/scratch/
+test_*.php
+import_*.php
+gen_*.php

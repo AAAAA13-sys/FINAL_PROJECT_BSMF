@@ -34,17 +34,19 @@
                     <td><span class="text-white-50 small">{{ $order->created_at->format('M d, Y') }}</span></td>
                     <td class="text-white fw-black">₱{{ number_format($order->total_amount, 2) }}</td>
                     <td>
-                        <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="d-flex gap-2">
-                            @csrf
-                            <select name="status" class="form-select form-select-sm bg-dark border-secondary text-white w-auto" style="font-size: 0.7rem; font-weight: 700;">
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>PENDING</option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>PROCESSING</option>
-                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>SHIPPED</option>
-                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>DELIVERED</option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
-                            </select>
-                            <button type="submit" class="btn btn-sm btn-warning py-1 px-3 fw-bold" style="font-size: 0.6rem;">SET</button>
-                        </form>
+                        @php
+                            $statusClass = match($order->status) {
+                                'pending' => 'badge-pending',
+                                'processing' => 'badge-processing',
+                                'shipped' => 'badge-shipped',
+                                'delivered' => 'badge-delivered',
+                                'cancelled' => 'badge-cancelled',
+                                default => 'bg-secondary'
+                            };
+                        @endphp
+                        <span class="badge {{ $statusClass }} px-3 py-2 text-xs rounded-pill fw-black ls-1">
+                            {{ strtoupper($order->status) }}
+                        </span>
                     </td>
                     <td class="pe-4 text-end">
                         <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" style="font-size: 0.65rem;">DETAILS</a>

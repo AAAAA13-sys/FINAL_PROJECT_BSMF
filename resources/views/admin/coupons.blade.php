@@ -94,7 +94,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Discount Value</label>
-                    <input type="number" step="0.01" name="discount_value" class="form-control bg-dark border-secondary text-white p-3" required>
+                    <input type="number" step="0.01" name="discount_value" class="form-control bg-dark border-secondary text-white p-3" placeholder="0.00 for Free Shipping">
                 </div>
                 <div class="col-md-6">
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Min Order (₱)</label>

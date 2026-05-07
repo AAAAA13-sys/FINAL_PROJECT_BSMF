@@ -72,13 +72,22 @@ final class ShippingService
             return 150.00;
         }
 
-        return 160.00;
+        return 180.00; // Increased for VisMin
+    }
+
+    /**
+     * Get the carrier name based on region
+     */
+    public static function getCarrier(string $region): string
+    {
+        return $region === 'NCR' ? 'Lalamove' : 'LBC Express';
     }
 
     private static function calculateMetroManila(float $distance): float
     {
+        // Lalamove-style pricing: Base 49 + distance fees
         $base = 49.00;
-        if ($distance <= 0) return 60.00;
+        if ($distance <= 0) return 60.00; // Default for NCR if distance unknown
         if ($distance <= 5) return $base + ($distance * 6);
         return $base + (5 * 6) + (($distance - 5) * 5);
     }

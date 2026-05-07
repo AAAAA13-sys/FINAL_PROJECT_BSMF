@@ -73,7 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/products', [AdminController::class, 'products'])->name('products');
         Route::post('/products', [AdminController::class, 'productStore'])->name('products.store');
         Route::get('/products/{id}/edit', [AdminController::class, 'productEdit'])->name('products.edit');
-        Route::put('/products/{id}', [AdminController::class, 'productUpdate'])->name('products.update');
+        Route::post('/products/{id}', [AdminController::class, 'productUpdate'])->name('products.update');
         Route::delete('/products/{id}', [AdminController::class, 'productDestroy'])->name('products.destroy');
         Route::delete('/products/images/{id}', [AdminController::class, 'productImageDestroy'])->name('products.images.destroy');
         Route::delete('/products/{id}/main-image', [AdminController::class, 'productMainImageDestroy'])->name('products.mainImage.destroy');
@@ -87,6 +87,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Users
         Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::get('/users/{id}', [AdminController::class, 'userShow'])->name('users.show');
+        Route::patch('/users/{id}/promote', [AdminController::class, 'userPromote'])->name('users.promote');
+        Route::patch('/users/{id}/demote', [AdminController::class, 'userDemote'])->name('users.demote');
         Route::delete('/users/{id}', [AdminController::class, 'userDestroy'])->name('users.destroy');
 
 

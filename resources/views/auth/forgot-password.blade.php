@@ -2,6 +2,10 @@
 
 @section('title', 'System Recovery - BSMF Garage')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/auth-ui.css') }}">
+@endpush
+
 @section('content')
 <div class="auth-container">
     <div class="auth-card">
@@ -26,9 +30,9 @@
                     <label for="email">Target Email</label>
                     <input type="email" id="email" name="email" class="form-control" 
                            placeholder="your@email.com" required autofocus>
-                    <span class="invalid-feedback" id="email-error"></span>
+                    <span class="invalid-feedback-auth" id="email-error"></span>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 mb-3" id="btn-email">DISPATCH CODE</button>
+                <button type="submit" class="btn btn-primary-auth w-100 mb-3" id="btn-email">DISPATCH CODE</button>
             </form>
         </div>
 
@@ -44,9 +48,9 @@
                     <label for="otp">Access Code</label>
                     <input type="text" id="otp" name="otp" class="form-control otp-input-styled" 
                            placeholder="000000" maxlength="6" required>
-                    <span class="invalid-feedback" id="otp-error"></span>
+                    <span class="invalid-feedback-auth" id="otp-error"></span>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 mb-3" id="btn-otp">AUTHENTICATE</button>
+                <button type="submit" class="btn btn-primary-auth w-100 mb-3" id="btn-otp">AUTHENTICATE</button>
             </form>
         </div>
 
@@ -67,9 +71,9 @@
                     <label for="password_confirmation">Confirm Password</label>
                     <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" 
                            placeholder="••••••••" required>
-                    <span class="invalid-feedback" id="password-error"></span>
+                    <span class="invalid-feedback-auth" id="password-error"></span>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 mb-3" id="btn-password">REINITIALIZE ENGINE</button>
+                <button type="submit" class="btn btn-primary-auth w-100 mb-3" id="btn-password">REINITIALIZE ENGINE</button>
             </form>
         </div>
 
@@ -78,152 +82,7 @@
         </div>
     </div>
 </div>
-
-<style>
-    .auth-container {
-        min-height: calc(100vh - 300px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 4rem 1rem;
-        background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
-    }
-
-    .auth-card {
-        width: 100%;
-        max-width: 480px;
-        background: rgba(10, 10, 10, 0.9);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 32px;
-        padding: 3.5rem;
-        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
-        position: relative;
-    }
-
-    .recovery-steps {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .step {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        background: #222;
-        color: #555;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 900;
-        font-size: 0.9rem;
-        border: 2px solid #333;
-        transition: all 0.4s ease;
-    }
-
-    .step.active {
-        background: var(--accent-color, #e63946);
-        color: white;
-        border-color: var(--accent-color, #e63946);
-        box-shadow: 0 0 15px rgba(230, 57, 70, 0.4);
-    }
-
-    .step.completed {
-        background: #2ecc71;
-        color: white;
-        border-color: #2ecc71;
-    }
-
-    .step-line {
-        height: 2px;
-        width: 40px;
-        background: #333;
-    }
-
-    .auth-header h1 {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 900;
-        font-size: 2.2rem;
-        letter-spacing: -1px;
-        margin-bottom: 1rem;
-        color: #fff;
-    }
-
-    .auth-header p {
-        color: #888;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-    }
-
-    .form-group label {
-        display: block;
-        color: #fff;
-        font-weight: 700;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 0.75rem;
-    }
-
-    .form-control {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        color: #fff;
-        padding: 1rem 1.2rem;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
-
-    .otp-input-styled {
-        text-align: center;
-        font-size: 2.5rem;
-        font-weight: 900;
-        letter-spacing: 1rem;
-        color: #ffffff !important;
-        background: rgba(0, 0, 0, 0.5);
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .form-control:focus {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: var(--accent-color, #e63946);
-        box-shadow: 0 0 20px rgba(230, 57, 70, 0.1);
-        outline: none;
-    }
-
-    .btn-primary {
-        background: var(--accent-color, #e63946);
-        border: none;
-        border-radius: 14px;
-        padding: 1.1rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(230, 57, 70, 0.4);
-    }
-
-    .btn-primary:disabled {
-        background: #444;
-        opacity: 0.7;
-    }
-
-    .invalid-feedback {
-        display: block;
-        color: #ff4757;
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-        font-weight: 600;
-    }
-</style>
+@endsection
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

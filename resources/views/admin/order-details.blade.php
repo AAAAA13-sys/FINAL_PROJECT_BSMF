@@ -125,7 +125,7 @@
                     @csrf
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold text-uppercase ls-1 mb-2">Transmission Status</label>
-                        <select name="status" class="form-select bg-black border-secondary text-white fw-bold py-2" style="font-size: 0.85rem;">
+                        <select name="status" id="statusSelect" class="form-select bg-black border-secondary text-white fw-bold py-2" style="font-size: 0.85rem;">
                             <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>PENDING</option>
                             <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>PROCESSING</option>
                             <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>SHIPPED</option>
@@ -134,10 +134,52 @@
                         </select>
                         <div class="mt-2 text-muted italic" style="font-size: 0.6rem;">Updating this will sync the shipment timeline for the collector.</div>
                     </div>
+
+                    <!-- Tracking Fields (Hidden by default) -->
+                    <div id="trackingFields" class="d-none">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase ls-1 mb-2">Courier Service</label>
+                            @php
+                                $defaultCourier = $order->courier_name;
+                                if (!$defaultCourier) {
+                                    $defaultCourier = (Str::contains(Str::lower($order->shipping_address), 'metro manila')) ? 'Lalamove' : 'LBC';
+                                }
+                            @endphp
+                            <input type="text" name="courier_name" class="form-control bg-black border-secondary text-white small" placeholder="e.g. LBC, J&T" value="{{ $defaultCourier }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase ls-1 mb-2">Tracking Number</label>
+                            <input type="text" name="tracking_number" class="form-control bg-black border-secondary text-white small" placeholder="e.g. LBC-12345" value="{{ $order->tracking_number }}">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold text-uppercase ls-1 mb-2">Courier Link</label>
+                            <input type="url" name="tracking_link" class="form-control bg-black border-secondary text-white small" placeholder="https://tracking.link/..." value="{{ $order->tracking_link }}">
+                            <div class="mt-2 text-warning italic" style="font-size: 0.6rem;">This link will be sent to the collector's email immediately.</div>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-warning w-100 py-2 fw-black text-uppercase ls-1" style="border-radius: 10px;">SET STATUS</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('statusSelect');
+        const trackingFields = document.getElementById('trackingFields');
+
+        function toggleTracking() {
+            if (statusSelect.value === 'shipped') {
+                trackingFields.classList.remove('d-none');
+            } else {
+                trackingFields.classList.add('d-none');
+            }
+        }
+
+        statusSelect.addEventListener('change', toggleTracking);
+        toggleTracking(); // Initial check
+    });
+</script>
 @endsection

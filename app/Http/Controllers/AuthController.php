@@ -94,7 +94,7 @@ final class AuthController extends Controller
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => $request->role ?? 'customer', // Allow setting role if needed, default to customer
+            'role' => 'customer', // HARD SECURITY: Never allow role injection from request
         ]);
 
         $mailStatus = '';

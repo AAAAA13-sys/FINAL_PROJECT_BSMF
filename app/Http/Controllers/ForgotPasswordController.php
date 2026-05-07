@@ -32,7 +32,7 @@ class ForgotPasswordController extends Controller
         $user->save();
 
         try {
-            $user->notify(new ResetPasswordOtp($otp));
+            defer(fn () => $user->notify(new ResetPasswordOtp($otp)));
             if ($request->wantsJson()) {
                 return response()->json(['success' => true, 'message' => 'Security code dispatched.']);
             }

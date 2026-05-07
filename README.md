@@ -57,8 +57,14 @@
 *   **Queue Optimization**: Configured a Database Queue system to ensure instant UI responsiveness during email dispatch.
 *   **UX Polishing**: Fixed OTP input visibility, added success toast notifications on the login screen, and implemented automated URL cleaning.
 
-### XI. Future Roadmap (Planned)
-*   **UI Overhaul**: A comprehensive redesign of the storefront to match the premium "Identity Dossier" aesthetic of the recovery flow.
-*   **Inventory Expansion**: Adding a wider variety of die-cast models and categories to the garage.
-*   **Accurate Database Seeding**: Refining the initial data injection to include more realistic product descriptions, specifications, and collector metadata.
-*   **Review System**: Implementation of a community feedback loop allowing racers to leave ratings and text reviews on their acquisitions.
+### XI. Collection Expansion and Logistics Optimization (May 07, 2026) - [COMPLETED]
+*   **Bulk Collection Import**: Successfully migrated 15 premium models from the "BSMF GARAGE" source, including the MSCH x Hotwheels collab and various STH/RLC pieces.
+*   **Logistics Architecture**: Overhauled the shipping engine to support dynamic regional fees (NCR, Luzon, VisMin) and integrated carrier switching (Lalamove for NCR, LBC Express for others).
+*   **Nomenclature Hardening**: Refactored the entire frontend CSS architecture from generic naming to semantic UI-focused nomenclature (`admin-ui.css`, `garage-main.css`, etc.).
+*   **Quantity Control UI**: Implemented a "Stupid-Proof" quantity selector with readonly inputs and incremental `+/-` buttons to prevent manual entry errors.
+*   **Mail Latency Optimization**: Integrated Laravel's `defer()` helper and background queues for Order Confirmations and Shipment notifications, achieving sub-second UI responsiveness.
+*   **Persistence Hardening**: Integrated all 15 new products directly into `DatabaseSeeder.php` to ensure catalog integrity across environment resets.
+*   **Workflow Completion**: Finalized the **Order Cancellation** logic for both Collectors and Staff, including automated stock restoration and audit logging.
+
+### XII. Future Roadmap (Planned)
+*   **Support & FAQ System**: Implementation of a dedicated collector support portal and a comprehensive FAQ section regarding card conditions and shipping.

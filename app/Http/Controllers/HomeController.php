@@ -14,8 +14,10 @@ final class HomeController extends Controller
      */
     public function index()
     {
-        // Fetch featured products (e.g. STH or high views)
+        // Fetch featured products (e.g. Super Treasure Hunt or high views)
         $featuredProducts = Product::with(['brand', 'scale'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->active()
             ->orderByDesc('is_super_treasure_hunt')
             ->latest()

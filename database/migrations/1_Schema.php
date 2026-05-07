@@ -104,6 +104,7 @@ return new class extends Migration
             $table->string('color', 50)->nullable();
             $table->boolean('is_treasure_hunt')->default(false);
             $table->boolean('is_super_treasure_hunt')->default(false);
+            $table->boolean('is_featured')->default(false);
             $table->boolean('is_chase')->default(false);
             $table->boolean('is_rlc_exclusive')->default(false);
             $table->string('card_condition', 20)->default('mint');
@@ -164,6 +165,9 @@ return new class extends Migration
             $table->text('shipping_address');
             $table->string('payment_method', 50);
             $table->boolean('extra_packaging_requested')->default(false);
+            $table->string('courier_name')->nullable();
+            $table->string('tracking_number')->nullable();
+            $table->text('tracking_link')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('placed_at')->useCurrent();
             $table->timestamp('processed_at')->nullable();

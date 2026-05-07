@@ -19,6 +19,8 @@ final class ProductController extends Controller
     {
         $query = Product::query()
             ->with(['brand', 'scale', 'series', 'reviews'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->active();
 
         // Search by car name, casting name, or description
@@ -63,11 +65,15 @@ final class ProductController extends Controller
         }
 
         // Filter by Carded / Loose
-        if ($request->filled('is_carded')) {
-            $query->where('is_carded', true);
-        }
-        if ($request->filled('is_loose')) {
-            $query->where('is_loose', true);
+        if ($request->filled('is_carded') || $request->filled('is_loose')) {
+            $query->where(function ($q) use ($request) {
+                if ($request->filled('is_carded')) {
+                    $q->orWhere('is_carded', true);
+                }
+                if ($request->filled('is_loose')) {
+                    $q->orWhere('is_loose', true);
+                }
+            });
         }
 
         // Filter by Price Range

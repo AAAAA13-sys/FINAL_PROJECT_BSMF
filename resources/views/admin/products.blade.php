@@ -12,7 +12,7 @@
     <div class="admin-table-container">
         @if($products->hasPages())
             <div class="glass-pagination">
-                <div class="small text-muted italic" style="font-size: 0.65rem;">
+                <div class="small text-muted italic text-xs-tracking">
                     Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of {{ $products->total() }} results
                 </div>
                 <div class="admin-pagination-links">
@@ -40,7 +40,7 @@
                             <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="" class="product-thumbnail-sm me-3">
                             <div>
                                 <div class="text-white fw-bold">{{ $product->name }}</div>
-                                <div class="text-muted small text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ $product->brand->name ?? 'Generic' }} • {{ $product->scale->name ?? '1:64' }}</div>
+                                <div class="text-muted small text-uppercase text-xs-tracking">{{ $product->brand->name ?? 'Generic' }} • {{ $product->scale->name ?? '1:64' }}</div>
                             </div>
                         </div>
                     </td>
@@ -72,67 +72,13 @@
     </div>
 
 @push('modals')
-<style>
-    /* Sleek File Input Styling - Left in style block as it's highly specific to this page's custom file inputs */
-    input[type="file"] {
-        font-size: 0.75rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        color: transparent; 
-        padding: 8px;
-        width: 100%;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    input[type="file"]:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: var(--secondary-blue);
-    }
-    input[type="file"]::file-selector-button {
-        background: var(--secondary-blue);
-        color: #000;
-        border: none;
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-weight: 900;
-        text-transform: uppercase;
-        font-size: 0.7rem;
-        margin-right: 10px;
-        cursor: pointer;
-    }
-    
-    .image-preview-wrapper {
-        position: relative;
-        display: inline-block;
-    }
-    .delete-image-btn {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background: var(--danger);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 16px;
-        height: 16px;
-        font-size: 10px;
-        line-height: 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        z-index: 10;
-    }
-</style>
 <!-- Universal Product Modal (Floating Card) -->
 <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content bsmf-modal-content">
             <div class="modal-header bsmf-modal-header">
-                <h6 class="modal-title text-white text-uppercase italic fw-black mb-0" id="productModalLabel" style="font-size: 0.9rem;">NEW <span>ACQUISITION</span></h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.6rem;"></button>
+                <h6 class="modal-title text-white text-uppercase italic fw-black mb-0 modal-header-sm-text" id="productModalLabel">NEW <span>ACQUISITION</span></h6>
+                <button type="button" class="btn-close btn-close-white btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <form id="productForm" action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
@@ -193,20 +139,27 @@
                         <!-- b. Main Image -->
                         <div class="col-md-6 mt-2">
                             <h6 class="section-divider">B. MAIN IMAGE (1)</h6>
-                            <input type="file" name="main_image" id="main_image_input" class="form-control garage-input" accept="image/*" onchange="previewImage(this, 'main_preview_container')">
+                            <input type="file" name="main_image" id="main_image_input" class="form-control garage-file-input" accept="image/*" onchange="previewImage(this, 'main_preview_container')">
                             <div id="main_preview_container" class="mt-2 d-flex flex-wrap gap-1"></div>
                         </div>
 
                         <!-- c. Secondary Images -->
                         <div class="col-md-6 mt-2">
-                            <h6 class="section-divider">C. GALLERY (MAX 4)</h6>
-                            <input type="file" name="additional_images[]" id="gallery_image_input" class="form-control garage-input" accept="image/*" multiple onchange="previewImages(this, 'gallery_preview_container')">
+                            <h6 class="section-divider d-flex justify-content-between align-items-center">
+                                <span>C. GALLERY (MAX 4)</span>
+                                <span id="gallery-counter" class="text-xs text-muted fw-bold">0/4 SLOTS</span>
+                            </h6>
+                            <input type="file" id="gallery_picker" class="form-control garage-file-input" accept="image/*" multiple onchange="previewImages(this, 'gallery_preview_container')">
+                            <input type="file" name="additional_images[]" id="gallery_submission_input" class="d-none" multiple>
                             <div id="gallery_preview_container" class="mt-2 d-flex flex-wrap gap-1"></div>
                         </div>
+
+                        <!-- d. Deletion Queue (Hidden) -->
+                        <div id="delete-queue" class="d-none"></div>
                     </div>
                     
                     <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
-                        <button type="submit" id="submitBtn" class="btn btn-warning w-100 py-1 fw-black text-uppercase ls-1" style="font-size: 0.7rem; border-radius: 8px;">ADD TO GARAGE</button>
+                        <button type="submit" id="submitBtn" class="btn btn-warning w-100 py-1 fw-black text-uppercase ls-1 btn-submit-garage">ADD TO GARAGE</button>
                     </div>
                 </form>
             </div>
@@ -246,6 +199,7 @@ function prepareProductModal(mode, product = null) {
     methodField.innerHTML = '';
     mainPreview.innerHTML = '';
     galleryPreview.innerHTML = '';
+    galleryFiles = []; // CLEAR THE FILE CACHE
 
     if (mode === 'add') {
         label.innerHTML = 'NEW <span>ACQUISITION</span>';
@@ -255,7 +209,7 @@ function prepareProductModal(mode, product = null) {
         label.innerHTML = 'EDIT <span>COLLECTIBLE</span>';
         submitBtn.innerHTML = 'UPDATE IN GARAGE';
         form.action = `/admin/products/${product.id}`;
-        methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+        methodField.innerHTML = '';
         
         // Fill fields
         document.getElementById('input_name').value = product.name || '';
@@ -286,73 +240,59 @@ function prepareProductModal(mode, product = null) {
                     </div>`;
             });
         }
+        updateGalleryCounter();
     }
+}
+
+// CUMULATIVE GALLERY HANDLER
+let galleryFiles = []; // Store new file selections here
+
+function updateGalleryCounter() {
+    const container = document.getElementById('gallery_preview_container');
+    
+    // Existing (on server)
+    const existing = container.querySelectorAll('.image-preview-wrapper:not(.preview-new-upload):not([style*="display: none"])').length;
+    
+    // New (in memory)
+    const news = galleryFiles.length;
+    
+    const total = existing + news;
+    const counter = document.getElementById('gallery-counter');
+    counter.innerText = `${total}/4 SLOTS`;
+    
+    if (total >= 4) {
+        counter.classList.remove('text-muted');
+        counter.classList.add('text-danger');
+    } else {
+        counter.classList.add('text-muted');
+        counter.classList.remove('text-danger');
+    }
+
+    // SYNC TO HIDDEN SUBMISSION INPUT
+    const subInput = document.getElementById('gallery_submission_input');
+    const dataTransfer = new DataTransfer();
+    galleryFiles.forEach(item => dataTransfer.items.add(item.file));
+    subInput.files = dataTransfer.files;
 }
 
 function deleteGalleryImage(id) {
-    if (confirm('Permanently remove this image from the gallery?')) {
-        const wrapper = document.getElementById(`gallery_img_${id}`);
-        wrapper.style.opacity = '0.5';
-        wrapper.style.pointerEvents = 'none';
-
-        fetch(`/admin/products/images/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(async response => {
-            const data = await response.json();
-            if (response.ok && data.success) {
-                wrapper.remove();
-            } else {
-                alert('Error: ' + (data.message || 'Could not delete image'));
-                wrapper.style.opacity = '1';
-                wrapper.style.pointerEvents = 'auto';
-            }
-        })
-        .catch(err => {
-            console.error('Delete Error:', err);
-            alert('Critical Error: Failed to reach the server.');
-            wrapper.style.opacity = '1';
-            wrapper.style.pointerEvents = 'auto';
-        });
-    }
+    const wrapper = document.getElementById(`gallery_img_${id}`);
+    wrapper.style.display = 'none';
+    
+    // Add to deletion queue
+    const queue = document.getElementById('delete-queue');
+    queue.innerHTML += `<input type="hidden" name="delete_gallery[]" value="${id}">`;
+    
+    updateGalleryCounter();
 }
 
 function deleteMainImage(productId) {
-    if (confirm('Remove the primary display image?')) {
-        const wrapper = document.getElementById('main_img_container');
-        wrapper.style.opacity = '0.5';
-        wrapper.style.pointerEvents = 'none';
-
-        fetch(`/admin/products/${productId}/main-image`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(async response => {
-            const data = await response.json();
-            if (response.ok && data.success) {
-                wrapper.remove();
-            } else {
-                alert('Error: ' + (data.message || 'Could not delete main image'));
-                wrapper.style.opacity = '1';
-                wrapper.style.pointerEvents = 'auto';
-            }
-        })
-        .catch(err => {
-            console.error('Delete Error:', err);
-            alert('Critical Error: Failed to reach the server.');
-            wrapper.style.opacity = '1';
-            wrapper.style.pointerEvents = 'auto';
-        });
-    }
+    const wrapper = document.getElementById('main_img_container');
+    wrapper.style.display = 'none';
+    
+    // Add to deletion queue
+    const queue = document.getElementById('delete-queue');
+    queue.innerHTML += `<input type="hidden" name="delete_main_image" value="1">`;
 }
 
 // Live Preview for Main Image
@@ -372,23 +312,56 @@ function previewImage(input, containerId) {
     }
 }
 
-// Live Preview for Multiple Images
+ // Cumulative Preview for Multiple Images
 function previewImages(input, containerId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = ''; // Clear existing
+    
     if (input.files) {
         Array.from(input.files).forEach(file => {
+            // Check if we hit the limit
+            const currentTotal = container.querySelectorAll('.image-preview-wrapper:not([style*="display: none"])').length;
+            if (currentTotal >= 4) return;
+
+            // Add to our memory buffer
+            const fileId = Math.random().toString(36).substr(2, 9);
+            galleryFiles.push({ id: fileId, file: file });
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                container.innerHTML += `
-                    <div class="image-preview-wrapper">
-                        <img src="${e.target.result}" class="image-preview-square border-white">
-                        <div class="badge-new-pill">NEW</div>
-                    </div>`;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-preview-wrapper preview-new-upload';
+                wrapper.id = `new_img_${fileId}`;
+                wrapper.innerHTML = `
+                    <img src="${e.target.result}" class="image-preview-square border-white">
+                    <div class="badge-new-pill">NEW</div>
+                    <button type="button" class="delete-image-btn" onclick="removeNewImage('${fileId}')">×</button>
+                `;
+                container.appendChild(wrapper);
+                updateGalleryCounter();
             };
             reader.readAsDataURL(file);
         });
+
+        // Reset the input so the same file can be picked again if deleted
+        input.value = '';
     }
 }
+
+function removeNewImage(fileId) {
+    // Remove from memory
+    galleryFiles = galleryFiles.filter(item => item.id !== fileId);
+    
+    // Remove from UI
+    const wrapper = document.getElementById(`new_img_${fileId}`);
+    if (wrapper) wrapper.remove();
+    
+    updateGalleryCounter();
+}
+
+// Intercept form submission to inject the accumulated files
+document.getElementById('productForm').addEventListener('submit', function(e) {
+    // No more manual injection needed here as updateGalleryCounter keeps it in sync
+    return true;
+});
 </script>
 @endsection

@@ -134,7 +134,7 @@ final class Product extends Model
             return 'Sold Out';
         }
         if ($this->stock_quantity <= $this->low_stock_threshold) {
-            return 'Low Stock';
+            return "Low Stock ({$this->stock_quantity} pieces left)";
         }
         return 'In Stock';
     }

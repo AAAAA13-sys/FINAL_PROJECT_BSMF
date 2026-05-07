@@ -2,11 +2,11 @@
 
 :root {
     --sidebar-width: 260px;
-    --danger: #ff4d4d;
-    --primary-red: #800C1F;
-    --primary-red-hover: #b91c1c;
-    --secondary-blue: #7598B9;
-    --bg-deep: #05080a;
+    --danger: var(--color-danger-muted);
+    --primary-red: var(--color-brand-red);
+    --primary-red-hover: #5A131A;
+    --secondary-blue: var(--color-cool-slate);
+    --bg-deep: var(--color-surface-base);
 }
 
 .admin-container {

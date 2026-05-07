@@ -35,20 +35,21 @@ final class CartController extends Controller
             }
         }
 
-        $shippingThreshold = 10000; // PHP threshold for free shipping
-        $shipping = $subtotal >= $shippingThreshold ? 0 : 250.00;
-        $total = $subtotal - $discount + $shipping;
+        $shipping = 0;
+        $total = $subtotal - $discount;
 
         // Fetch recommendations (random products not in cart)
         $cartProductIds = $cart->items->pluck('product_id')->toArray();
         $recommendedProducts = Product::with(['brand', 'scale'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->active()
             ->whereNotIn('id', $cartProductIds)
             ->inRandomOrder()
             ->limit(4)
             ->get();
 
-        return view('cart.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode', 'shippingThreshold', 'recommendedProducts'));
+        return view('cart.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode', 'recommendedProducts'));
     }
 
     /**

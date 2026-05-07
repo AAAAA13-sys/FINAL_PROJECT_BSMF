@@ -11,20 +11,22 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-ui.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('css/garage-main.css') }}?v={{ time() }}">
 </head>
-<body style="padding-top: 0 !important;">
+<body class="p-0">
     <div class="admin-container">
-        <aside class="admin-sidebar" style="padding: 1.5rem 0.75rem 1.5rem 0.75rem;">
+        <aside class="admin-sidebar admin-sidebar-nav">
             <div class="px-3 mb-2">
-                <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-0 text-decoration-none" style="font-size: 1.6rem; white-space: nowrap; padding-right: 0;">BSMF ADMIN</a>
-                <div style="margin-top: 0.2rem;">
-                    <span style="color: var(--primary); font-weight: 900; letter-spacing: 2px; font-size: 0.7rem; text-transform: uppercase; font-family: 'Outfit';">Control Panel</span>
+                <a href="{{ route('admin.dashboard') }}" class="logo d-block mb-0 text-decoration-none admin-logo-text">BSMF <span class="logo-accent">ADMIN</span></a>
+                <div class="admin-panel-sublabel">
+                    <span>Control Panel</span>
                 </div>
             </div>
 
             <nav class="admin-nav px-2">
                 <a href="{{ route('admin.dashboard') }}" class="admin-nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-chart-line"></i> Dashboard
+                    <i class="fas fa-home"></i> Dashboard
                 </a>
                 <a href="{{ route('admin.products') }}" class="admin-nav-link {{ Route::is('admin.products') ? 'active' : '' }}">
                     <i class="fas fa-car"></i> Products
@@ -47,19 +49,19 @@
                 @endif
                 
                 <div class="mt-auto pt-2 px-2">
-                    <hr style="border: none; border-top: 1px solid var(--glass-border); margin-bottom: 0.5rem;">
+                    <hr class="hr-glass mb-2">
                     
                     <div class="px-3 mb-3">
-                        <div class="text-white fw-black small text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">{{ Auth::user()->name }}</div>
-                        <div class="text-warning fw-bold text-uppercase" style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.8;">ROLE: {{ Auth::user()->role }}</div>
+                        <div class="text-white fw-black small text-uppercase admin-current-user-info">{{ Auth::user()->name }}</div>
+                        <div class="text-warning fw-bold text-uppercase admin-current-user-role">ROLE: {{ Auth::user()->role }}</div>
                     </div>
 
-                    <a href="{{ route('home') }}" class="admin-nav-link mb-2" style="opacity: 0.8; font-size: 0.75rem; font-weight: 800; padding-left: 1.25rem;">
+                    <a href="{{ route('home') }}" class="admin-nav-link mb-2 btn-admin-visit-site">
                         <i class="fas fa-external-link-alt"></i> VISIT SITE
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn w-100" style="background: rgba(128, 12, 31, 0.15); color: var(--primary); border: 1px solid rgba(128, 12, 31, 0.3); padding: 0.75rem 1rem; font-weight: 900; text-transform: uppercase; border-radius: 12px; font-size: 0.75rem; letter-spacing: 1.5px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button type="submit" class="btn w-100 btn-admin-logout-sidebar">
                             <i class="fas fa-sign-out-alt"></i> LOGOUT
                         </button>
                     </form>
@@ -71,13 +73,13 @@
             @if(session('success'))
                 <div class="auth-alert auth-alert-info auto-hide-alert d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-check-circle me-2"></i> {{ session('success') }}</span>
-                    <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.remove()" style="font-size: 0.6rem;"></button>
+                    <button type="button" class="btn-close btn-close-white btn-close-xs" onclick="this.parentElement.remove()"></button>
                 </div>
             @endif
             @if(session('error'))
                 <div class="auth-alert auth-alert-danger auto-hide-alert d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}</span>
-                    <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.remove()" style="font-size: 0.6rem;"></button>
+                    <button type="button" class="btn-close btn-close-white btn-close-xs" onclick="this.parentElement.remove()"></button>
                 </div>
             @endif
             @yield('content')
@@ -90,9 +92,7 @@
             const alerts = document.querySelectorAll('.auto-hide-alert');
             alerts.forEach(alert => {
                 setTimeout(() => {
-                    alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    alert.style.opacity = '0';
-                    alert.style.transform = 'translateY(-20px)';
+                    alert.classList.add('alert-fade-out');
                     setTimeout(() => alert.remove(), 500);
                 }, 3000);
             });

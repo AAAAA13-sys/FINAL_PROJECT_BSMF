@@ -215,11 +215,29 @@ final class AdminController extends Controller
         // 2. Prepare Update Data
         $updateData = ['status' => $newStatus];
         if ($newStatus === Order::STATUS_PROCESSING) $updateData['processed_at'] = now();
-        if ($newStatus === Order::STATUS_SHIPPED) $updateData['shipped_at'] = now();
+        
+        if ($newStatus === Order::STATUS_SHIPPED) {
+            $updateData['shipped_at'] = now();
+            $updateData['courier_name'] = $request->courier_name;
+            $updateData['tracking_number'] = $request->tracking_number;
+            $updateData['tracking_link'] = $request->tracking_link;
+        }
+        
         if ($newStatus === Order::STATUS_DELIVERED) $updateData['delivered_at'] = now();
 
         // 3. Save
         $order->update($updateData);
+
+        // 4. Send Email if Shipped
+        if ($newStatus === Order::STATUS_SHIPPED) {
+            try {
+                defer(fn() => \Illuminate\Support\Facades\Mail::to($order->customer_email)
+                    ->send(new \App\Mail\OrderShipped($order)));
+            } catch (\Exception $e) {
+                // Log the error but don't stop the flow
+                \Illuminate\Support\Facades\Log::error("Failed to send shipping email: " . $e->getMessage());
+            }
+        }
 
         return back()->with('success', "Order #{$order->order_number} shifted to {$newStatus}.");
     }
@@ -280,18 +298,46 @@ final class AdminController extends Controller
         // Remove from validated array
         unset($validated['main_image'], $validated['additional_images']);
 
-        // Handle Main Image Update
+        // Handle Deferred Deletions
+        if ($request->has('delete_main_image') && $product->main_image) {
+            $filePath = str_replace('storage/', '', $product->main_image);
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+            $validated['main_image'] = null;
+        }
+
+        // Handle New Main Image Upload
         if ($mainImage) {
             $path = $mainImage->store('products/main', 'public');
             $validated['main_image'] = 'storage/' . $path;
         }
 
-        $oldProduct = $product->getOriginal();
+        if ($request->has('delete_gallery')) {
+            foreach ($request->delete_gallery as $imageId) {
+                $img = \App\Models\ProductImage::find($imageId);
+                if ($img) {
+                    $filePath = str_replace('storage/', '', $img->image_path);
+                    if (Storage::disk('public')->exists($filePath)) {
+                        Storage::disk('public')->delete($filePath);
+                    }
+                    $img->delete();
+                }
+            }
+        }
+
         $product->update($validated);
 
 
         // Handle Secondary Images (Append to Gallery)
         if ($secondaryImages) {
+            $currentGalleryCount = $product->gallery()->count();
+            $newCount = count($secondaryImages);
+            
+            if (($currentGalleryCount + $newCount) > 4) {
+                return back()->with('error', "Garage limit exceeded! A grail can only have 4 gallery images total. (Currently has {$currentGalleryCount})");
+            }
+
             foreach ($secondaryImages as $image) {
                 $path = $image->store('products/gallery', 'public');
                 $product->gallery()->create([
@@ -375,6 +421,63 @@ final class AdminController extends Controller
     }
 
     /**
+     * Show detailed user view for admin.
+     */
+    public function userShow($id)
+    {
+        $user = User::with(['orders', 'cart'])->findOrFail($id);
+        return view('admin.user-details', compact('user'));
+    }
+
+    /**
+     * Promote a user.
+     */
+    public function userPromote($id)
+    {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot promote users.');
+        }
+
+        $user = User::findOrFail($id);
+
+        if ($user->role === 'customer') {
+            $user->role = 'staff';
+        } elseif ($user->role === 'staff') {
+            $user->role = 'admin';
+        } else {
+            return back()->with('error', 'Collector is already an Admin.');
+        }
+
+        $user->save();
+
+        return back()->with('success', "Collector promoted to " . strtoupper($user->role) . ".");
+    }
+
+    /**
+     * Demote a user.
+     */
+    public function userDemote($id)
+    {
+        if (!auth()->user()->isAdmin()) {
+            return back()->with('error', 'Staff cannot demote users.');
+        }
+
+        $user = User::findOrFail($id);
+
+        if ($user->role === 'admin') {
+            return back()->with('error', 'Cannot demote an Admin.');
+        } elseif ($user->role === 'staff') {
+            $user->role = 'customer';
+        } else {
+            return back()->with('error', 'User is already a Collector.');
+        }
+
+        $user->save();
+
+        return back()->with('success', "User demoted to " . strtoupper($user->role) . ".");
+    }
+
+    /**
      * Remove a user.
      */
     public function userDestroy($id)
@@ -409,7 +512,7 @@ final class AdminController extends Controller
             'code' => 'required|string|unique:coupons,coupon_code',
             'name' => 'nullable|string',
             'discount_type' => 'required|string',
-            'discount_value' => 'required|numeric|min:0',
+            'discount_value' => 'required_unless:discount_type,free_shipping|numeric|min:0',
             'min_order_amount' => 'nullable|numeric|min:0',
             'expires_at' => 'nullable|date',
         ]);

@@ -1,0 +1,262 @@
+/* BSMF Admin Custom Styles */
+/* Centralizing admin-specific styles from Blade files */
+
+/* --- Sidebar --- */
+.admin-sidebar-nav {
+    padding: 1.5rem 0.75rem 1.5rem 0.75rem;
+}
+
+.admin-logo-text {
+    font-size: 1.6rem;
+    white-space: nowrap;
+    padding-right: 0;
+}
+
+.admin-panel-sublabel {
+    color: var(--primary);
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-family: 'Outfit';
+    margin-top: 0.2rem;
+}
+
+.admin-current-user-info {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+
+.admin-current-user-role {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+.btn-admin-visit-site {
+    opacity: 0.8;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding-left: 1.25rem;
+}
+
+.btn-admin-logout-sidebar {
+    background: rgba(128, 12, 31, 0.15);
+    color: var(--primary);
+    border: 1px solid rgba(128, 12, 31, 0.3);
+    padding: 0.75rem 1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* --- User Details --- */
+.badge-status-verified {
+    font-size: 0.65rem;
+}
+
+.badge-status-unverified {
+    font-size: 0.65rem;
+}
+
+.badge-admin-red {
+    background-color: #ff4d4d;
+}
+
+.badge-staff-outline {
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+}
+
+.admin-header-title-small {
+    font-size: 1.2rem;
+}
+
+.badge-order-status-cancelled {
+    background-color: #ff4d4d;
+    font-size: 0.65rem;
+}
+
+.btn-view-order-sm {
+    font-size: 0.65rem;
+}
+
+/* --- File Inputs & Previews --- */
+.garage-file-input {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white !important;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.garage-file-input:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--secondary-blue);
+}
+
+.garage-file-input::file-selector-button {
+    background: var(--secondary-blue);
+    color: #000;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.delete-image-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    line-height: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.modal-header-sm-text {
+    font-size: 0.9rem;
+}
+
+.btn-close-sm {
+    font-size: 0.6rem;
+}
+
+.btn-submit-garage {
+    font-size: 0.7rem;
+    border-radius: 8px;
+}
+
+.text-xs-tracking {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+/* --- Badges & Buttons --- */
+.badge-role-admin {
+    background-color: #ff4d4d;
+    font-size: 0.6rem;
+    border-radius: 30px;
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+.badge-role-staff {
+    background-color: transparent;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    font-size: 0.6rem;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+}
+
+.badge-role-unverified {
+    background-color: #6c757d;
+    color: white;
+    font-size: 0.6rem;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+}
+
+.badge-role-collector {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.6rem;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+}
+
+.badge-current-user {
+    background-color: #6c757d;
+    color: #212529;
+    font-size: 0.6rem;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+}
+
+.btn-admin-promote {
+    background-color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    font-size: 0.65rem;
+    border-radius: 50px;
+    font-weight: bold;
+    color: white;
+    padding: 0.25rem 1rem;
+}
+
+.btn-admin-demote {
+    background-color: transparent;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    font-size: 0.65rem;
+    border-radius: 50px;
+    font-weight: bold;
+    padding: 0.25rem 1rem;
+}
+
+.btn-admin-details {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.65rem;
+    border-radius: 50px;
+    font-weight: bold;
+    padding: 0.25rem 1rem;
+}
+
+.btn-admin-disabled {
+    font-size: 0.65rem;
+    opacity: 0.3;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    font-weight: bold;
+    padding: 0.25rem 1rem;
+}
+
+/* --- Global Admin Headers --- */
+.admin-header-title {
+    color: white !important;
+    font-weight: 900 !important;
+    font-style: italic !important;
+    text-transform: uppercase !important;
+    font-size: 2rem !important;
+    letter-spacing: -1px;
+}
+
+.admin-header-title span {
+    background: linear-gradient(135deg, var(--color-cool-slate) 0%, #ff4d4d 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}

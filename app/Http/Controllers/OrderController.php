@@ -38,9 +38,21 @@ final class OrderController extends Controller
      */
     public function show($id)
     {
+        // Check if the order belongs to the user
         $order = Order::with(['items.product'])
+            ->where('id', $id)
             ->where('user_id', Auth::id())
-            ->findOrFail($id);
+            ->first();
+
+        // If not authorized, redirect to their most recent order instead of showing an error
+        if (!$order) {
+            $latestOrder = Order::where('user_id', Auth::id())->latest()->first();
+            if ($latestOrder) {
+                return redirect()->route('orders.show', $latestOrder->id)
+                    ->with('warning', 'You do not have access to that acquisition. Showing your most recent one.');
+            }
+            return redirect()->route('orders.index')->with('error', 'Unauthorized access.');
+        }
             
         if (request()->wantsJson() || request()->is('api/*')) {
             return new \App\Http\Resources\OrderResource($order);
@@ -75,7 +87,7 @@ final class OrderController extends Controller
     /**
      * Show checkout page with collector options.
      */
-    public function checkout()
+    public function checkout(Request $request)
     {
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         
@@ -83,18 +95,31 @@ final class OrderController extends Controller
             return redirect()->route('products.index')->with('error', 'Your cart is empty.');
         }
 
-        $subtotal = $cart->subtotal();
+        $selectedItemIds = $request->input('selected_items', session('selected_cart_items', []));
+        $items = $cart->items->whereIn('id', $selectedItemIds);
+        
+        // If still empty (session/request lost), process whole cart
+        if ($items->isEmpty()) {
+            $items = $cart->items;
+            $selectedItemIds = $items->pluck('id')->toArray();
+        }
+
+        session(['selected_cart_items' => $selectedItemIds]);
+
+        $subtotal = $items->sum(fn($item) => ($item->price_at_time ?? $item->product->price) * $item->quantity);
+        
         $discount = 0;
         $couponCode = session('coupon_code');
 
         if ($couponCode) {
             $coupon = Coupon::where('coupon_code', $couponCode)->first();
             if ($coupon && $coupon->isValid()) {
-                // Simplified discount calculation
                 if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
                     $discount = $subtotal * ($coupon->discount_value / 100);
-                } else {
+                } elseif ($coupon->discount_type === Coupon::TYPE_FIXED) {
                     $discount = $coupon->discount_value;
+                } else {
+                    $discount = 0;
                 }
             }
         }
@@ -103,9 +128,9 @@ final class OrderController extends Controller
         $regionalCities = \App\Services\ShippingService::getRegionalCities();
         $mmDistances = \App\Services\ShippingService::getMetroManilaDistances();
         $shipping = 0; 
-        $total = $subtotal - $discount + $shipping;
+        $total = $subtotal - $discount;
 
-        return view('checkout.index', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'couponCode', 'mmDistances', 'regions', 'regionalCities'));
+        return view('checkout.index', compact('cart', 'items', 'subtotal', 'discount', 'shipping', 'total', 'couponCode', 'mmDistances', 'regions', 'regionalCities'));
     }
 
     /**
@@ -132,7 +157,19 @@ final class OrderController extends Controller
 
         try {
             $regions = \App\Services\ShippingService::getRegions();
-            $subtotal = $cart->subtotal();
+            
+            // Calculate components using selected items from request/session
+            $selectedItemIds = $request->input('selected_items', session('selected_cart_items', []));
+            $items = $cart->items->whereIn('id', $selectedItemIds);
+            
+            // If still empty, process whole cart
+            if ($items->isEmpty()) {
+                $items = $cart->items;
+                $selectedItemIds = $items->pluck('id')->toArray();
+            }
+
+            $subtotal = $items->sum(fn($item) => ($item->price_at_time ?? $item->product->price) * $item->quantity);
+            
             $discount = 0;
             $couponCode = session('coupon_code');
 
@@ -141,21 +178,26 @@ final class OrderController extends Controller
                 if ($coupon && $coupon->isValid()) {
                     if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
                         $discount = $subtotal * ($coupon->discount_value / 100);
-                    } else {
+                    } elseif ($coupon->discount_type === Coupon::TYPE_FIXED) {
                         $discount = $coupon->discount_value;
+                    } else {
+                        // Free shipping or other types: no monetary discount on items
+                        $discount = 0;
                     }
                 }
             }
 
-            $shipping = \App\Services\ShippingService::calculate(
-                $request->shipping_region ?? '', 
-                $request->shipping_city ? (\App\Services\ShippingService::getMetroManilaDistances()[$request->shipping_city] ?? 0) : 0
-            );
-
-            // Add 50 pesos packaging fee if requested
-            if ($request->has('extra_packaging')) {
-                $shipping += 50.00;
+            // Calculate Shipping
+            $region = $request->shipping_region;
+            $city = $request->shipping_city;
+            $distance = 0;
+            
+            if ($region === 'NCR') {
+                $distances = \App\Services\ShippingService::getMetroManilaDistances();
+                $distance = $distances[$city] ?? 0;
             }
+            
+            $shipping = \App\Services\ShippingService::calculate($region, (float)$distance);
 
             // Combine components into a full shipping address
             $fullAddress = $request->shipping_address;
@@ -164,24 +206,54 @@ final class OrderController extends Controller
             }
             $fullAddress .= ", " . ($regions[$request->shipping_region] ?? $request->shipping_region);
 
-            // Call the Stored Procedure
-            DB::statement("SET @p_order_id = 0;");
-            DB::statement("CALL sp_ProcessOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_order_id)", [
-                $user->id,
-                $fullAddress,
-                $request->payment_method,
-                $request->customer_name ?? $user->name,
-                $request->customer_email ?? $user->email,
-                $request->customer_phone,
-                $couponCode,
-                $discount,
-                $shipping,
-                $request->notes,
-                (int) $request->has('extra_packaging')
-            ]);
+            // Call the Stored Procedure with isolation logic
+            $selectedItemIds = session('selected_cart_items', []);
+            
+            // 1. Remove unselected items temporarily (This is auto-committed)
+            $unselectedItems = [];
+            if (!empty($selectedItemIds)) {
+                $unselectedItems = DB::table('cart_items')
+                    ->where('cart_id', $cart->id)
+                    ->whereNotIn('id', $selectedItemIds)
+                    ->get()
+                    ->map(function($item) {
+                        return (array)$item;
+                    })->toArray();
 
-            $result = DB::selectOne("SELECT @p_order_id as id");
-            $orderId = $result->id;
+                DB::table('cart_items')
+                    ->where('cart_id', $cart->id)
+                    ->whereNotIn('id', $selectedItemIds)
+                    ->delete();
+            }
+
+            try {
+                // 2. Call the Stored Procedure (It handles its own transaction)
+                DB::statement("SET @p_order_id = 0;");
+                DB::statement("CALL sp_ProcessOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_order_id)", [
+                    $user->id,
+                    $fullAddress,
+                    $request->payment_method,
+                    $request->customer_name ?? $user->name,
+                    $request->customer_email ?? $user->email,
+                    $request->customer_phone,
+                    $couponCode,
+                    $discount,
+                    $shipping,
+                    $request->notes,
+                    (int) $request->has('extra_packaging')
+                ]);
+
+                $result = DB::selectOne("SELECT @p_order_id as id");
+                $orderId = $result->id;
+            } finally {
+                // 3. Restore the unselected items (Always run this, even if SP fails)
+                if (!empty($unselectedItems)) {
+                    foreach ($unselectedItems as $item) {
+                        unset($item['id']); 
+                        DB::table('cart_items')->insert($item);
+                    }
+                }
+            }
 
             if (!$orderId) {
                 throw new \Exception("Order processing failed at database level.");
@@ -195,7 +267,10 @@ final class OrderController extends Controller
             }
 
             $order = Order::find($orderId);
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderConfirmation($order));
+            $order->update(['courier_name' => \App\Services\ShippingService::getCarrier($region)]);
+            
+            defer(fn() => \Illuminate\Support\Facades\Mail::to($order->customer_email)
+                ->send(new \App\Mail\OrderConfirmation($order)));
 
             return redirect()->route('orders.confirmation', $orderId)->with('success', 'Order placed successfully! A confirmation receipt has been sent to your email.');
         } catch (\Exception $e) {
@@ -243,9 +318,21 @@ final class OrderController extends Controller
      */
     public function confirmation($id)
     {
+        // Check if the order belongs to the user
         $order = Order::with(['items.product'])
+            ->where('id', $id)
             ->where('user_id', Auth::id())
-            ->findOrFail($id);
+            ->first();
+
+        // If not authorized, redirect to their most recent confirmation instead of showing an error
+        if (!$order) {
+            $latestOrder = Order::where('user_id', Auth::id())->latest()->first();
+            if ($latestOrder) {
+                return redirect()->route('orders.confirmation', $latestOrder->id)
+                    ->with('warning', 'You do not have access to that acquisition. Showing your most recent one.');
+            }
+            return redirect()->route('orders.index')->with('error', 'Unauthorized access.');
+        }
 
         return view('orders.confirmation', compact('order'));
     }

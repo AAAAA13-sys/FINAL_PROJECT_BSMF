@@ -13,6 +13,9 @@
         <div class="col-md-7">
             <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
                 @csrf
+                @foreach($items as $item)
+                    <input type="hidden" name="selected_items[]" value="{{ $item->id }}">
+                @endforeach
                 <!-- Shipping Info -->
                 <div class="card bg-dark border-secondary rounded-4 p-4 mb-3 shadow-lg">
                     <h6 class="text-white text-uppercase italic mb-4">SHIPPING <span>DETAILS</span></h6>
@@ -56,14 +59,14 @@
                 </div>
 
                 <!-- Collector Preferences -->
-                <div class="card bg-dark border-warning rounded-4 p-4 mb-3 shadow-lg">
-                    <h6 class="text-warning text-uppercase italic mb-3">COLLECTOR <span>PREFERENCES</span></h6>
+                <div class="card bg-dark border-glass rounded-4 p-4 mb-3 shadow-lg">
+                    <h6 class="text-white text-uppercase italic mb-3">COLLECTOR <span>PREFERENCES</span></h6>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" name="extra_packaging" id="extra_packaging" onchange="updateShipping()">
                         <label class="form-check-label text-white fw-bold small" for="extra_packaging">
                             EXTRA PROTECTION PACKAGING (+ ₱50.00)
                         </label>
-                        <p class="text-muted small mb-0" style="font-size: 0.7rem;">Crucial for carded collectors. We use double-walled boxes and extra bubble wrap.</p>
+                        <p class="text-muted small mb-0 fs-07rem">Crucial for carded collectors. We use double-walled boxes and extra bubble wrap.</p>
                     </div>
                     <div>
                         <label class="input-label-sm">Special Instructions</label>
@@ -100,11 +103,11 @@
                 <form action="{{ route('coupon.apply') }}" method="POST" class="d-flex gap-2">
                     @csrf
                     <input type="text" name="code" class="form-control garage-input" placeholder="ENTER CODE" value="{{ $couponCode }}">
-                    <button type="submit" class="btn btn-outline-warning fw-bold px-4" style="border-radius: 12px; font-size: 0.75rem;">APPLY</button>
+                    <button type="submit" class="btn btn-outline-danger fw-bold px-4 coupon-btn-apply">APPLY</button>
                 </form>
             </div>
 
-            <div class="card bg-dark border-secondary rounded-4 shadow-lg sticky-top" style="top: 100px;">
+            <div class="card bg-dark border-secondary rounded-4 shadow-lg sticky-top checkout-sticky">
                 <div class="card-body p-4">
                     <h6 class="text-white text-uppercase italic mb-4">YOUR <span>SELECTION</span></h6>
                     
@@ -112,7 +115,7 @@
                         @foreach($cart->items as $item)
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex align-items-center gap-3">
-                                    <span class="badge bg-secondary rounded-pill" style="font-size: 0.6rem;">{{ $item->quantity }}x</span>
+                                    <span class="badge bg-secondary rounded-pill badge-xs">{{ $item->quantity }}x</span>
                                     <span class="text-white small fw-bold">{{ $item->product->name }}</span>
                                 </div>
                                 <span class="text-white small">₱{{ number_format($item->product->price * $item->quantity, 2) }}</span>
@@ -134,7 +137,7 @@
                                 <form action="{{ route('coupon.remove') }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" style="background: none; border: none; color: var(--text-muted); font-size: 0.6rem; text-decoration: underline; padding: 0;">Remove</button>
+                                    <button type="submit" class="remove-coupon-link">Remove</button>
                                 </form>
                             </div>
                             <span>- ₱{{ number_format($discount, 2) }}</span>
@@ -142,21 +145,21 @@
                     @endif
 
                     <div class="d-flex justify-content-between mb-2 text-white opacity-75 small">
-                        <span>Freight (LBC)</span>
+                        <span>Courier: <span id="carrier_name">LBC Express</span></span>
                         <span id="display_shipping">₱0.00</span>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-4 text-white opacity-75 small" id="packaging_line" style="display: none !important;">
+                    <div class="d-flex justify-content-between mb-4 text-white opacity-75 small d-none-important" id="packaging_line">
                         <span>Extra Protection</span>
                         <span id="display_packaging">₱50.00</span>
                     </div>
 
                     <div class="d-flex justify-content-between mb-4 h4 text-white">
                         <span class="fw-black italic">TOTAL</span>
-                        <span class="fw-black text-warning" id="display_total">₱{{ number_format($subtotal - $discount, 2) }}</span>
+                        <span class="fw-black text-white" id="display_total">₱{{ number_format($subtotal - $discount, 2) }}</span>
                     </div>
 
-                    <button type="submit" form="checkout-form" class="btn btn-warning w-100 py-3 fw-black text-uppercase ls-2 shadow-lg" style="border-radius: 12px;">COMPLETE ACQUISITION</button>
+                    <button type="submit" form="checkout-form" class="btn btn-danger w-100 py-3 fw-black text-uppercase ls-2 shadow-lg rounded-3">COMPLETE ACQUISITION</button>
                 </div>
             </div>
         </div>
@@ -188,33 +191,42 @@
     function updateShipping() {
         const region = document.getElementById('shipping_region').value;
         const citySelect = document.getElementById('shipping_city');
+        const selectedCity = citySelect.options[citySelect.selectedIndex];
+        const distance = selectedCity ? parseFloat(selectedCity.getAttribute('data-km') || 0) : 0;
+        
         const extraPackaging = document.getElementById('extra_packaging').checked;
         const packagingLine = document.getElementById('packaging_line');
+        const carrierDisplay = document.getElementById('carrier_name');
         
         let fee = 0;
+        let carrier = "Freight";
+
+        if (region) {
+            // JS implementation of ShippingService logic
+            if (region === 'NCR') {
+                carrier = "Lalamove";
+                const base = 49.00;
+                if (distance <= 0) fee = 60.00;
+                else if (distance <= 5) fee = base + (distance * 6);
+                else fee = base + (5 * 6) + ((distance - 5) * 5);
+            } else {
+                carrier = "LBC Express";
+                const luzonRegions = ['Region I', 'Region II', 'Region III', 'Region IV-A', 'Region V', 'CAR'];
+                fee = luzonRegions.includes(region) ? 150.00 : 180.00;
+            }
+        }
+
         let packagingFee = extraPackaging ? 50 : 0;
 
         if (extraPackaging) {
-            packagingLine.setAttribute('style', 'display: flex !important;');
+            packagingLine.classList.remove('d-none-important');
+            packagingLine.classList.add('d-flex-important');
         } else {
-            packagingLine.setAttribute('style', 'display: none !important;');
+            packagingLine.classList.remove('d-flex-important');
+            packagingLine.classList.add('d-none-important');
         }
 
-        if (region === 'NCR') {
-            const selectedCity = citySelect.options[citySelect.selectedIndex];
-            const km = parseFloat(selectedCity.getAttribute('data-km')) || 0;
-            if (km > 0) {
-                let base = 49;
-                if (km <= 5) fee = base + (km * 6);
-                else fee = base + (5 * 6) + ((km - 5) * 5);
-            } else {
-                fee = 60;
-            }
-        } else if (region) {
-            const luzon = ['Region I', 'Region II', 'Region III', 'Region IV-A', 'Region V', 'CAR'];
-            fee = luzon.includes(region) ? 150 : 160;
-        }
-
+        carrierDisplay.innerText = carrier;
         document.getElementById('display_shipping').innerText = '₱' + fee.toLocaleString(undefined, {minimumFractionDigits: 2});
         document.getElementById('input_shipping_fee').value = fee;
         

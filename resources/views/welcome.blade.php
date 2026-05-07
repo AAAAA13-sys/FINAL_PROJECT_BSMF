@@ -7,7 +7,7 @@
     <div class="hero-content fade-in">
         <h4 class="detail-category mb-2">ULTIMATE COLLECTOR SERIES</h4>
         <h1>BSMF <span>GARAGE</span></h1>
-        <p class="detail-desc text-center" style="max-width: 600px;">
+        <p class="detail-desc text-center hero-subtitle-limited">
             The ultimate destination for premium die-cast enthusiasts. 
             Discover rare grails, carded legends, and loose selection collectibles.
         </p>
@@ -54,17 +54,3 @@
     </div>
 </section>
 @endsection
-
-@push('styles')
-<style>
-    /* Specific overrides to keep the blade 100% clean of style attributes */
-    .hero {
-        background-attachment: fixed;
-        min-height: 90vh;
-    }
-    .hero h1 {
-        font-size: clamp(3rem, 10vw, 8rem);
-        letter-spacing: -4px;
-    }
-</style>
-@endpush

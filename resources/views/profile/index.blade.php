@@ -2,9 +2,16 @@
 
 @section('title', 'Collector Profile - BSMF GARAGE')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/profile-ui.css') }}">
+@endpush
+
 @section('content')
 <div class="profile-hero">
     <div class="container">
+        <div class="d-flex align-items-center gap-3 mb-5">
+            <h2 class="text-white text-uppercase italic fw-black mb-0">COLLECTOR <span>PROFILE</span></h2>
+        </div>
         <div class="profile-header-content">
             <div class="profile-avatar">
                 <div class="avatar-inner">
@@ -29,11 +36,11 @@
             @method('PUT')
 
             <div class="row g-5">
-                <div class="col-lg-8">
+                <div class="col-lg-10 offset-lg-1">
                     <div class="glass-card mb-5">
                         <div class="card-header">
                             <i class="fas fa-id-card"></i>
-                            <h3>IDENTITY DOSSIER</h3>
+                            <h3>IDENTITY PROFILE</h3>
                         </div>
                         <div class="card-body">
                             <div class="row g-4">
@@ -57,7 +64,7 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating-custom">
-                                        <textarea name="default_shipping_address" id="address" class="custom-input" style="height: 120px" placeholder="Shipping Address">{{ old('default_shipping_address', $user->default_shipping_address) }}</textarea>
+                                        <textarea name="default_shipping_address" id="address" class="custom-input profile-textarea" placeholder="Shipping Address">{{ old('default_shipping_address', $user->default_shipping_address) }}</textarea>
                                         <label for="address">DEFAULT SHIPPING ADDRESS</label>
                                     </div>
                                 </div>
@@ -75,54 +82,27 @@
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="form-floating-custom">
-                                        <input type="password" name="password" id="password" class="custom-input" placeholder="New Password" style="padding-right: 45px;">
+                                        <input type="password" name="password" id="password" class="custom-input password-input-wrapper" placeholder="New Password">
                                         <label for="password">NEW PASSWORD</label>
-                                        <i class="fas fa-eye password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 15px; top: 35px; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;"></i>
+                                        <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('password', this)"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating-custom">
-                                        <input type="password" name="password_confirmation" id="password_confirmation" class="custom-input" placeholder="Confirm Password" style="padding-right: 45px;">
+                                        <input type="password" name="password_confirmation" id="password_confirmation" class="custom-input password-input-wrapper" placeholder="Confirm Password">
                                         <label for="password_confirmation">CONFIRM NEW PASSWORD</label>
-                                        <i class="fas fa-eye password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 15px; top: 35px; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;"></i>
+                                        <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('password_confirmation', this)"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
 
-                <div class="col-lg-4">
-                    <div class="glass-card sticky-sidebar">
-                        <div class="card-header">
-                            <i class="fas fa-cog"></i>
-                            <h3>PREFERENCES</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="preference-item mb-4">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="pref-label">NEWSLETTER</span>
-                                    <div class="form-check form-switch custom-switch">
-                                        <input class="form-check-input" type="checkbox" name="newsletter_subscribed" id="newsletter" {{ $user->newsletter_subscribed ? 'checked' : '' }}>
-                                    </div>
-                                </div>
-                                <p class="pref-desc">Receive exclusive alerts on new arrivals and rare treasures.</p>
-                            </div>
-                            
-                            <div class="preference-item mb-4">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="pref-label">STOCK ALERTS</span>
-                                    <div class="form-check form-switch custom-switch">
-                                        <input class="form-check-input" type="checkbox" checked disabled>
-                                    </div>
-                                </div>
-                                <p class="pref-desc">Automatic notifications when watched models are restocked.</p>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 py-3 mt-4">
-                                <i class="fas fa-save me-2"></i> UPDATE DOSSIER
-                            </button>
-                        </div>
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-primary px-5 py-3 rounded-pill fw-black text-uppercase italic tracking-wider shadow-lg">
+                            <i class="fas fa-save me-2"></i> UPDATE <span>PROFILE</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -130,6 +110,7 @@
     </div>
 </section>
 
+@push('scripts')
 <script>
     function togglePassword(inputId, icon) {
         const input = document.getElementById(inputId);
@@ -144,212 +125,5 @@
         }
     }
 </script>
-
-<style>
-    :root {
-        --profile-accent: #e63946;
-        --profile-bg: #0a0a0a;
-        --profile-card: rgba(20, 20, 20, 0.8);
-        --profile-border: rgba(255, 255, 255, 0.08);
-    }
-
-    .profile-hero {
-        background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1594731828614-83137d6ac4a8?q=80&w=2000') center/cover;
-        padding: 8rem 0 4rem;
-        border-bottom: 1px solid var(--profile-border);
-    }
-
-    .profile-header-content {
-        display: flex;
-        align-items: center;
-        gap: 3rem;
-    }
-
-    .profile-avatar {
-        position: relative;
-    }
-
-    .avatar-inner {
-        width: 150px;
-        height: 150px;
-        background: var(--profile-card);
-        border: 2px solid var(--profile-accent);
-        border-radius: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        color: white;
-        box-shadow: 0 0 30px rgba(230, 57, 70, 0.2);
-    }
-
-    .badge-collector {
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--profile-accent);
-        color: white;
-        padding: 4px 15px;
-        border-radius: 20px;
-        font-size: 0.7rem;
-        font-weight: 900;
-        letter-spacing: 1px;
-        white-space: nowrap;
-        box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
-    }
-
-    .profile-identity h1 {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 900;
-        font-size: 3.5rem;
-        letter-spacing: -2px;
-        margin-bottom: 0.5rem;
-        color: white;
-    }
-
-    .profile-identity p {
-        color: var(--text-muted);
-        font-weight: 600;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-    }
-
-    .profile-section {
-        background: var(--profile-bg);
-        padding: 6rem 0;
-        min-height: 80vh;
-    }
-
-    .glass-card {
-        background: var(--profile-card);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--profile-border);
-        border-radius: 32px;
-        overflow: hidden;
-    }
-
-    .card-header {
-        padding: 2rem 2.5rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        border-bottom: none;
-        background: transparent;
-    }
-
-    .card-header i {
-        color: var(--profile-accent);
-        font-size: 1.2rem;
-    }
-
-    .card-header h3 {
-        color: white;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 800;
-        font-size: 1.1rem;
-        letter-spacing: 1px;
-        margin: 0;
-        text-transform: uppercase;
-    }
-
-    .card-body {
-        padding: 2.5rem;
-    }
-
-    .form-floating-custom {
-        position: relative;
-    }
-
-    .custom-input {
-        width: 100%;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid var(--profile-border);
-        border-radius: 16px;
-        padding: 1.8rem 1.2rem 0.6rem;
-        color: white;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .custom-input:focus {
-        background: rgba(255,255,255,0.06);
-        border-color: var(--profile-accent);
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
-    }
-
-    .form-floating-custom label {
-        position: absolute;
-        top: 0.6rem;
-        left: 1.2rem;
-        font-size: 0.65rem;
-        font-weight: 800;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        pointer-events: none;
-    }
-
-    .pref-label {
-        color: white;
-        font-weight: 800;
-        font-size: 0.9rem;
-        letter-spacing: 1px;
-    }
-
-    .pref-desc {
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        margin: 0;
-    }
-
-    .custom-switch .form-check-input {
-        width: 3rem;
-        height: 1.5rem;
-        background-color: rgba(255,255,255,0.1);
-        border-color: transparent;
-        cursor: pointer;
-    }
-
-    .custom-switch .form-check-input:checked {
-        background-color: var(--profile-accent);
-    }
-
-    .btn-primary {
-        background: var(--profile-accent);
-        border: none;
-        border-radius: 16px;
-        font-weight: 900;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(230, 57, 70, 0.4);
-        background: #f84d5a;
-    }
-
-    .sticky-sidebar {
-        position: sticky;
-        top: 6rem;
-    }
-
-    @media (max-width: 991px) {
-        .profile-header-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 1.5rem;
-        }
-        .profile-identity h1 {
-            font-size: 2.5rem;
-        }
-        .sticky-sidebar {
-            position: static;
-        }
-    }
-</style>
+@endpush
 @endsection

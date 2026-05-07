@@ -25,7 +25,7 @@ final class User extends Authenticatable implements MustVerifyEmail
         'username',
         'email',
         'password',
-        'role',
+        // 'role', // REMOVED: Prevent mass assignment of user roles
         'phone',
         'default_shipping_address',
         'newsletter_subscribed',
@@ -133,6 +133,6 @@ final class User extends Authenticatable implements MustVerifyEmail
             'otp_expires_at' => now()->addMinutes(10),
         ]);
 
-        $this->notify(new \App\Notifications\VerifyEmailOtp($otp));
+        defer(fn () => $this->notify(new \App\Notifications\VerifyEmailOtp($otp)));
     }
 }

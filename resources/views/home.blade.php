@@ -11,8 +11,8 @@
         
         <div class="hero-search-wrapper fade-in delay-2">
             <form action="{{ route('products.index') }}" method="GET" id="searchForm" class="hero-search-form">
-                <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search the archives..." class="hero-search-input">
-                <button type="submit" class="btn btn-primary hero-search-btn px-4">Archive Search</button>
+                <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search the garage..." class="hero-search-input">
+                <button type="submit" class="btn btn-primary hero-search-btn px-4">Garage Search</button>
             </form>
             <div id="searchSuggestions" class="glass search-suggestions-dropdown"></div>
         </div>
@@ -68,7 +68,7 @@
                 <h2 class="section-title stacked">LATEST <span>ARRIVALS</span></h2>
                 <p class="text-muted mt-2">Fresh out of the crate. Limited quantities available for the season.</p>
             </div>
-            <a href="{{ route('products.index') }}" class="btn btn-primary btn-pill-large">View Archive</a>
+            <a href="{{ route('products.index') }}" class="btn btn-primary btn-pill-large">View Garage</a>
         </div>
         
         <div class="product-grid">
@@ -84,6 +84,27 @@
                     </div>
                     <div class="product-card-body">
                         <h3 class="product-card-title">{{ $product->name }}</h3>
+                        <div class="mb-2" style="font-size: 0.8rem; color: var(--color-warm-bronze);">
+                            @php
+                                $rating = $product->reviews_avg_rating ?? 0;
+                                $fullStars = floor($rating);
+                                $halfStar = ($rating - $fullStars) >= 0.5;
+                            @endphp
+                            @for($i = 0; $i < $fullStars; $i++)
+                                <i class="fas fa-star"></i>
+                            @endfor
+                            @if($halfStar)
+                                <i class="fas fa-star-half-alt"></i>
+                                @for($i = 0; $i < 4 - $fullStars; $i++)
+                                    <i class="far fa-star text-muted"></i>
+                                @endfor
+                            @else
+                                @for($i = 0; $i < 5 - $fullStars; $i++)
+                                    <i class="far fa-star text-muted"></i>
+                                @endfor
+                            @endif
+                            <span class="text-muted ms-1" style="font-size: 0.7rem;">({{ $product->reviews_count ?? 0 }})</span>
+                        </div>
                         <div class="product-card-tags">
                             <span class="tag-badge tag-secondary">{{ $product->brand->name }}</span>
                             <span class="tag-badge tag-muted">{{ $product->scale->name }}</span>
@@ -97,7 +118,7 @@
             @empty
                 <div class="empty-state-container">
                     <i class="fas fa-box-open empty-icon"></i>
-                    <p class="empty-text">The archives are being restocked. Check back at dawn.</p>
+                    <p class="empty-text">The garage is being restocked. Check back at dawn.</p>
                 </div>
             @endforelse
         </div>
