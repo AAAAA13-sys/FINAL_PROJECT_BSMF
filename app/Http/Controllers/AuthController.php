@@ -10,8 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
+use App\Traits\LogsActions;
+
 final class AuthController extends Controller
 {
+    use LogsActions;
     /**
      * Show login view.
      */
@@ -52,6 +55,7 @@ final class AuthController extends Controller
             $request->session()->regenerate();
             
             if ($user->isAdministrative()) {
+                $this->logAction('LOGIN', "User logged in: {$user->username}");
                 return redirect()->route('admin.dashboard')->with('success', "Welcome back, {$user->name}!");
             }
             
@@ -144,6 +148,10 @@ final class AuthController extends Controller
         if ($request->wantsJson() || $request->is('api/*')) {
             $request->user()->currentAccessToken()->delete();
             return response()->json(['message' => 'Logged out successfully']);
+        }
+
+        if (auth()->check() && auth()->user()->isAdministrative()) {
+            $this->logAction('LOGOUT', "User logged out: " . auth()->user()->username);
         }
 
         Auth::logout();

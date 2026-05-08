@@ -4,6 +4,30 @@
 <div class="fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="card-title-premium" style="font-size: 2rem;">SYSTEM <span style="color: var(--secondary);">LOGS</span></h2>
+        
+        <form action="{{ route('admin.audit-logs') }}" method="GET" class="d-flex gap-2 align-items-end">
+            <div class="filter-group">
+                <label class="text-muted smaller fw-bold mb-1 d-block">FILTER BY ACTION</label>
+                <select name="action_filter" class="form-select form-select-sm bg-dark text-white border-secondary" style="min-width: 150px;" onchange="this.form.submit()">
+                    <option value="">ALL ACTIONS</option>
+                    @foreach($actions as $action)
+                        <option value="{{ $action }}" {{ request('action_filter') == $action ? 'selected' : '' }}>{{ $action }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="text-muted smaller fw-bold mb-1 d-block">FILTER BY OPERATOR</label>
+                <select name="user_filter" class="form-select form-select-sm bg-dark text-white border-secondary" style="min-width: 150px;" onchange="this.form.submit()">
+                    <option value="">ALL OPERATORS</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}" {{ request('user_filter') == $user->id ? 'selected' : '' }}>{{ strtoupper($user->username) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <a href="{{ route('admin.audit-logs') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" title="Reset Filters">
+                <i class="fas fa-undo"></i>
+            </a>
+        </form>
     </div>
 
     <div class="admin-table-container shadow-lg">

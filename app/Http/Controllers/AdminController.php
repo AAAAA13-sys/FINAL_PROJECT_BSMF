@@ -537,14 +537,28 @@ final class AdminController extends Controller
     /**
      * Display the audit log list for the Owner.
      */
-    public function auditLogs()
+    public function auditLogs(Request $request)
     {
         if (auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized access to Audit Logs.');
         }
 
-        $logs = \App\Models\AuditLog::with('user')->latest()->paginate(50);
-        return view('admin.audit-logs', compact('logs'));
+        $query = \App\Models\AuditLog::with('user');
+
+        if ($request->filled('action_filter')) {
+            $query->where('action', $request->action_filter);
+        }
+
+        if ($request->filled('user_filter')) {
+            $query->where('user_id', $request->user_filter);
+        }
+
+        $logs = $query->latest()->paginate(50)->appends($request->all());
+        
+        $actions = \App\Models\AuditLog::select('action')->distinct()->pluck('action');
+        $users = \App\Models\User::whereIn('role', ['admin', 'staff'])->get();
+
+        return view('admin.audit-logs', compact('logs', 'actions', 'users'));
     }
 
 

@@ -16,16 +16,16 @@ return new class extends Migration
             CREATE TRIGGER trig_AuditProductInsert AFTER INSERT ON products FOR EACH ROW
             BEGIN
                 INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'PRODUCT_CREATED', CONCAT('Created product: ', NEW.name), 'App\\\\Models\\\\Product', NEW.id, 
-                JSON_OBJECT('name', NEW.name, 'price', NEW.price, 'stock', NEW.stock_quantity), @current_ip, NOW(), NOW());
+                VALUES (@current_user_id, 'PRODUCT_CREATE', CONCAT('Created product: ', NEW.name), 'App\\\\Models\\\\Product', NEW.id, 
+                JSON_OBJECT('name', NEW.name, 'casting', NEW.casting_name, 'price', NEW.price, 'stock', NEW.stock_quantity), @current_ip, NOW(), NOW());
             END;
 
             DROP TRIGGER IF EXISTS trig_AuditProductUpdate;
             CREATE TRIGGER trig_AuditProductUpdate AFTER UPDATE ON products FOR EACH ROW
             BEGIN
-                IF OLD.stock_quantity <> NEW.stock_quantity OR OLD.price <> NEW.price OR OLD.name <> NEW.name THEN
+                IF OLD.stock_quantity <> NEW.stock_quantity OR OLD.price <> NEW.price OR OLD.name <> NEW.name OR OLD.description <> NEW.description THEN
                     INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, new_values, ip_address, created_at, updated_at)
-                    VALUES (@current_user_id, 'PRODUCT_UPDATED', CONCAT('Updated product: ', NEW.name), 'App\\\\Models\\\\Product', NEW.id, 
+                    VALUES (@current_user_id, 'PRODUCT_UPDATE', CONCAT('Updated product: ', NEW.name), 'App\\\\Models\\\\Product', NEW.id, 
                     JSON_OBJECT('name', OLD.name, 'price', OLD.price, 'stock', OLD.stock_quantity),
                     JSON_OBJECT('name', NEW.name, 'price', NEW.price, 'stock', NEW.stock_quantity), @current_ip, NOW(), NOW());
                 END IF;
@@ -35,7 +35,7 @@ return new class extends Migration
             CREATE TRIGGER trig_AuditProductDelete AFTER DELETE ON products FOR EACH ROW
             BEGIN
                 INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'PRODUCT_DELETED', CONCAT('Deleted product: ', OLD.name), 'App\\\\Models\\\\Product', OLD.id, 
+                VALUES (@current_user_id, 'PRODUCT_DELETE', CONCAT('Deleted product: ', OLD.name), 'App\\\\Models\\\\Product', OLD.id, 
                 JSON_OBJECT('name', OLD.name, 'price', OLD.price, 'stock', OLD.stock_quantity), @current_ip, NOW(), NOW());
             END;
 
@@ -65,7 +65,7 @@ return new class extends Migration
             CREATE TRIGGER trig_AuditCouponInsert AFTER INSERT ON coupons FOR EACH ROW
             BEGIN
                 INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'COUPON_CREATED', CONCAT('Created coupon: ', NEW.coupon_code), 'App\\\\Models\\\\Coupon', NEW.id, 
+                VALUES (@current_user_id, 'COUPON_CREATE', CONCAT('Created coupon: ', NEW.coupon_code), 'App\\\\Models\\\\Coupon', NEW.id, 
                 JSON_OBJECT('code', NEW.coupon_code, 'discount', NEW.discount_value), @current_ip, NOW(), NOW());
             END;
 
@@ -73,17 +73,52 @@ return new class extends Migration
             CREATE TRIGGER trig_AuditCouponDelete AFTER DELETE ON coupons FOR EACH ROW
             BEGIN
                 INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'COUPON_DELETED', CONCAT('Deleted coupon: ', OLD.coupon_code), 'App\\\\Models\\\\Coupon', OLD.id, 
+                VALUES (@current_user_id, 'COUPON_DELETE', CONCAT('Deleted coupon: ', OLD.coupon_code), 'App\\\\Models\\\\Coupon', OLD.id, 
                 JSON_OBJECT('code', OLD.coupon_code, 'discount', OLD.discount_value), @current_ip, NOW(), NOW());
             END;
 
             -- 5. User Audit Triggers
+            DROP TRIGGER IF EXISTS trig_AuditUserUpdate;
+            CREATE TRIGGER trig_AuditUserUpdate AFTER UPDATE ON users FOR EACH ROW
+            BEGIN
+                IF OLD.role <> NEW.role THEN
+                    INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, new_values, ip_address, created_at, updated_at)
+                    VALUES (@current_user_id, 'USER_ROLE_UPDATE', CONCAT('Updated user ', NEW.username, ' role from ', OLD.role, ' to ', NEW.role), 
+                    'App\\\\Models\\\\User', NEW.id, JSON_OBJECT('role', OLD.role), JSON_OBJECT('role', NEW.role), @current_ip, NOW(), NOW());
+                END IF;
+            END;
+
             DROP TRIGGER IF EXISTS trig_AuditUserDelete;
             CREATE TRIGGER trig_AuditUserDelete AFTER DELETE ON users FOR EACH ROW
             BEGIN
                 INSERT INTO audit_logs (user_id, action, description, model_type, model_id, old_values, ip_address, created_at, updated_at)
-                VALUES (@current_user_id, 'USER_DELETED', CONCAT('Deleted user: ', OLD.username), 'App\\\\Models\\\\User', OLD.id, 
+                VALUES (@current_user_id, 'USER_DELETE', CONCAT('Deleted user: ', OLD.username), 'App\\\\Models\\\\User', OLD.id, 
                 JSON_OBJECT('username', OLD.username, 'email', OLD.email), @current_ip, NOW(), NOW());
+            END;
+
+            -- 6. Taxonomy Audit Triggers (Brand, Scale, Series)
+            DROP TRIGGER IF EXISTS trig_AuditBrandInsert;
+            CREATE TRIGGER trig_AuditBrandInsert AFTER INSERT ON brands FOR EACH ROW
+            BEGIN
+                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
+                VALUES (@current_user_id, 'BRAND_CREATE', CONCAT('Created brand: ', NEW.name), 'App\\\\Models\\\\Brand', NEW.id, 
+                JSON_OBJECT('name', NEW.name), @current_ip, NOW(), NOW());
+            END;
+
+            DROP TRIGGER IF EXISTS trig_AuditScaleInsert;
+            CREATE TRIGGER trig_AuditScaleInsert AFTER INSERT ON scales FOR EACH ROW
+            BEGIN
+                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
+                VALUES (@current_user_id, 'SCALE_CREATE', CONCAT('Created scale: ', NEW.name), 'App\\\\Models\\\\Scale', NEW.id, 
+                JSON_OBJECT('name', NEW.name), @current_ip, NOW(), NOW());
+            END;
+
+            DROP TRIGGER IF EXISTS trig_AuditSeriesInsert;
+            CREATE TRIGGER trig_AuditSeriesInsert AFTER INSERT ON series FOR EACH ROW
+            BEGIN
+                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
+                VALUES (@current_user_id, 'SERIES_CREATE', CONCAT('Created series: ', NEW.name), 'App\\\\Models\\\\Series', NEW.id, 
+                JSON_OBJECT('name', NEW.name), @current_ip, NOW(), NOW());
             END;
         ");
     }
@@ -100,6 +135,10 @@ return new class extends Migration
         DB::unprepared("DROP TRIGGER IF EXISTS trig_LowStockAlert;");
         DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditCouponInsert;");
         DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditCouponDelete;");
+        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditUserUpdate;");
         DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditUserDelete;");
+        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditBrandInsert;");
+        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditScaleInsert;");
+        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditSeriesInsert;");
     }
 };
