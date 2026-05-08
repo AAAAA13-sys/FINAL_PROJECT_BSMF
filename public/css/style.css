@@ -2,7 +2,7 @@
     /* Premium Spectrum Palette */
     --color-brand-red: #e63946;
     --color-warm-bronze: #A69275;
-    --color-cool-slate: #7598B9;
+    --color-cool-slate: #1E222A; /* Reverted to dark neutral as requested */
     --color-forest-emerald: #265A42;
     --color-surface-base: #0A0B0E;
     --color-surface-elevated: #121419;
@@ -13,9 +13,9 @@
 
     /* Legacy Mappings to Unified System */
     --primary: var(--color-brand-red);
-    --primary-hover: #5A131A;
-    --secondary: var(--color-cool-slate);
-    --secondary-blue: var(--color-cool-slate);
+    --primary-hover: #800C1F;
+    --secondary: #DCDFE4; /* Light grey instead of blue */
+    --secondary-blue: var(--color-surface-border);
     --bg-dark: var(--color-surface-elevated);
     --bg-darker: var(--color-surface-base);
     --card-bg: var(--color-surface-elevated);
@@ -27,8 +27,8 @@
     --glass-border: var(--color-surface-border);
 
     /* Bootstrap Overrides for Premium Aesthetic */
-    --bs-primary: var(--color-cool-slate);
-    --bs-primary-rgb: 92, 107, 122;
+    --bs-primary: var(--color-brand-red);
+    --bs-primary-rgb: 230, 57, 70;
     --bs-info: var(--color-cool-slate);
     --bs-info-rgb: 92, 107, 122;
     --bs-success: var(--color-forest-emerald);
@@ -135,7 +135,7 @@ nav.scrolled {
     font-weight: 900;
     text-transform: uppercase;
     font-style: italic;
-    background: linear-gradient(135deg, var(--secondary) 0%, #ff4d4d 100%);
+    background: linear-gradient(135deg, #800C1F 0%, #e63946 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -558,24 +558,38 @@ nav.scrolled {
     text-align: center;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, #a50f25 100%);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(128, 12, 31, 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #a50f25 0%, var(--primary) 100%) !important;
+.btn-primary, .btn-danger, .btn-brand-primary {
+    background: linear-gradient(135deg, #800C1F 0%, #e63946 100%) !important;
     color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(128, 12, 31, 0.5), 0 0 0 2px rgba(128, 12, 31, 0.2);
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important; /* Dark, subtle shadow only */
+    padding: 0.8rem 2rem !important;
 }
 
-.btn-primary:active {
-    transform: translateY(1px);
-    box-shadow: var(--surface-pressed);
+.btn-primary:hover, .btn-danger:hover, .btn-brand-primary:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5) !important; /* Subtler hover shadow */
+    color: white !important;
+}
+
+.btn-outline-danger, .btn-outline-primary {
+    background: transparent !important;
+    border: 2px solid #e63946 !important;
+    color: #e63946 !important;
+    border-radius: 12px !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-outline-danger:hover, .btn-outline-primary:hover {
+    background: #e63946 !important;
+    color: white !important;
 }
 
 /* --- NEW SEMANTIC BUTTON CLASSES --- */
