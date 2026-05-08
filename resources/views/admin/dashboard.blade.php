@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="fade-in">
+<div class="fade-in d-flex flex-column h-100">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="admin-header-title">BSMF <span>DASHBOARD</span></h2>
         <div class="text-end">
@@ -14,45 +14,45 @@
     <!-- Stats Grid -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="stat-card glass border-secondary p-4">
-                <p class="text-cool-slate text-xs text-uppercase tracking-wider mb-2 fw-bolder">Total Revenue</p>
-                <h3 class="text-cool-slate fw-black mb-0 fs-3 tracking-tighter">₱{{ number_format($totalSales, 2) }}</h3>
+            <div class="stat-card glass border-glass p-4">
+                <p class="text-white-50 text-xs text-uppercase tracking-wider mb-2 fw-bolder">Total Revenue</p>
+                <h3 class="text-white fw-black mb-0 fs-3 tracking-tighter">₱{{ number_format($totalSales, 2) }}</h3>
                 <div class="progress mt-3 h-4px bg-glass">
-                    <div class="progress-bar bg-warning w-100"></div>
+                    <div class="progress-bar bg-white w-100"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card glass border-primary p-4">
-                <p class="text-primary text-xs text-uppercase tracking-wider mb-2 fw-bolder">Total Orders</p>
+            <div class="stat-card glass border-glass p-4">
+                <p class="text-white-50 text-xs text-uppercase tracking-wider mb-2 fw-bolder">Total Orders</p>
                 <h3 class="text-white fw-black mb-0 fs-3 tracking-tighter">{{ $totalOrders }}</h3>
                 <div class="progress mt-3 h-4px bg-glass">
-                    <div class="progress-bar bg-primary w-100"></div>
+                    <div class="progress-bar bg-danger w-100"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card glass border-info p-4">
-                <p class="text-info text-xs text-uppercase tracking-wider mb-2 fw-bolder">Inventory (SKUs)</p>
-                <h3 class="text-info fw-black mb-0 fs-3 tracking-tighter">{{ $totalProducts }}</h3>
+            <div class="stat-card glass border-glass p-4">
+                <p class="text-white-50 text-xs text-uppercase tracking-wider mb-2 fw-bolder">Inventory (SKUs)</p>
+                <h3 class="text-white fw-black mb-0 fs-3 tracking-tighter">{{ $totalProducts }}</h3>
                 <div class="progress mt-3 h-4px bg-glass">
-                    <div class="progress-bar bg-info w-100"></div>
+                    <div class="progress-bar bg-white w-100"></div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card glass border-success p-4">
-                <p class="text-success text-xs text-uppercase tracking-wider mb-2 fw-bolder">Active Collectors</p>
+            <div class="stat-card glass border-glass p-4">
+                <p class="text-white-50 text-xs text-uppercase tracking-wider mb-2 fw-bolder">Active Collectors</p>
                 <h3 class="text-white fw-black mb-0 fs-3 tracking-tighter">{{ $totalCustomers }}</h3>
                 <div class="progress mt-3 h-4px bg-glass">
-                    <div class="progress-bar bg-success w-100"></div>
+                    <div class="progress-bar bg-danger w-100"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Revenue Chart Section -->
-    <div class="card glass border-secondary shadow-lg p-3 mb-4">
+    <div class="card glass border-glass shadow-lg p-3 mb-4 flex-grow-1 d-flex flex-column">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="text-white text-uppercase fst-italic mb-0 text-sm">REVENUE <span>PERFORMANCE</span></h6>
             <form action="{{ route('admin.dashboard') }}" method="GET" id="revenueFilterForm">
@@ -62,8 +62,8 @@
                 </select>
             </form>
         </div>
-        <div class="h-180px">
-            <canvas id="revenueChart"></canvas>
+        <div class="position-relative flex-grow-1 min-h-180px">
+            <canvas id="revenueChart" class="position-absolute w-100 h-100"></canvas>
         </div>
     </div>
 

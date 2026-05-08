@@ -11,7 +11,7 @@
             </a>
         </div>
         <div class="d-flex align-items-center gap-3 mb-5">
-            <h2 class="text-white text-uppercase italic fw-black mb-0">YOUR <span>CART</span></h2>
+            <h2 class="text-white text-uppercase fw-black mb-0">YOUR <span>CART</span></h2>
             <span class="text-xs text-cool-slate fw-black text-uppercase tracking-wider bg-slate-subtle px-3 py-1 rounded-pill border-slate-subtle">{{ $cart->items->count() }} MODELS</span>
         </div>
 
@@ -89,7 +89,7 @@
                     </div>
 
                     <div class="reveal">
-                        <h3 class="text-white text-uppercase italic mb-4 fw-black fs-4 tracking-wide">VAULT <span>RECOMMENDATIONS</span></h3>
+                        <h3 class="text-white text-uppercase mb-4 fw-black fs-4 tracking-wide">VAULT <span>RECOMMENDATIONS</span></h3>
                         <div class="row g-4">
                             @foreach($recommendedProducts as $rec)
                                 <div class="col-md-3">
@@ -134,7 +134,7 @@
 
                 <div class="col-md-4">
                     <div class="bg-surface-elevated border-glass rounded-24 p-5 shadow-raised sticky-top-120">
-                        <h4 class="text-white text-uppercase italic mb-4 fw-black tracking-wide">GARAGE <span>SUMMARY</span></h4>
+                        <h4 class="text-white text-uppercase mb-4 fw-black tracking-wide">GARAGE <span>SUMMARY</span></h4>
                         
                         @if($discount > 0)
                             <div class="d-flex justify-content-between mb-3 text-sm text-brand-red fw-semibold">
@@ -166,7 +166,7 @@
         @else
             <div class="text-center py-5 px-4 bg-surface-elevated border-glass rounded-40 shadow-inset">
                 <i class="fas fa-box-open fs-huge text-cool-slate mb-5 opacity-20"></i>
-                <h2 class="text-white mb-2 fw-black text-uppercase fst-italic">Your Garage is Empty</h2>
+                <h2 class="text-white mb-2 fw-black text-uppercase">Your Garage is Empty</h2>
                 <p class="text-muted fs-5 mb-5 fw-medium">Start building your legendary collection today.</p>
                 <a href="{{ route('products.index') }}" class="btn btn-primary px-5 py-3 rounded-pill fw-black tracking-wider">DISCOVER MODELS</a>
             </div>

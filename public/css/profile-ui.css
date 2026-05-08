@@ -2,8 +2,8 @@
 :root {
     --profile-accent: var(--color-brand-red);
     --profile-bg: #0a0a0a;
-    --profile-card: rgba(20, 20, 20, 0.8);
-    --profile-border: rgba(255, 255, 255, 0.08);
+    --profile-card: rgba(20, 22, 28, 0.6);
+    --profile-border: rgba(255, 255, 255, 0.05);
 }
 
 .profile-hero {
@@ -117,9 +117,10 @@
 
 .custom-input {
     width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--profile-border);
-    border-radius: 16px;
+    background: var(--bg-dark);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--surface-inset);
+    border-radius: 12px;
     padding: 1.8rem 1.2rem 0.6rem;
     color: white;
     font-weight: 600;
@@ -127,10 +128,9 @@
 }
 
 .custom-input:focus {
-    background: rgba(255,255,255,0.06);
-    border-color: var(--profile-accent);
+    border-color: var(--secondary);
     outline: none;
-    box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
+    box-shadow: var(--surface-inset), 0 0 10px rgba(117, 152, 185, 0.2);
 }
 
 select.custom-input {

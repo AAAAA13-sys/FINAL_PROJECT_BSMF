@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/admin-ui.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/garage-main.css') }}?v={{ time() }}">
 </head>
@@ -69,7 +69,7 @@
             </nav>
         </aside>
 
-        <main class="admin-main fade-in">
+        <main class="admin-main fade-in d-flex flex-column">
             @if(session('success'))
                 <div class="auth-alert auth-alert-info auto-hide-alert d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-check-circle me-2"></i> {{ session('success') }}</span>

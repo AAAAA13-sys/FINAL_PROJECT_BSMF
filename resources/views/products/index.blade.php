@@ -141,6 +141,12 @@
                                     <div class="badge-container-grid">
                                         <span class="badge-brand-grid">{{ $product->brand->name }}</span>
                                         <span class="badge-scale-grid">{{ $product->scale->name }}</span>
+                                        @if($product->is_carded)
+                                            <span style="background: rgba(255,255,255,0.1); color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;">CARDED</span>
+                                        @endif
+                                        @if($product->is_loose)
+                                            <span style="background: rgba(230, 57, 70, 0.15); color: var(--color-brand-red); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;">LOOSE</span>
+                                        @endif
                                     </div>
                                     
                                     <p class="product-description-grid">{{ Str::limit($product->casting_name, 60) }}</p>

@@ -4,8 +4,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
-    const mobileToggle = document.querySelector('.mobile-toggle');
-    const navLinks = document.querySelector('.nav-links');
+    const mobileToggle = document.querySelector('.mobile-toggle') || document.querySelector('.mobile-toggle-minimal');
+    const navLinks = document.querySelector('.nav-links') || document.querySelector('.nav-links-minimal');
     if (mobileToggle && navLinks) {
         mobileToggle.addEventListener('click', (e) => {
             e.stopPropagation();
