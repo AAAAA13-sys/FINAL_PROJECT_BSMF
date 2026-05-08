@@ -1,11 +1,4 @@
 /* BSMF Auth Unified Styles */
-
-:root {
-    --accent-color: var(--color-brand-red);
-    --secondary-blue: #7598B9;
-    /* Synchronized with user's manual preference */
-}
-
 .auth-wrapper-padded {
     padding-top: 6rem;
 }

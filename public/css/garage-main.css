@@ -41,7 +41,7 @@
 }
 
 h1 span, h2 span, h3 span {
-    background: linear-gradient(135deg, var(--color-cool-slate) 0%, #ff4d4d 100%);
+    background: linear-gradient(135deg, #800C1F 0%, #ff4d4d 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -51,19 +51,18 @@ h1 span, h2 span, h3 span {
 }
 
 .text-price-grid {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     color: white;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 .text-product-title-grid {
     color: #ffffff !important;
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     margin-bottom: 0.4rem;
-    font-weight: 900;
-    font-style: italic;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: -0.5px;
+    letter-spacing: 0.5px;
 }
 
 /* --- Components --- */
@@ -97,8 +96,8 @@ h1 span, h2 span, h3 span {
 }
 
 .btn-filter-apply:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
 }
 
 .btn-filter-reset {
@@ -147,7 +146,7 @@ h1 span, h2 span, h3 span {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--color-cool-slate), var(--color-brand-red));
+    background: linear-gradient(90deg, #800C1F, var(--color-brand-red));
     opacity: 0;
     transition: opacity 0.4s ease;
 }
@@ -197,7 +196,7 @@ h1 span, h2 span, h3 span {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: linear-gradient(135deg, var(--color-cool-slate) 0%, #4a90e2 100%);
+    background: linear-gradient(135deg, #800C1F 0%, #e63946 100%);
     color: #fff;
     padding: 4px 10px;
     border-radius: 8px;
@@ -238,26 +237,26 @@ h1 span, h2 span, h3 span {
 
 .badge-brand-grid {
     font-size: 0.6rem;
-    color: var(--color-cool-slate);
+    color: #ffffff; /* Contrast fix */
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: rgba(117, 152, 185, 0.1);
+    background: rgba(230, 57, 70, 0.2); /* Red tint */
     padding: 4px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(117, 152, 185, 0.2);
+    border: 1px solid rgba(230, 57, 70, 0.3);
 }
 
 .badge-scale-grid {
     font-size: 0.6rem;
-    color: var(--text-muted);
+    color: #ffffff; /* Contrast fix */
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
     padding: 4px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .product-description-grid {
@@ -279,9 +278,9 @@ h1 span, h2 span, h3 span {
 }
 
 .text-price-grid {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: #ffffff !important;
-    font-weight: 900;
+    font-weight: 800;
     font-family: 'Outfit', sans-serif;
     text-shadow: none !important;
 }
