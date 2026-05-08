@@ -48,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.process');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/confirmation/{id}', [OrderController::class, 'confirmation'])->name('orders.confirmation');
-    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{id}/cancel', [\App\Http\Controllers\CancellationController::class, 'cancelByUser'])->name('orders.cancel');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 
 
@@ -83,6 +83,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
         Route::get('/orders/{id}', [AdminController::class, 'orderShow'])->name('orders.show');
         Route::post('/orders/{id}/status', [AdminController::class, 'orderUpdateStatus'])->name('orders.updateStatus');
+        Route::post('/orders/{id}/cancel', [\App\Http\Controllers\CancellationController::class, 'cancelByAdmin'])->name('admin.orders.cancel');
 
 
 

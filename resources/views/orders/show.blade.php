@@ -86,19 +86,32 @@
             <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
                 @csrf
                 <div class="modal-body p-4">
-                    <p class="modal-bsmf-body-text">Please provide a reason for cancelling this acquisition. The items will be returned to the general stock.</p>
+                    <p class="modal-bsmf-body-text">Please select a reason for ejecting this acquisition from your garage.</p>
                     <div class="form-group">
-                        <label for="cancellation_reason" class="modal-bsmf-label">Cancellation Reason</label>
-                        <select name="cancellation_reason" id="cancellation_reason" class="form-select filter-input modal-bsmf-select" required>
-                            <option value="" disabled selected>Select a reason...</option>
-                            <option value="Changed my mind">Changed my mind</option>
-                            <option value="Found a better price elsewhere">Found a better price elsewhere</option>
-                            <option value="Duplicate order">Duplicate order</option>
-                            <option value="Shipping time too long">Shipping time too long</option>
-                            <option value="Financial reasons">Financial reasons</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="form-check bsmf-custom-radio">
+                                <input class="form-check-input" type="radio" name="reason" id="reason1" value="Changed my mind" required>
+                                <label class="form-check-label" for="reason1">Changed my mind</label>
+                            </div>
+                            <div class="form-check bsmf-custom-radio">
+                                <input class="form-check-input" type="radio" name="reason" id="reason2" value="Incorrect Address Details">
+                                <label class="form-check-label" for="reason2">Incorrect Address Details (Fix Address)</label>
+                            </div>
+                            <div class="form-check bsmf-custom-radio">
+                                <input class="form-check-input" type="radio" name="reason" id="reason3" value="Duplicate Order">
+                                <label class="form-check-label" for="reason3">Duplicate Order</label>
+                            </div>
+                            <div class="form-check bsmf-custom-radio">
+                                <input class="form-check-input" type="radio" name="reason" id="reason4" value="Found better price elsewhere">
+                                <label class="form-check-label" for="reason4">Found better price elsewhere</label>
+                            </div>
+                            <div class="form-check bsmf-custom-radio">
+                                <input class="form-check-input" type="radio" name="reason" id="reason5" value="Other">
+                                <label class="form-check-label" for="reason5">Other</label>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
                     <button type="button" class="btn btn-outline-bsmf-subtle modal-bsmf-btn-cancel" data-bs-dismiss="modal">KEEP ORDER</button>

@@ -1365,3 +1365,29 @@ h1 span, h2 span, h3 span {
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
 }
+
+/* --- Custom Radio Buttons --- */
+.bsmf-custom-radio {
+    padding: 1rem;
+    background: var(--bg-darker);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.bsmf-custom-radio:hover {
+    border-color: var(--secondary);
+    background: rgba(230, 57, 70, 0.05);
+}
+.bsmf-custom-radio .form-check-input:checked ~ .form-check-label {
+    color: var(--secondary);
+    font-weight: 800;
+}
+.bsmf-custom-radio .form-check-input {
+    border-color: var(--glass-border);
+    background-color: transparent;
+}
+.bsmf-custom-radio .form-check-input:checked {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}

@@ -158,7 +158,16 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-warning w-100 py-2 fw-black text-uppercase ls-1" style="border-radius: 10px;">SET STATUS</button>
+                    <!-- Cancellation Reason (Hidden by default) -->
+                    <div id="cancellationFields" class="d-none">
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold text-uppercase ls-1 mb-2">Cancellation Reason</label>
+                            <textarea name="reason" id="cancellationReason" class="form-control bg-black border-secondary text-white small" rows="3" placeholder="Explain why this acquisition is being ejected..."></textarea>
+                            <div class="mt-2 text-danger italic" style="font-size: 0.6rem;">This reason will be sent to the collector via email.</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-warning w-100 py-2 fw-black text-uppercase ls-1" style="border-radius: 10px;">SET STATUS</button>
                 </form>
             </div>
         </div>
@@ -169,17 +178,45 @@
     document.addEventListener('DOMContentLoaded', function() {
         const statusSelect = document.getElementById('statusSelect');
         const trackingFields = document.getElementById('trackingFields');
+        const cancellationFields = document.getElementById('cancellationFields');
+        const cancellationReason = document.getElementById('cancellationReason');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusForm = statusSelect.closest('form');
 
-        function toggleTracking() {
-            if (statusSelect.value === 'shipped') {
+        const originalAction = statusForm.action;
+        const cancelAction = "{{ route('admin.orders.cancel', $order->id) }}";
+
+        function updateUI() {
+            const status = statusSelect.value;
+            
+            // Toggle Tracking
+            if (status === 'shipped') {
                 trackingFields.classList.remove('d-none');
             } else {
                 trackingFields.classList.add('d-none');
             }
+
+            // Toggle Cancellation
+            if (status === 'cancelled') {
+                cancellationFields.classList.remove('d-none');
+                cancellationReason.setAttribute('required', 'required');
+                submitBtn.classList.remove('btn-warning');
+                submitBtn.classList.add('btn-danger');
+                submitBtn.textContent = 'CONFIRM CANCELLATION';
+                statusForm.action = cancelAction;
+            } else {
+                cancellationFields.classList.add('d-none');
+                cancellationReason.removeAttribute('required');
+                submitBtn.classList.remove('btn-danger');
+                submitBtn.classList.add('btn-warning');
+                submitBtn.textContent = 'SET STATUS';
+                statusForm.action = originalAction;
+            }
         }
 
-        statusSelect.addEventListener('change', toggleTracking);
-        toggleTracking(); // Initial check
+        statusSelect.addEventListener('change', updateUI);
+        updateUI(); // Initial check
     });
 </script>
+
 @endsection

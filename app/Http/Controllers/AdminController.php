@@ -182,19 +182,11 @@ final class AdminController extends Controller
         $newStatus = $request->status;
         $oldStatus = $order->status;
 
-        // If cancelling, use the stored procedure to handle stock and audits
+        // If cancelling, refer to the dedicated cancellation route
         if ($newStatus === Order::STATUS_CANCELLED) {
-            try {
-                DB::statement('CALL sp_CancelOrder(?, ?, ?)', [
-                    $id, 
-                    auth()->id(), 
-                    $request->reason ?? 'Cancelled by Staff'
-                ]);
-                return back()->with('success', "Order #{$order->order_number} has been cancelled and stock restored.");
-            } catch (\Exception $e) {
-                return back()->with('error', "Cancellation failed: " . $e->getMessage());
-            }
+            return back()->with('error', 'Please use the dedicated Cancellation workflow to provide a reason for the collector.');
         }
+
 
         // Define strict sequence for other transitions
         $allowedTransitions = [
