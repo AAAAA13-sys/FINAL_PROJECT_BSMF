@@ -73,11 +73,16 @@
                     </div>
 
                     <div class="glass-card mb-5">
-                        <div class="card-header">
-                            <i class="fas fa-shield-alt"></i>
-                            <h3>SECURITY PROTOCOL</h3>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-shield-alt"></i>
+                                <h3 class="d-inline-block m-0 ms-2">SECURITY PROTOCOL</h3>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="btn-toggle-security" onclick="toggleSecurityProtocol()" style="border-radius: 8px; font-weight: 700; letter-spacing: 1px; font-size: 0.75rem;">
+                                <i class="fas fa-key me-1"></i> MODIFY
+                            </button>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="security-protocol-body" style="display: none;">
                             <p class="text-muted mb-4 small">Leave blank if you do not wish to update your secure access credentials.</p>
                             <div class="row g-4">
                                 <div class="col-md-6">
@@ -96,16 +101,16 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    </div>
-
+                    </div> <!-- Close Security Protocol Card -->
+                    
                     <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary px-5 py-3 rounded-pill fw-black text-uppercase italic tracking-wider shadow-lg">
+                        <button type="submit" class="btn btn-primary px-5 py-3 rounded-pill fw-black text-uppercase italic tracking-wider shadow-lg" style="background: linear-gradient(135deg, #800C1F 0%, #e63946 100%); border: none;">
                             <i class="fas fa-save me-2"></i> UPDATE <span>PROFILE</span>
                         </button>
                     </div>
-                </div>
-            </div>
+
+                </div> <!-- Close col-lg-10 -->
+            </div> <!-- Close row -->
         </form>
     </div>
 </section>
@@ -122,6 +127,27 @@
             input.type = 'password';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
+        }
+    }
+
+    function toggleSecurityProtocol() {
+        const body = document.getElementById('security-protocol-body');
+        const btn = document.getElementById('btn-toggle-security');
+        
+        if (body.style.display === 'none') {
+            body.style.display = 'block';
+            body.classList.add('fade-in');
+            btn.innerHTML = '<i class="fas fa-times me-1"></i> CANCEL';
+            btn.classList.replace('btn-outline-secondary', 'btn-outline-danger');
+        } else {
+            body.style.display = 'none';
+            body.classList.remove('fade-in');
+            btn.innerHTML = '<i class="fas fa-key me-1"></i> MODIFY';
+            btn.classList.replace('btn-outline-danger', 'btn-outline-secondary');
+            
+            // Clear password fields on cancel
+            document.getElementById('password').value = '';
+            document.getElementById('password_confirmation').value = '';
         }
     }
 </script>

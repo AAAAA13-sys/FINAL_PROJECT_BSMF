@@ -79,7 +79,16 @@ textarea,
 }
 
 body {
-    background-color: var(--bg-darker);
+    background-color: var(--color-surface-base);
+    background-image: conic-gradient(
+        var(--color-surface-elevated) 90deg, 
+        transparent 90deg 180deg, 
+        var(--color-surface-elevated) 180deg 270deg, 
+        transparent 270deg
+    );
+    background-size: 160px 160px; /* Large racing checks */
+    background-position: 0 0;
+    background-attachment: fixed; /* Keeps pattern static while scrolling */
     color: var(--text-main);
     line-height: 1.6;
     overflow-x: hidden;
@@ -282,7 +291,6 @@ nav.scrolled {
     line-height: 0.85;
     margin-bottom: 1.5rem;
     font-weight: 900;
-    font-style: italic;
     text-transform: uppercase;
     color: white;
     text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -330,7 +338,6 @@ nav.scrolled {
 
 .section-title {
     font-size: clamp(2.2rem, 5vw, 3.5rem);
-    font-style: italic;
     text-transform: uppercase;
     font-weight: 900;
     line-height: 1.1;
@@ -2376,7 +2383,6 @@ html {
 
 .section-title-large {
     font-size: clamp(2.5rem, 5vw, 4rem);
-    font-style: italic;
     text-transform: uppercase;
     line-height: 1.1;
     font-weight: 900;

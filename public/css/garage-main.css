@@ -46,9 +46,8 @@ h1 span, h2 span, h3 span {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
-    font-style: italic;
-    padding-right: 0.15em; /* Room for italic tilt */
-    margin-right: -0.15em; /* Compensate for the extra padding */
+    padding-right: 0.15em;
+    margin-right: -0.15em;
 }
 
 .text-price-grid {
@@ -92,6 +91,14 @@ h1 span, h2 span, h3 span {
     font-weight: 900;
     letter-spacing: 2px;
     margin-bottom: 1rem;
+    background: linear-gradient(135deg, #800C1F 0%, #e63946 100%) !important;
+    border: none !important;
+    transition: all 0.3s ease;
+}
+
+.btn-filter-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4) !important;
 }
 
 .btn-filter-reset {
@@ -283,7 +290,7 @@ h1 span, h2 span, h3 span {
     padding: 0.6rem 1.25rem;
     font-size: 0.75rem;
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--color-cool-slate) 0%, var(--color-brand-red) 100%);
+    background: linear-gradient(135deg, #800C1F 0%, #e63946 100%);
     border: none;
     color: white;
     font-weight: 900;
