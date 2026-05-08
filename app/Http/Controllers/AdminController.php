@@ -490,7 +490,7 @@ final class AdminController extends Controller
         }
         $user = User::findOrFail($id);
         $user->delete();
-        return back()->with('success', 'Collector ejected from the garage.');
+        return redirect()->route('admin.users')->with('success', 'Collector ejected from the garage.');
     }
 
 
@@ -531,7 +531,7 @@ final class AdminController extends Controller
         }
         $coupon = Coupon::findOrFail($id);
         $coupon->delete();
-        return back()->with('success', 'Promo code deactivated.');
+        return redirect()->route('admin.coupons')->with('success', 'Promo code deactivated.');
     }
 
     /**

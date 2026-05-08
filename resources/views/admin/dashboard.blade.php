@@ -75,7 +75,7 @@
                     <h6 class="text-white text-uppercase fst-italic mb-0 text-sm tracking-wide">RECENT <span class="text-cool-slate">TRANSACTIONS</span></h6>
                     <a href="{{ route('admin.orders') }}" class="text-warm-bronze text-xs text-decoration-none fw-bold">VIEW ALL →</a>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-0 admin-dashboard-card-body">
                     <div class="table-responsive">
                         <table class="table table-dark table-hover mb-0 align-middle">
                             <thead>
@@ -121,18 +121,18 @@
         <div class="col-md-4">
             <div class="d-flex flex-column gap-4">
                 <!-- Stock Alerts -->
-                <div class="card glass border-danger rounded-4 shadow-lg">
-                    <div class="card-header bg-transparent border-danger p-3">
-                        <h6 class="text-danger text-uppercase italic mb-0">LOW <span>STOCK</span></h6>
+                <div class="card glass border-low-stock rounded-4 shadow-lg">
+                    <div class="card-header bg-transparent border-low-stock p-3">
+                        <h6 class="text-low-stock text-uppercase italic mb-0">LOW <span>STOCK</span></h6>
                     </div>
-                    <div class="card-body p-3 max-h-140 overflow-auto">
+                    <div class="card-body p-3 admin-dashboard-card-body">
                         @forelse($lowStockProducts as $lp)
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom border-secondary border-opacity-25">
                                 <div>
                                     <h6 class="text-white mb-1 small fw-bold">{{ $lp->name }}</h6>
-                                    <p class="text-danger small mb-0 fw-bold">{{ $lp->stock_quantity }} IN GARAGE</p>
+                                    <p class="text-low-stock small mb-0 fw-bold">{{ $lp->stock_quantity }} IN GARAGE</p>
                                 </div>
-                                <a href="{{ route('admin.products.edit', $lp->id) }}" class="btn btn-outline-danger btn-sm rounded-pill text-xs">REFILL</a>
+                                <a href="{{ route('admin.products.edit', $lp->id) }}?mode=refill" class="btn btn-low-stock btn-sm rounded-pill text-xs">REFILL</a>
                             </div>
                         @empty
                             <div class="text-center py-3">
@@ -158,4 +158,3 @@
 
 
 @endsection
-

@@ -21,6 +21,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout']); // Fallback to prevent 404 on manual GET or link click
 
 // Password Reset
 Route::get('/forgot-password', [\App\Http\Controllers\ForgotPasswordController::class, 'show'])->name('password.request');

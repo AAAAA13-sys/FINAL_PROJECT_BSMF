@@ -28,9 +28,10 @@
 }
 
 .admin-current-user-role {
+    color: var(--primary);
     font-size: 0.6rem;
     letter-spacing: 2px;
-    opacity: 0.8;
+    font-weight: 900 !important;
 }
 
 .btn-admin-visit-site {
@@ -259,4 +260,39 @@
     background: linear-gradient(135deg, var(--color-cool-slate) 0%, #ff4d4d 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
+}
+
+/* --- Low Stock Alerts --- */
+.border-low-stock {
+    border-color: #ff7675 !important;
+}
+
+.text-low-stock {
+    color: #ff7675 !important;
+}
+
+.btn-low-stock {
+    border-color: #ff7675 !important;
+    color: #ff7675 !important;
+    transition: all 0.3s ease;
+}
+
+.btn-low-stock:hover {
+    background-color: #ff7675 !important;
+    color: #1a1a1a !important;
+}
+
+/* --- Dashboard Uniformity --- */
+.admin-dashboard-card-body {
+    height: 400px;
+    overflow-y: auto;
+}
+
+.admin-dashboard-card-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.admin-dashboard-card-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
 }

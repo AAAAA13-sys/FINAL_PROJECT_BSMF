@@ -37,9 +37,9 @@
                         <div class="col-md-6">
                             <label class="input-label-sm">Region / State</label>
                             <select name="shipping_region" id="shipping_region" class="form-select garage-select" required onchange="handleRegionChange()">
-                                <option value="" disabled selected>Select Region</option>
+                                <option value="" disabled {{ !Auth::user()->region ? 'selected' : '' }}>Select Region</option>
                                 @foreach($regions as $code => $name)
-                                    <option value="{{ $code }}">{{ $name }}</option>
+                                    <option value="{{ $code }}" {{ Auth::user()->region == $code ? 'selected' : '' }}>{{ $name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,13 +47,18 @@
                         <div class="col-md-6">
                             <label class="input-label-sm">City / Municipality</label>
                             <select name="shipping_city" id="shipping_city" class="form-select garage-select" required onchange="updateShipping()">
-                                <option value="" disabled selected>Select Region First</option>
+                                <option value="" disabled {{ !Auth::user()->city ? 'selected' : '' }}>{{ Auth::user()->region ? 'Select City' : 'Select Region First' }}</option>
+                                @if(Auth::user()->region && isset($regionalCities[Auth::user()->region]))
+                                    @foreach($regionalCities[Auth::user()->region] as $cityName => $km)
+                                        <option value="{{ $cityName }}" {{ Auth::user()->city == $cityName ? 'selected' : '' }} data-km="{{ $km }}">{{ $cityName }}{{ $km > 0 ? " (~{$km}km)" : '' }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
 
                         <div class="col-12">
                             <label class="input-label-sm">Unit / Street / House No. / Barangay</label>
-                            <input type="text" name="shipping_address" class="form-control garage-input" placeholder="e.g. Unit 201, 123 Speed Way St., Brgy. San Antonio" required>
+                            <input type="text" name="shipping_address" class="form-control garage-input" value="{{ Auth::user()->default_shipping_address }}" placeholder="e.g. Unit 201, 123 Speed Way St., Brgy. San Antonio" required>
                         </div>
                     </div>
                 </div>
@@ -233,5 +238,8 @@
         const total = subtotal - discount + fee + packagingFee;
         document.getElementById('display_total').innerText = '₱' + total.toLocaleString(undefined, {minimumFractionDigits: 2});
     }
+    
+    // Calculate initial shipping if address is pre-filled
+    window.onload = updateShipping;
 </script>
 @endsection

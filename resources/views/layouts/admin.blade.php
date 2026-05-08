@@ -53,7 +53,7 @@
                     
                     <div class="px-3 mb-3">
                         <div class="text-white fw-black small text-uppercase admin-current-user-info">{{ Auth::user()->name }}</div>
-                        <div class="text-warning fw-bold text-uppercase admin-current-user-role">ROLE: {{ Auth::user()->role }}</div>
+                        <div class="text-danger fw-bold text-uppercase admin-current-user-role">ROLE: {{ Auth::user()->role }}</div>
                     </div>
 
                     <a href="{{ route('home') }}" class="admin-nav-link mb-2 btn-admin-visit-site">

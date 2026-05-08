@@ -37,7 +37,7 @@
                 <tr>
                     <td class="ps-4">
                         <div class="d-flex align-items-center">
-                            <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="" class="product-thumbnail-sm me-3">
+                            <img src="{{ $product->main_image ? asset($product->main_image) : asset('images/placeholder-car.webp') }}" alt="" class="product-thumbnail-sm me-3" loading="lazy">
                             <div>
                                 <div class="text-white fw-bold">{{ $product->name }}</div>
                                 <div class="text-muted small text-uppercase text-xs-tracking">{{ $product->brand->name ?? 'Generic' }} • {{ $product->scale->name ?? '1:64' }}</div>
