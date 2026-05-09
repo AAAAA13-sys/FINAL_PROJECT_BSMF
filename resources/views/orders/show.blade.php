@@ -15,7 +15,7 @@
         @endif
 
         @php
-            $statuses = ['pending' => 'Order Placed', 'processing' => 'Processing', 'out_for_delivery' => 'Out for Delivery', 'delivered' => 'Delivered'];
+            $statuses = ['pending' => 'Order Placed', 'processing' => 'Processing', 'shipped' => 'Dispatched', 'delivered' => 'Delivered'];
             $statusKeys = array_keys($statuses);
             $currentIndex = array_search($order->status, $statusKeys);
             if ($currentIndex === false) $currentIndex = 0;

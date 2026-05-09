@@ -134,7 +134,7 @@ final class OrderController extends Controller
     }
 
     /**
-     * Process the die-cast order.
+     * Start the order process and send OTP.
      */
     public function store(Request $request)
     {
@@ -143,53 +143,89 @@ final class OrderController extends Controller
             'payment_method' => 'required|in:Cash on Delivery',
             'shipping_region' => 'required|string',
             'shipping_city' => 'required|string',
+            'customer_name' => 'required|string',
+            'customer_email' => 'required|email',
+            'customer_phone' => 'required|string',
         ]);
 
         $user = Auth::user();
-        $cart = Cart::with('items.product')->where('user_id', $user->id)->first();
+        $cart = \App\Models\Cart::with('items.product')->where('user_id', $user->id)->first();
         
         if (!$cart || $cart->items->isEmpty()) {
-            if ($request->wantsJson() || $request->is('api/*')) {
-                return response()->json(['message' => 'Cart is empty'], 400);
-            }
             return redirect()->route('products.index')->with('error', 'Your cart is empty.');
         }
 
+        // Store pending order data in session
+        session(['pending_order' => $request->all()]);
+
+        // Send OTP
+        $user->sendOrderOtp();
+
+        return redirect()->route('checkout.verify')->with('success', 'FINAL LAP: A verification code has been sent to your email to confirm this acquisition.');
+    }
+
+    /**
+     * Show the OTP verification page for the order.
+     */
+    public function showVerifyOtp()
+    {
+        if (!session('pending_order')) {
+            return redirect()->route('checkout')->with('error', 'No pending order found. Start your engines again.');
+        }
+        return view('checkout.verify-otp');
+    }
+
+    /**
+     * Verify the OTP and finally process the order.
+     */
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $user = Auth::user();
+        
+        if (!$user->otp || $user->otp !== $request->otp || now()->gt($user->otp_expires_at)) {
+            return back()->withErrors(['otp' => 'The provided code is invalid or has expired. The finish line is waiting.']);
+        }
+
+        $orderData = session('pending_order');
+        if (!$orderData) {
+            return redirect()->route('checkout')->with('error', 'Your order session expired. Refuel and try again.');
+        }
+
+        $cart = \App\Models\Cart::with('items.product')->where('user_id', $user->id)->first();
+        
         try {
+            DB::beginTransaction();
+
             $regions = \App\Services\ShippingService::getRegions();
-            
-            // Calculate components using selected items from request/session
-            $selectedItemIds = $request->input('selected_items', session('selected_cart_items', []));
+            $selectedItemIds = session('selected_cart_items', []);
             $items = $cart->items->whereIn('id', $selectedItemIds);
             
-            // If still empty, process whole cart
             if ($items->isEmpty()) {
                 $items = $cart->items;
                 $selectedItemIds = $items->pluck('id')->toArray();
             }
 
             $subtotal = $items->sum(fn($item) => ($item->price_at_time ?? $item->product->price) * $item->quantity);
-            
             $discount = 0;
             $couponCode = session('coupon_code');
 
             if ($couponCode) {
-                $coupon = Coupon::where('coupon_code', $couponCode)->first();
+                $coupon = \App\Models\Coupon::where('coupon_code', $couponCode)->first();
                 if ($coupon && $coupon->isValid()) {
-                    if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
+                    if ($coupon->discount_type === \App\Models\Coupon::TYPE_PERCENTAGE) {
                         $discount = $subtotal * ($coupon->discount_value / 100);
-                    } elseif ($coupon->discount_type === Coupon::TYPE_FIXED) {
+                    } elseif ($coupon->discount_type === \App\Models\Coupon::TYPE_FIXED) {
                         $discount = $coupon->discount_value;
-                    } else {
-                        // Free shipping or other types: no monetary discount on items
-                        $discount = 0;
                     }
                 }
             }
 
-            // Calculate Shipping
-            $region = $request->shipping_region;
-            $city = $request->shipping_city;
+            $region = $orderData['shipping_region'];
+            $city = $orderData['shipping_city'];
             $distance = 0;
             
             if ($region === 'NCR') {
@@ -199,26 +235,16 @@ final class OrderController extends Controller
             
             $shipping = \App\Services\ShippingService::calculate($region, (float)$distance);
 
-            // Combine components into a full shipping address
-            $fullAddress = $request->shipping_address;
-            if ($request->shipping_city) {
-                $fullAddress .= ", " . $request->shipping_city;
-            }
-            $fullAddress .= ", " . ($regions[$request->shipping_region] ?? $request->shipping_region);
+            $fullAddress = $orderData['shipping_address'] . ", " . $city . ", " . ($regions[$region] ?? $region);
 
-            // Call the Stored Procedure with isolation logic
-            $selectedItemIds = session('selected_cart_items', []);
-            
-            // 1. Remove unselected items temporarily (This is auto-committed)
+            // Temporarily hide unselected items
             $unselectedItems = [];
             if (!empty($selectedItemIds)) {
                 $unselectedItems = DB::table('cart_items')
                     ->where('cart_id', $cart->id)
                     ->whereNotIn('id', $selectedItemIds)
                     ->get()
-                    ->map(function($item) {
-                        return (array)$item;
-                    })->toArray();
+                    ->map(fn($item) => (array)$item)->toArray();
 
                 DB::table('cart_items')
                     ->where('cart_id', $cart->id)
@@ -227,26 +253,24 @@ final class OrderController extends Controller
             }
 
             try {
-                // 2. Call the Stored Procedure (It handles its own transaction)
                 DB::statement("SET @p_order_id = 0;");
                 DB::statement("CALL sp_ProcessOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_order_id)", [
                     $user->id,
                     $fullAddress,
-                    $request->payment_method,
-                    $request->customer_name ?? $user->name,
-                    $request->customer_email ?? $user->email,
-                    $request->customer_phone,
+                    $orderData['payment_method'],
+                    $orderData['customer_name'],
+                    $orderData['customer_email'],
+                    $orderData['customer_phone'],
                     $couponCode,
                     $discount,
                     $shipping,
-                    $request->notes,
-                    (int) $request->has('extra_packaging')
+                    $orderData['notes'] ?? null,
+                    (int) isset($orderData['extra_packaging'])
                 ]);
 
                 $result = DB::selectOne("SELECT @p_order_id as id");
                 $orderId = $result->id;
             } finally {
-                // 3. Restore the unselected items (Always run this, even if SP fails)
                 if (!empty($unselectedItems)) {
                     foreach ($unselectedItems as $item) {
                         unset($item['id']); 
@@ -259,25 +283,19 @@ final class OrderController extends Controller
                 throw new \Exception("Order processing failed at database level.");
             }
 
-            session()->forget('coupon_code');
+            // Clear OTP and Session
+            $user->update(['otp' => null, 'otp_expires_at' => null]);
+            session()->forget(['pending_order', 'coupon_code', 'selected_cart_items']);
 
-            if ($request->wantsJson() || $request->is('api/*')) {
-                $order = Order::find($orderId);
-                return (new \App\Http\Resources\OrderResource($order))->response()->setStatusCode(201);
-            }
-
-            $order = Order::find($orderId);
-            $order->update(['courier_name' => \App\Services\ShippingService::getCarrier($region)]);
+            $order = \App\Models\Order::find($orderId);
             
-            defer(fn() => \Illuminate\Support\Facades\Mail::to($order->customer_email)
-                ->send(new \App\Mail\OrderConfirmation($order)));
+            DB::commit();
 
-            return redirect()->route('orders.confirmation', $orderId)->with('success', 'Order placed successfully! A confirmation receipt has been sent to your email.');
+            return redirect()->route('orders.confirmation', $orderId)->with('success', 'FINISH LINE! Order placed successfully. You can track your acquisition details below.');
+
         } catch (\Exception $e) {
-            if ($request->wantsJson() || $request->is('api/*')) {
-                return response()->json(['message' => $e->getMessage()], 400);
-            }
-            return back()->withInput()->with('error', $e->getMessage());
+            DB::rollBack();
+            return redirect()->route('checkout')->with('error', $e->getMessage());
         }
     }
 

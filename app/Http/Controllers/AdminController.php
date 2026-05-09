@@ -159,7 +159,7 @@ final class AdminController extends Controller
      */
     public function orders()
     {
-        $orders = Order::with('user')->latest()->paginate(20);
+        $orders = Order::with('user')->latest()->paginate(10);
         return view('admin.orders', compact('orders'));
     }
 
@@ -491,7 +491,7 @@ final class AdminController extends Controller
      */
     public function coupons()
     {
-        $coupons = Coupon::latest()->get();
+        $coupons = Coupon::latest()->paginate(10);
         return view('admin.coupons', compact('coupons'));
     }
 
@@ -545,10 +545,14 @@ final class AdminController extends Controller
             $query->where('user_id', $request->user_filter);
         }
 
-        $logs = $query->latest()->paginate(50)->appends($request->all());
+        $logs = $query->latest()->paginate(10)->appends($request->all());
         
         $actions = \App\Models\AuditLog::select('action')->distinct()->pluck('action');
         $users = \App\Models\User::whereIn('role', ['admin', 'staff'])->get();
+
+        if ($request->ajax()) {
+            return view('admin.partials.audit-logs-table', compact('logs'))->render();
+        }
 
         return view('admin.audit-logs', compact('logs', 'actions', 'users'));
     }

@@ -70,7 +70,7 @@
                                         @if($order->tracking_link)
                                             <a href="{{ $order->tracking_link }}" target="_blank" class="btn btn-primary btn-bsmf-action">TRACK SHIPMENT</a>
                                         @else
-                                            <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary btn-bsmf-action">TRACK SHIPMENT</a>
+                                            <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary btn-bsmf-action">VIEW DETAILS</a>
                                         @endif
                                     @endif
                                 </div>

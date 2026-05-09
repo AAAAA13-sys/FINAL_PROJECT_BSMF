@@ -73,7 +73,9 @@
                                                         max="{{ $item->product->stock_quantity }}" 
                                                         class="qty-input-field quantity-input" 
                                                         id="qty-{{ $item->id }}"
-                                                        readonly
+                                                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                        oninput="if(this.value > {{ $item->product->stock_quantity }}) this.value = {{ $item->product->stock_quantity }}; updateQuantity({{ $item->id }}, this.value);"
+                                                        onblur="if(this.value < 1 || this.value === '') { this.value = 1; updateQuantity({{ $item->id }}, 1); }"
                                                         onchange="updateQuantity({{ $item->id }}, this.value)">
                                                     <button type="button" class="qty-btn" onclick="incrementQty({{ $item->id }}, {{ $item->product->stock_quantity }})">
                                                         <i class="fas fa-plus"></i>

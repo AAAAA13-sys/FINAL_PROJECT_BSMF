@@ -33,21 +33,27 @@ final class CancellationController extends Controller
 
         $reason = $request->reason;
 
-        // "If address (fix address)" logic
-        if ($reason === 'Change of Shipping Address' || $reason === 'Incorrect Address Details') {
-            return redirect()->route('profile.edit')
-                ->with('info', 'To fix your address, please update your collector profile before placing a new order.');
-        }
-
         try {
+            DB::beginTransaction();
+            
             DB::statement('CALL sp_CancelOrder(?, ?, ?)', [
                 $id,
                 Auth::id(),
                 $reason
             ]);
 
+            DB::commit();
+
+            // After successful cancellation, redirect to profile if it was an address issue
+            if ($reason === 'Change of Shipping Address' || $reason === 'Incorrect Address Details') {
+                return redirect()->route('profile.edit')
+                    ->with('success', 'Acquisition ejected. Items returned to garage.')
+                    ->with('info', 'Please update your collector profile before placing a new order.');
+            }
+
             return redirect()->route('orders.index')->with('success', 'Acquisition ejected. Items returned to the main garage.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return back()->with('error', 'Failed to eject: ' . $e->getMessage());
         }
     }

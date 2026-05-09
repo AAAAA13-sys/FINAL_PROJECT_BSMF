@@ -292,30 +292,129 @@
         <div class="footer-grid">
             <div>
                 <div class="logo footer-logo-sm">BSMF GARAGE</div>
-                <p class="footer-desc">Premium Die-Cast Collector Series. The ultimate destination for collectors.</p>
+                <p class="footer-desc">Premium Die-Cast Collector Series. The ultimate destination for collectors who demand the best.</p>
             </div>
             <div>
-                <h4 class="footer-links-title">Quick Links</h4>
+                <h4 class="footer-links-title text-uppercase ls-2">Support</h4>
                 <ul class="footer-links-list">
-                    <li><a href="{{ route('home') }}">Home</a></li>
-                    <li><a href="{{ route('products.index') }}">Shop Now</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="footer-links-title">Support</h4>
-                <ul class="footer-links-list">
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">FAQ</a></li>
+                    <li><a href="javascript:void(0)" onclick="toggleContactModal()">Contact Us</a></li>
+                    <li><a href="{{ route('faq') }}">FAQ</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; {{ date('Y') }} BSMF GARAGE. All rights reserved.
+            &copy; {{ date('Y') }} BSMF GARAGE. ALL RIGHTS RESERVED.
         </div>
     </footer>
 
+    <!-- Contact Us Modal -->
+    <div id="contactModal" class="contact-modal-overlay" style="display: none;">
+        <div class="contact-modal-glass fade-in">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="text-white text-uppercase italic fw-black mb-0">CONTACT <span>SUPPORT</span></h3>
+                <button onclick="toggleContactModal()" class="btn-close-modal">×</button>
+            </div>
+            
+            <div class="contact-methods">
+                <div class="contact-item mb-4">
+                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-text">
+                        <label>EMAIL US @</label>
+                        <a href="mailto:bsmfgarage@gmail.com">bsmfgarage@gmail.com</a>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fab fa-facebook-f"></i></div>
+                    <div class="contact-text">
+                        <label>SEND US A PRIVATE MESSAGE</label>
+                        <a href="https://www.facebook.com/profile.php?id=61558633430601" target="_blank">Visit Facebook Page</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5 pt-3 border-top border-white border-opacity-10">
+                <p class="text-white-50 smaller italic mb-0">Typical response time: Within 24 hours</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .contact-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(15px);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .contact-modal-glass {
+        background: rgba(20, 22, 28, 0.9);
+        border: 2px solid var(--color-brand-red);
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+    .btn-close-modal {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.3s;
+    }
+    .btn-close-modal:hover { opacity: 1; }
+    .contact-item { display: flex; gap: 20px; align-items: center; }
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(230, 57, 70, 0.1);
+        border: 1px solid rgba(230, 57, 70, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        color: var(--color-brand-red);
+    }
+    .contact-text label {
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 4px;
+    }
+    .contact-text a {
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+    }
+    .contact-text a:hover { color: var(--color-brand-red); }
+    </style>
+
+    <script>
+        function toggleContactModal() {
+            const modal = document.getElementById('contactModal');
+            if (modal.style.display === 'none') {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
 
 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

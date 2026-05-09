@@ -6,7 +6,7 @@
         <h2 class="admin-header-title">BSMF <span>DASHBOARD</span></h2>
         <div class="text-end">
             <div class="text-white-50 text-xs fst-italic fw-bold">{{ now()->format('l, jS F Y') }}</div>
-            <div class="text-cool-slate text-xs fw-black text-uppercase">Admin: {{ Auth::user()->name }}</div>
+            <div class="text-secondary text-xs fw-black text-uppercase">Admin: {{ Auth::user()->name }}</div>
         </div>
     </div>
 
@@ -33,7 +33,13 @@
         </div>
         <div class="col-md-3">
             <div class="stat-card glass border-glass p-4">
-                <p class="text-white-50 text-xs text-uppercase tracking-wider mb-2 fw-bolder">Inventory (SKUs)</p>
+                <p class="text-white-50 text-xs text-uppercase tracking-wider mb-2 fw-bolder">
+                    Inventory (SKUs)
+                    <i class="fas fa-info-circle ms-1 cursor-help opacity-50" 
+                       data-bs-toggle="tooltip" 
+                       data-bs-placement="top" 
+                       title="Stock Keeping Unit: A unique code used to identify and track each individual product variation in your inventory."></i>
+                </p>
                 <h3 class="text-white fw-black mb-0 fs-3 tracking-tighter">{{ $totalProducts }}</h3>
                 <div class="progress mt-3 h-4px bg-glass">
                     <div class="progress-bar bg-white w-100"></div>
@@ -72,7 +78,7 @@
         <div class="col-md-8">
             <div class="card glass border-glass rounded-4 overflow-hidden shadow-lg bg-glass">
                 <div class="card-header bg-transparent border-bottom-glass d-flex justify-content-between align-items-center p-4">
-                    <h6 class="text-white text-uppercase fst-italic mb-0 text-sm tracking-wide">RECENT <span class="text-cool-slate">TRANSACTIONS</span></h6>
+                    <h6 class="text-white text-uppercase fst-italic mb-0 text-sm tracking-wide">RECENT <span class="text-warning">TRANSACTIONS</span></h6>
                     <a href="{{ route('admin.orders') }}" class="text-warm-bronze text-xs text-decoration-none fw-bold">VIEW ALL →</a>
                 </div>
                 <div class="card-body p-0 admin-dashboard-card-body">
@@ -153,6 +159,12 @@
                 {!! json_encode($salesData->pluck('label')) !!},
                 {!! json_encode($salesData->pluck('total')) !!}
             );
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
         });
     </script>
 

@@ -58,6 +58,10 @@ final class AuthController extends Controller
                 $this->logAction('LOGIN', "User logged in: {$user->username}");
                 return redirect()->route('admin.dashboard')->with('success', "Welcome back, {$user->name}!");
             }
+
+            if (!$user->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice')->with('success', 'Please verify your account to continue.');
+            }
             
             return redirect()->intended(route('home'))->with('success', "Welcome back, {$user->name}!");
         }

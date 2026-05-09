@@ -795,7 +795,17 @@ h1 span, h2 span, h3 span {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 0;
+    padding: 4rem 0;
+    background: #050608; /* DEEPER DARK */
+    position: relative;
+}
+
+.confirmation-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.05) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .confirmation-wrapper {
@@ -803,23 +813,25 @@ h1 span, h2 span, h3 span {
     max-width: 600px;
     margin: 0 auto;
     padding: 1rem;
+    position: relative;
+    z-index: 2;
 }
 
 .confirmation-icon {
-    font-size: 2.5rem;
-    color: var(--color-cool-slate);
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 15px rgba(117, 152, 185, 0.3);
+    font-size: 3.5rem;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 25px rgba(230, 57, 70, 0.4);
 }
 
 .confirmation-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
     letter-spacing: -0.5px;
 }
 
 .confirmation-receipt {
-    margin-top: 0.15rem;
-    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
     font-weight: 800;
     text-transform: uppercase;
@@ -827,14 +839,18 @@ h1 span, h2 span, h3 span {
 }
 
 .confirmation-receipt span {
-    color: var(--color-cool-slate);
+    color: var(--secondary);
 }
 
 .confirmation-glass-box {
-    margin-top: 1.5rem;
-    padding: 1.5rem;
+    background: rgba(20, 22, 28, 0.95); /* MUCH MORE OPAQUE */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 2rem;
+    padding: 2.5rem;
     text-align: left;
-    border-radius: 20px;
+    border-radius: 28px;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
 }
 
 
@@ -1390,4 +1406,77 @@ h1 span, h2 span, h3 span {
 .bsmf-custom-radio .form-check-input:checked {
     background-color: var(--secondary);
     border-color: var(--secondary);
+}
+
+/* --- Custom Radio Buttons --- */
+.bsmf-custom-radio {
+    position: relative;
+    padding: 1.25rem 1.5rem 1.25rem 3.5rem !important;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.bsmf-custom-radio:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    transform: translateX(5px);
+}
+
+.bsmf-custom-radio .form-check-input {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px !important;
+    height: 22px !important;
+    margin: 0 !important;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5) !important;
+}
+
+.bsmf-custom-radio .form-check-input:checked {
+    background-color: var(--color-brand-red) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 0 15px rgba(230, 57, 70, 0.4), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+.bsmf-custom-radio .form-check-input:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+.bsmf-custom-radio .form-check-label {
+    cursor: pointer;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.3s ease;
+    margin-bottom: 0;
+    user-select: none;
+}
+
+.bsmf-custom-radio .form-check-input:checked + .form-check-label {
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }

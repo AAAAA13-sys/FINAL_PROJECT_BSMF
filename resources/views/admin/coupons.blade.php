@@ -71,6 +71,15 @@
             </tbody>
         </table>
     </div>
+
+    <div class="mt-4 d-flex flex-column align-items-center">
+        <div class="text-muted smaller fw-normal text-uppercase ls-2 mb-2 opacity-50">
+            SHOWING {{ $coupons->firstItem() ?? 0 }}-{{ $coupons->lastItem() ?? 0 }} OF {{ $coupons->total() }} COUPONS
+        </div>
+        <div id="pagination-container">
+            {{ $coupons->links() }}
+        </div>
+    </div>
 </div>
 
 <!-- Add Coupon Modal -->

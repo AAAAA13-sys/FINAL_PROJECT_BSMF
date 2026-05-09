@@ -55,11 +55,15 @@
                 @endforeach
             </tbody>
         </table>
-        @if($orders->hasPages())
-            <div class="p-4 border-top border-secondary bg-darker bg-opacity-50">
-                {{ $orders->links() }}
-            </div>
-        @endif
+    </div>
+
+    <div class="mt-4 d-flex flex-column align-items-center">
+        <div class="text-muted smaller fw-normal text-uppercase ls-2 mb-2 opacity-50">
+            SHOWING {{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }} OF {{ $orders->total() }} ORDERS
+        </div>
+        <div id="pagination-container">
+            {{ $orders->links() }}
+        </div>
     </div>
 </div>
 @endsection

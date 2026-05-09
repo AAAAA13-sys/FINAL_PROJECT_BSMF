@@ -97,6 +97,14 @@
                 }, 3000);
             });
         });
+        // Global Page Jump Handler
+        window.addEventListener('page-jump', function(e) {
+            // If the page has a custom handler (like Audit Logs AJAX), it should stop propagation
+            // Otherwise, we just redirect
+            if (!e.defaultPrevented) {
+                window.location.href = e.detail.url;
+            }
+        });
     </script>
     @stack('modals')
 </body>

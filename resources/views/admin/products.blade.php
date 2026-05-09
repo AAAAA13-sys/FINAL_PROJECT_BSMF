@@ -10,16 +10,7 @@
     </div>
 
     <div class="admin-table-container">
-        @if($products->hasPages())
-            <div class="glass-pagination">
-                <div class="small text-muted italic text-xs-tracking">
-                    Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of {{ $products->total() }} results
-                </div>
-                <div class="admin-pagination-links">
-                    {{ $products->links() }}
-                </div>
-            </div>
-        @endif
+        {{-- Top pagination removed for cleaner look --}}
         <table class="admin-table">
             <thead>
                 <tr>
@@ -69,6 +60,15 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-4 d-flex flex-column align-items-center">
+        <div class="text-muted smaller fw-normal text-uppercase ls-2 mb-2 opacity-50">
+            SHOWING {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} OF {{ $products->total() }} PRODUCTS
+        </div>
+        <div id="pagination-container">
+            {{ $products->links() }}
+        </div>
     </div>
 
 @push('modals')

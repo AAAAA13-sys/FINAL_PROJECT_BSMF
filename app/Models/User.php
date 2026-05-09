@@ -137,4 +137,18 @@ final class User extends Authenticatable implements MustVerifyEmail
 
         defer(fn () => $this->notify(new \App\Notifications\VerifyEmailOtp($otp)));
     }
+    /**
+     * Generate and send a new OTP for order confirmation.
+     */
+    public function sendOrderOtp(): void
+    {
+        $otp = (string) random_int(100000, 999999);
+        
+        $this->update([
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        defer(fn () => $this->notify(new \App\Notifications\OrderConfirmationOtp($otp)));
+    }
 }

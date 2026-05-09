@@ -15,7 +15,7 @@
         
         <div class="glass confirmation-glass-box">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="confirmation-summary-title mb-0">SHIPMENT <span>DETAILS</span></h3>
+                <h3 class="confirmation-summary-title mb-0">ACQUISITION <span>DETAILS</span></h3>
                 <div class="confirmation-payment-box text-end">
                     <span class="confirmation-payment-label me-2">PAYMENT METHOD:</span>
                     <span class="confirmation-payment-badge">{{ $order->payment_method }}</span>
@@ -56,7 +56,7 @@
                     </div>
                 @endif
                 <div class="d-flex justify-content-between text-muted small mb-2">
-                    <span>Shipping ({{ $order->courier_name ?? 'Freight' }})</span>
+                    <span>Shipping Fee</span>
                     <span>₱{{ number_format($order->shipping_fee, 2) }}</span>
                 </div>
                 @if($order->extra_packaging_requested)

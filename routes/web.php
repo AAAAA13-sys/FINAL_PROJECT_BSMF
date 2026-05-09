@@ -9,10 +9,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupportController;
 use Illuminate\Support\Facades\Route;
 
-// Public Routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+// Public/Semi-Public Routes
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::get('/faq', function () { return view('faq'); })->name('faq');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index')->middleware('verified');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show')->middleware('verified');
 Route::get('/api/search-suggestions', [ProductController::class, 'suggestions'])->name('api.search.suggestions');
 
 // Auth Routes
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Checkout & Orders
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.process');
+    Route::get('/checkout/verify', [OrderController::class, 'showVerifyOtp'])->name('checkout.verify');
+    Route::post('/checkout/verify', [OrderController::class, 'verifyOtp'])->name('checkout.verify.process');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/confirmation/{id}', [OrderController::class, 'confirmation'])->name('orders.confirmation');
     Route::post('/orders/{id}/cancel', [\App\Http\Controllers\CancellationController::class, 'cancelByUser'])->name('orders.cancel');
@@ -83,7 +86,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
         Route::get('/orders/{id}', [AdminController::class, 'orderShow'])->name('orders.show');
         Route::post('/orders/{id}/status', [AdminController::class, 'orderUpdateStatus'])->name('orders.updateStatus');
-        Route::post('/orders/{id}/cancel', [\App\Http\Controllers\CancellationController::class, 'cancelByAdmin'])->name('admin.orders.cancel');
+        Route::post('/orders/{id}/cancel', [\App\Http\Controllers\CancellationController::class, 'cancelByAdmin'])->name('orders.cancel');
 
 
 

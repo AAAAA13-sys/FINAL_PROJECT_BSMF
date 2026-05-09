@@ -135,7 +135,16 @@
                                     <button type="button" class="btn btn-qty-adjust px-3 text-white border-0 bg-transparent" onclick="adjustQty(-1)">
                                         <i class="fas fa-minus fa-xs"></i>
                                     </button>
-                                    <input type="number" id="quantity_input" name="quantity" class="filter-input border-0 bg-transparent py-4 px-2 text-center fw-black w-100 no-spinners" value="1" min="1" max="{{ $product->stock_quantity }}" readonly>
+                                    <input type="number" 
+                                           id="quantity_input" 
+                                           name="quantity" 
+                                           class="filter-input border-0 bg-transparent py-4 px-2 text-center fw-black w-100 no-spinners" 
+                                           value="1" 
+                                           min="1" 
+                                           max="{{ $product->stock_quantity }}"
+                                           onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                           oninput="if(this.value > {{ $product->stock_quantity }}) this.value = {{ $product->stock_quantity }};"
+                                           onblur="if(this.value < 1 || this.value === '') this.value = 1;">
                                     <button type="button" class="btn btn-qty-adjust px-3 text-white border-0 bg-transparent" onclick="adjustQty(1)">
                                         <i class="fas fa-plus fa-xs"></i>
                                     </button>
@@ -148,7 +157,7 @@
                             <script>
                             function adjustQty(amount) {
                                 const input = document.getElementById('quantity_input');
-                                let val = parseInt(input.value);
+                                let val = parseInt(input.value) || 1;
                                 const max = parseInt(input.max);
                                 
                                 val += amount;

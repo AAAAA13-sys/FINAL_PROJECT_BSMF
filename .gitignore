@@ -22,7 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-.agent/
+.agents/
+skills-lock.json
 .gemini/
 acceptance_criteria.md
 /tests
