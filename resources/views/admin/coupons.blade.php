@@ -95,7 +95,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Type</label>
-                    <select name="discount_type" class="form-select bg-dark border-secondary text-white p-3" required>
+                    <select name="discount_type" class="form-select bg-dark border-secondary text-white p-3" required onchange="toggleDiscountInput(this)">
                         <option value="percentage">Percentage (%)</option>
                         <option value="fixed">Fixed Amount (₱)</option>
                         <option value="free_shipping">Free Shipping</option>
@@ -103,11 +103,11 @@
                 </div>
                 <div class="col-md-6">
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Discount Value</label>
-                    <input type="number" step="0.01" name="discount_value" class="form-control bg-dark border-secondary text-white p-3" placeholder="0.00 for Free Shipping">
+                    <input type="number" step="0.01" name="discount_value" id="discount_value_input" class="form-control bg-dark border-secondary text-white p-3" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46">
                 </div>
                 <div class="col-md-6">
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Min Order (₱)</label>
-                    <input type="number" step="0.01" name="min_order_amount" class="form-control bg-dark border-secondary text-white p-3" value="0.00">
+                    <input type="number" step="0.01" name="min_order_amount" class="form-control bg-dark border-secondary text-white p-3" value="0" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46">
                 </div>
                 <div class="col-md-6">
                     <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Usage Limit</label>
@@ -125,4 +125,20 @@
         </form>
     </div>
 </div>
+
+    <script>
+        function toggleDiscountInput(select) {
+            const valueInput = document.getElementById('discount_value_input');
+            if (select.value === 'free_shipping') {
+                valueInput.value = '0';
+                valueInput.disabled = true;
+                valueInput.style.opacity = '0.5';
+                valueInput.placeholder = "FREE SHIPPING ACTIVE";
+            } else {
+                valueInput.disabled = false;
+                valueInput.style.opacity = '1';
+                valueInput.placeholder = "";
+            }
+        }
+    </script>
 @endsection

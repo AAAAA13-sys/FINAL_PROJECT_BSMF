@@ -35,7 +35,7 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label class="input-label-sm">Region / State</label>
+                            <label class="input-label-sm">Region</label>
                             <select name="shipping_region" id="shipping_region" class="form-select garage-select" required onchange="handleRegionChange()">
                                 <option value="" disabled {{ !Auth::user()->region ? 'selected' : '' }}>Select Region</option>
                                 @foreach($regions as $code => $name)

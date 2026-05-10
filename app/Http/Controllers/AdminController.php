@@ -500,17 +500,40 @@ final class AdminController extends Controller
         if (!auth()->user()->isAdmin()) {
             return back()->with('error', 'Staff cannot create coupons.');
         }
+
+        // Default to 0 for numerical fields if blank
+        $request->merge([
+            'discount_value' => $request->discount_value ?? 0,
+            'min_order_amount' => $request->min_order_amount ?? 0,
+        ]);
+
         $validated = $request->validate([
             'code' => 'required|string|unique:coupons,coupon_code',
             'name' => 'nullable|string',
-            'discount_type' => 'required|string',
-            'discount_value' => 'required_unless:discount_type,free_shipping|numeric|min:0',
+            'discount_type' => 'required|string|in:percentage,fixed,free_shipping,bogo',
+            'discount_value' => [
+                'required_unless:discount_type,free_shipping',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->discount_type === Coupon::TYPE_PERCENTAGE && $value > 50) {
+                        $fail('The percentage discount cannot exceed 50%. High-speed deals have limits, collector!');
+                    }
+                },
+            ],
             'min_order_amount' => 'nullable|numeric|min:0',
-            'expires_at' => 'nullable|date',
+            'usage_limit' => 'nullable|integer|min:1',
+            'expires_at' => 'nullable|date|after:today',
         ]);
 
         $validated['coupon_code'] = $validated['code'];
         $validated['name'] = $validated['name'] ?? $validated['coupon_code'];
+        
+        // Force 0 for free shipping
+        if ($validated['discount_type'] === Coupon::TYPE_FREE_SHIPPING) {
+            $validated['discount_value'] = 0;
+        }
+
         unset($validated['code']);
         $coupon = Coupon::create($validated);
         return back()->with('success', 'Promo code activated!');
