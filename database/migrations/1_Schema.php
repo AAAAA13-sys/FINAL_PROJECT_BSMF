@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'staff', 'customer'])->default('customer');
             $table->string('phone', 20)->nullable();
+            $table->string('region')->nullable();
+            $table->string('city')->nullable();
             $table->text('default_shipping_address')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('otp')->nullable();
@@ -249,15 +251,6 @@ return new class extends Migration
             $table->timestamp('failed_at')->useCurrent();
         });
 
-        // 17. Wishlists Table
-        Schema::create('wishlists', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('product_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->timestamps();
-        });
 
         // 18. SQL Constraints
         DB::unprepared("
@@ -305,7 +298,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wishlists');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('jobs');
         Schema::dropIfExists('reviews');

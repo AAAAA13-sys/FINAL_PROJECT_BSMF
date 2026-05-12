@@ -96,30 +96,6 @@ return new class extends Migration
                 JSON_OBJECT('username', OLD.username, 'email', OLD.email), @current_ip, NOW(), NOW());
             END;
 
-            -- 6. Taxonomy Audit Triggers (Brand, Scale, Series)
-            DROP TRIGGER IF EXISTS trig_AuditBrandInsert;
-            CREATE TRIGGER trig_AuditBrandInsert AFTER INSERT ON brands FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (COALESCE(@current_user_id, 1), 'BRAND_CREATE', CONCAT('Created brand: ', NEW.name), 'App\\\\Models\\\\Brand', NEW.id, 
-                JSON_OBJECT('name', NEW.name), @current_ip, NOW(), NOW());
-            END;
-
-            DROP TRIGGER IF EXISTS trig_AuditScaleInsert;
-            CREATE TRIGGER trig_AuditScaleInsert AFTER INSERT ON scales FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (COALESCE(@current_user_id, 1), 'SCALE_CREATE', CONCAT('Created scale: ', NEW.name), 'App\\\\Models\\\\Scale', NEW.id, 
-                JSON_OBJECT('name', NEW.name), @current_ip, NOW(), NOW());
-            END;
-
-            DROP TRIGGER IF EXISTS trig_AuditSeriesInsert;
-            CREATE TRIGGER trig_AuditSeriesInsert AFTER INSERT ON series FOR EACH ROW
-            BEGIN
-                INSERT INTO audit_logs (user_id, action, description, model_type, model_id, new_values, ip_address, created_at, updated_at)
-                VALUES (COALESCE(@current_user_id, 1), 'SERIES_CREATE', CONCAT('Created series: ', NEW.name), 'App\\\\Models\\\\Series', NEW.id, 
-                JSON_OBJECT('name', NEW.name), @current_ip, NOW(), NOW());
-            END;
         ");
     }
 
@@ -137,8 +113,5 @@ return new class extends Migration
         DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditCouponDelete;");
         DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditUserUpdate;");
         DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditUserDelete;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditBrandInsert;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditScaleInsert;");
-        DB::unprepared("DROP TRIGGER IF EXISTS trig_AuditSeriesInsert;");
     }
 };

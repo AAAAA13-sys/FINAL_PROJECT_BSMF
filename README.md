@@ -4,7 +4,7 @@
 
 ### I. Project Scaffolding and Schema Definition (April 23, 2026)
 *   Initialized the Laravel 11 framework environment and core directory structure.
-*   Created 12 migrations to define the database schema, including Users, Categories, Products, Carts, Orders, OrderItems, Reviews, Wishlists, and Coupons.
+*   Created 12 migrations to define the database schema, including Users, Categories, Products, Carts, Orders, OrderItems, Reviews, and Coupons.
 *   Established foundational models with Eloquent relationships for order tracking and inventory management.
 *   Integrated the initial public stylesheets and base layout templates for the storefront.
 
