@@ -1,80 +1,71 @@
 # BSMF Garage - Premium Die-Cast Collector Series
 
-## Development Log & Roadmap
-
-### I. Project Scaffolding and Schema Definition (April 23, 2026)
-*   Initialized the Laravel 11 framework environment and core directory structure.
-*   Created 12 migrations to define the database schema, including Users, Categories, Products, Carts, Orders, OrderItems, Reviews, and Coupons.
-*   Established foundational models with Eloquent relationships for order tracking and inventory management.
-*   Integrated the initial public stylesheets and base layout templates for the storefront.
-
-### II. Infrastructure Migration and Configuration (April 25, 2026)
-*   Migrated the database engine from SQLite to a production-grade MySQL 8.0 configuration.
-*   Updated config/database.php to standardize connection strings and persistence settings.
-*   Configured global charset and collation settings to ensure compatibility with localized data.
-
-### III. Administrative Interface and Branding Overhaul (April 25, 2026)
-*   Redesigned the Admin Dashboard using a premium dark-glass aesthetic.
-*   Updated the AdminController to support complex administrative tasks such as multi-image product uploads.
-*   Implemented a dynamic, filterable sales revenue chart on the administrative dashboard.
-
-### IV. Architectural Refactoring and Performance Optimization (April 27, 2026)
-*   Unified Web and API controllers to consolidate business logic.
-*   Performed a comprehensive audit of routes/web.php to resolve naming collisions.
-*   Modularized the CSS and JavaScript assets into separate, cacheable components.
-
-### V. Feature Simplification and Database Integrity (April 29, 2026)
-*   Decommissioned the Dispute Management system.
-*   Verified and hardened all foreign key constraints between Products, Brands, and OrderItems.
-*   Implemented cascading delete logic for inventory safety.
-
-### VI. Localization and Visual Design Finalization (April 30, 2026)
-*   Localized the application for the Philippine market (₱ symbol and formatting).
-*   Standardized global container padding at 40px across all pages.
-*   Introduced high-fidelity red-to-yellow hover transitions.
-
-### VII. Security Hardening and Role-Based Access Control (May 01, 2026)
-*   Replaced legacy is_admin boolean with a comprehensive role system (admin, staff, customer).
-*   Integrated isAdmin() and isStaff() helper methods into the User model.
-*   Locked down User management and Coupon Vault interfaces.
-
-### VIII. Audit Logging and Operational Intelligence (May 01, 2026)
-*   Created a custom Audit Logging system recording all administrative actions.
-*   Refactored log display to show "Before" and "After" state changes.
-*   Implemented a metadata scrubbing layer for technical data privacy.
-
-### IX. Procedural Optimization and Sequential Numbering (May 01, 2026)
-*   Implemented new daily sequential order numbering format: BSMF-YY/MM/DD-ID-000.
-*   Developed midnight reset logic for the order sequence counter.
-*   Enforced a strict linear order status workflow.
-
-### X. OTP Security and Identity Recovery (May 05, 2026) - [COMPLETED]
-*   **OTP Security Engine**: Implemented 6-digit One-Time Password (OTP) verification for both Registration (Join) and Password Recovery.
-*   **Gmail SMTP Integration**: Established a secure connection with Google SMTP using App Passwords for reliable local mail delivery.
-*   **Multi-Step Recovery UI**: Overhauled the Forgot Password flow into a high-fidelity, single-page 3-step AJAX transition (Email -> OTP -> New Password).
-*   **Administrative Bypass**: Implemented an automated verification bypass for Admin and Staff roles to streamline development.
-*   **Branding Synchronization**: Rebranded the entire application from "FINAL_PROJECT" to **BSMF Garage** across all emails and system notifications.
-*   **Queue Optimization**: Configured a Database Queue system to ensure instant UI responsiveness during email dispatch.
-*   **UX Polishing**: Fixed OTP input visibility, added success toast notifications on the login screen, and implemented automated URL cleaning.
-
-### XI. Collection Expansion and Logistics Optimization (May 07, 2026) - [COMPLETED]
-*   **Bulk Collection Import**: Successfully migrated 15 premium models from the "BSMF GARAGE" source, including the MSCH x Hotwheels collab and various STH/RLC pieces.
-*   **Logistics Architecture**: Overhauled the shipping engine to support dynamic regional fees (NCR, Luzon, VisMin) and integrated carrier switching (Lalamove for NCR, LBC Express for others).
-*   **Nomenclature Hardening**: Refactored the entire frontend CSS architecture from generic naming to semantic UI-focused nomenclature (`admin-ui.css`, `garage-main.css`, etc.).
-*   **Quantity Control UI**: Implemented a "Stupid-Proof" quantity selector with readonly inputs and incremental `+/-` buttons to prevent manual entry errors.
-*   **Mail Latency Optimization**: Integrated Laravel's `defer()` helper and background queues for Order Confirmations and Shipment notifications, achieving sub-second UI responsiveness.
-*   **Persistence Hardening**: Integrated all 15 new products directly into `DatabaseSeeder.php` to ensure catalog integrity across environment resets.
-*   **Workflow Completion**: Finalized the **Order Cancellation** logic for both Collectors and Staff, including automated stock restoration and audit logging.
-
-### XII. Support & Knowledge Base (May 08, 2026) - [COMPLETED]
-*   **Support & FAQ System**: Implemented a dedicated collector support portal and a comprehensive FAQ section regarding card conditions and shipping.
-*   **Database Optimization**: Optimized SQL stored procedures and refined the data dictionary.
-
-### XIII. Final Deployment & Optimization (May 14, 2026) - [FINAL]
-*   **Unified Setup Engine**: Replaced verbose installation scripts with a clean, professional `setup.bat` that handles everything from DB creation to background service management.
-*   **Infrastructure Transition**: Successfully migrated the notification system to a new dedicated account (`bsmfsupport@gmail.com`) for improved deliverability.
-*   **Showcase Optimization**: Fine-tuned the shop display to 9 items per page to maximize pagination utility and UI balance.
-*   **Public Access Hardening**: Resolved landing page accessibility by decoupling public views (Home/Products) from restrictive auth middleware.
-*   **Codebase Cleanup**: Purged redundant documentation and obsolete database tree files to ensure a production-ready repository.
+**Status:** `PRODUCTION READY`
+**Last Updated:** May 14, 2026
 
 ---
+
+### I. Foundation (Apr 23, 2026)
+*   Laravel 11 & core structure.
+*   12-table schema (Users, Products, Orders).
+*   Eloquent relationships.
+
+### II. Infrastructure (Apr 25, 2026)
+*   MySQL 8.0 Migration.
+*   Standardized connections.
+
+### III. Admin UI (Apr 25, 2026)
+*   Dark-Glass Dashboard.
+*   Multi-image uploads.
+*   Revenue charts.
+
+### IV. Optimization (Apr 27, 2026)
+*   Unified Web/API controllers.
+*   Asset modularization (CSS/JS).
+
+### V. Cleanup (Apr 29, 2026)
+*   Dispute system removed.
+*   Foreign key hardening.
+
+### VI. Localization (Apr 30, 2026)
+*   PH Currency (₱) & formatting.
+*   40px global padding.
+*   Red/Yellow hover effects.
+
+### VII. Security (May 01, 2026)
+*   Role system (Admin/Staff/Customer).
+*   Coupon Vault lockdown.
+
+### VIII. Audit Engine (May 01, 2026)
+*   Action logging system.
+*   Before/After state tracking.
+
+### IX. Sequential ID (May 01, 2026)
+*   BSMF-YYMMDD order format.
+*   Midnight reset logic.
+
+### X. OTP & Mail (May 05, 2026)
+*   6-digit OTP verification.
+*   Gmail SMTP integration.
+*   3-step recovery UI.
+*   Queue optimization.
+
+### XI. Collection (May 07, 2026)
+*   15 Premium STH/RLC models.
+*   Regional shipping (Lalamove/LBC).
+*   Quantity +/- control UI.
+*   Order cancellation logic.
+
+### XII. Knowledge (May 08, 2026)
+*   FAQ & Support portal.
+*   SQL procedure optimization.
+
+### XIII. Final Polish (May 14, 2026)
+*   Silent `setup.bat`.
+*   Email migration (`bsmfsupport`).
+*   Showcase limit (9 per page).
+*   Public landing page fix.
+*   AuditLogSeeder purged.
+
+---
+**BSMF Garage - Launch Ready**
