@@ -1,9 +1,5 @@
-# BSMF Garage - Premium Die-Cast Collector Series
-
-**Status:** `PRODUCTION READY`
+# BSMF Garage
 **Last Updated:** May 14, 2026
-
----
 
 ### I. Foundation (Apr 23, 2026)
 *   Laravel 11 & core structure.
@@ -66,6 +62,3 @@
 *   Showcase limit (9 per page).
 *   Public landing page fix.
 *   AuditLogSeeder purged.
-
----
-**BSMF Garage - Launch Ready**
