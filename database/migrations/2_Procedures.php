@@ -79,7 +79,7 @@ return new class extends Migration
                     products.main_image, cart_items.quantity, products.price, (products.price * cart_items.quantity), NOW(), NOW()
                 FROM cart_items
                 JOIN products ON cart_items.product_id = products.id
-                LEFT JOIN brands ON products.brand_id = brands.id
+                JOIN brands ON products.brand_id = brands.id
                 WHERE cart_items.cart_id = variable_cart_id;
 
                 UPDATE products

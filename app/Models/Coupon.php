@@ -14,7 +14,7 @@ final class Coupon extends Model
     public const TYPE_PERCENTAGE = 'percentage';
     public const TYPE_FIXED = 'fixed';
     public const TYPE_FREE_SHIPPING = 'free_shipping';
-    public const TYPE_BOGO = 'bogo';
+
 
     protected $fillable = [
         'coupon_code',

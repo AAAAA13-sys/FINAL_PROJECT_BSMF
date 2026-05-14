@@ -510,7 +510,7 @@ final class AdminController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|unique:coupons,coupon_code',
             'name' => 'nullable|string',
-            'discount_type' => 'required|string|in:percentage,fixed,free_shipping,bogo',
+            'discount_type' => 'required|string|in:percentage,fixed,free_shipping',
             'discount_value' => [
                 'required_unless:discount_type,free_shipping',
                 'numeric',

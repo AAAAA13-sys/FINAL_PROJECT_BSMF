@@ -138,7 +138,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('coupon_code', 50)->unique();
             $table->string('name', 100);
-            $table->enum('discount_type', ['percentage', 'fixed', 'free_shipping', 'bogo'])->default('percentage');
+            $table->enum('discount_type', ['percentage', 'fixed', 'free_shipping'])->default('percentage');
             $table->decimal('discount_value', 10, 2)->nullable();
             $table->decimal('min_order_amount', 12, 2)->default(0);
             $table->decimal('max_discount', 12, 2)->nullable();
