@@ -10,10 +10,10 @@ use App\Http\Controllers\SupportController;
 use Illuminate\Support\Facades\Route;
 
 // Public/Semi-Public Routes
-Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/faq', function () { return view('faq'); })->name('faq');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index')->middleware('verified');
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show')->middleware('verified');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/api/search-suggestions', [ProductController::class, 'suggestions'])->name('api.search.suggestions');
 
 // Auth Routes

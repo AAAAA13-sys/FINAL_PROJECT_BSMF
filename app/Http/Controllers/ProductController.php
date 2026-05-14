@@ -113,7 +113,7 @@ final class ProductController extends Controller
                 break;
         }
 
-        $products = $query->paginate(24)->withQueryString();
+        $products = $query->paginate(9)->withQueryString();
 
         if ($request->wantsJson() || $request->is('api/*')) {
             return \App\Http\Resources\ProductResource::collection($products);

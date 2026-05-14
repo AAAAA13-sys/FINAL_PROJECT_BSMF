@@ -66,5 +66,16 @@
 *   **Persistence Hardening**: Integrated all 15 new products directly into `DatabaseSeeder.php` to ensure catalog integrity across environment resets.
 *   **Workflow Completion**: Finalized the **Order Cancellation** logic for both Collectors and Staff, including automated stock restoration and audit logging.
 
-### XII. Future Roadmap (Planned)
-*   **Support & FAQ System**: Implementation of a dedicated collector support portal and a comprehensive FAQ section regarding card conditions and shipping.
+### XII. Support & Knowledge Base (May 08, 2026) - [COMPLETED]
+*   **Support & FAQ System**: Implemented a dedicated collector support portal and a comprehensive FAQ section regarding card conditions and shipping.
+*   **Database Optimization**: Optimized SQL stored procedures and refined the data dictionary.
+
+### XIII. Final Deployment & Optimization (May 14, 2026) - [FINAL]
+*   **Unified Setup Engine**: Replaced verbose installation scripts with a clean, professional `setup.bat` that handles everything from DB creation to background service management.
+*   **Infrastructure Transition**: Successfully migrated the notification system to a new dedicated account (`bsmfsupport@gmail.com`) for improved deliverability.
+*   **Showcase Optimization**: Fine-tuned the shop display to 9 items per page to maximize pagination utility and UI balance.
+*   **Public Access Hardening**: Resolved landing page accessibility by decoupling public views (Home/Products) from restrictive auth middleware.
+*   **Codebase Cleanup**: Purged redundant documentation and obsolete database tree files to ensure a production-ready repository.
+
+---
+**BSMF Garage - Ready for Launch**
