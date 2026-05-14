@@ -9,21 +9,25 @@
 @section('content')
 <div class="profile-hero">
     <div class="container">
-        <div class="d-flex align-items-center gap-3 mb-5">
-            <h2 class="text-white text-uppercase italic fw-black mb-0">COLLECTOR <span>PROFILE</span></h2>
-        </div>
-        <div class="profile-header-content">
-            <div class="profile-avatar">
-                <div class="avatar-inner">
-                    <i class="fas fa-user-secret"></i>
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="d-flex align-items-center gap-3 mb-5">
+                    <h2 class="text-white text-uppercase italic fw-black mb-0">COLLECTOR <span>PROFILE</span></h2>
                 </div>
-                <div class="badge-collector">
-                    <i class="fas fa-certificate"></i> ELITE COLLECTOR
+                <div class="profile-header-content">
+                    <div class="profile-avatar">
+                        <div class="avatar-inner">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div class="badge-collector">
+                            <i class="fas fa-certificate"></i> ELITE COLLECTOR
+                        </div>
+                    </div>
+                    <div class="profile-identity">
+                        <h1>{{ strtoupper($user->name) }}</h1>
+                        <p>Member since {{ $user->created_at->format('M Y') }} • {{ $user->orders()->count() }} Acquisitions</p>
+                    </div>
                 </div>
-            </div>
-            <div class="profile-identity">
-                <h1>{{ strtoupper($user->name) }}</h1>
-                <p>Member since {{ $user->created_at->format('M Y') }} • {{ $user->orders()->count() }} Acquisitions</p>
             </div>
         </div>
     </div>

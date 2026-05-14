@@ -42,6 +42,12 @@
             border-bottom: 1px solid var(--color-surface-border);
             z-index: 1000;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: headerBackgroundScroll 2s linear infinite;
+        }
+
+        @keyframes headerBackgroundScroll {
+            from { background-position: 0 0; }
+            to { background-position: 40px 0; }
         }
 
         nav.minimal-header.scrolled {
@@ -54,6 +60,7 @@
                 transparent 270deg
             );
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: headerBackgroundScroll 2s linear infinite;
         }
 
         .logo-minimal {

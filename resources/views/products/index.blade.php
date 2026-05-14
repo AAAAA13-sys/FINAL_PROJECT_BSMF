@@ -73,20 +73,20 @@
 
             <!-- Product Listing -->
             <div class="col-lg-9">
-                <div class="d-flex justify-content-between align-items-end mb-5">
-                    <div>
-                        <h2 class="section-title fs-huge">THE <span>GARAGE</span></h2>
-                        <p class="text-garage-stats">{{ $products->total() }} pieces in your garage view</p>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-3">
-                        <label class="label-sort-by">Sort By:</label>
-                        <select id="headerSort" class="filter-input select-header-sort">
-                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest Arrival</option>
-                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                            <option value="alpha_asc" {{ request('sort') == 'alpha_asc' ? 'selected' : '' }}>Name: A-Z</option>
-                        </select>
+                <div class="mb-5">
+                    <h2 class="section-title fs-huge">THE <span>GARAGE</span></h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="text-garage-stats mb-0">{{ $products->total() }} pieces in your garage view</p>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <label class="label-sort-by mb-0">Sort By:</label>
+                            <select id="headerSort" class="filter-input select-header-sort">
+                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest Arrival</option>
+                                <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                                <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                                <option value="alpha_asc" {{ request('sort') == 'alpha_asc' ? 'selected' : '' }}>Name: A-Z</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
