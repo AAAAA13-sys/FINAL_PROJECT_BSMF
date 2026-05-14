@@ -24,7 +24,7 @@
 
         <div class="tracking-progress-container">
             <div class="tracking-line"></div>
-            <div class="tracking-line-active" style="width: {{ $progress }}%;"></div>
+            <div class="tracking-line-active" style="width: calc(({{ $progress }} / 100) * (100% - 4rem));"></div>
             
             @foreach($statuses as $key => $label)
                 @php $index = array_search($key, $statusKeys); @endphp

@@ -251,6 +251,19 @@ return new class extends Migration
             $table->timestamp('failed_at')->useCurrent();
         });
 
+        // 17. Cache Table
+        Schema::create('cache', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->mediumText('value');
+            $table->integer('expiration');
+        });
+
+        Schema::create('cache_locks', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->string('owner');
+            $table->integer('expiration');
+        });
+
 
         // 18. SQL Constraints
         DB::unprepared("
@@ -298,6 +311,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('cache_locks');
+        Schema::dropIfExists('cache');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('jobs');
         Schema::dropIfExists('reviews');

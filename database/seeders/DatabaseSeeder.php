@@ -227,31 +227,6 @@ class DatabaseSeeder extends Seeder
         Review::create(['product_id' => $nissan->id, 'user_id' => $collector2->id, 'rating' => 5, 'comment' => 'The sea blue paint is incredible in person. Metal base gives it nice weight.']);
         Review::create(['product_id' => $nissan->id, 'user_id' => $collector3->id, 'rating' => 4, 'comment' => 'Awesome car, glad I grabbed it before it sold out. Solid JDM piece.']);
 
-        // --- TOYOTA SUPRA PREMIUM ---
-        $supra = Product::create([
-            'brand_id' => $hw->id,
-            'scale_id' => $scale64->id,
-            'series_id' => $premiumSeries->id,
-            'name' => 'Hotwheels Premium Boulevard Toyota Supra',
-            'casting_name' => 'Toyota Supra',
-            'slug' => 'toyota-supra-boulevard',
-            'price' => 1299.00,
-            'stock_quantity' => 3,
-            'is_carded' => true,
-            'is_loose' => false,
-            'card_condition' => 'Near Mint',
-            'main_image' => 'images/products/toyota-supra/main.jpg',
-            'description' => "The Premium Boulevard Toyota Supra is one of the most iconic JDM castings in the Hot Wheels lineup. Featuring Real Riders rubber tires and a metal-on-metal construction.\n\nCondition: Near Mint Carded",
-        ]);
-
-        for ($i = 1; $i <= 4; $i++) {
-            ProductImage::create([
-                'product_id' => $supra->id,
-                'image_path' => "images/products/toyota-supra/gallery-$i.jpg",
-                'type' => 'gallery',
-            ]);
-        }
-        Review::create(['product_id' => $supra->id, 'user_id' => $collector1->id, 'rating' => 5, 'comment' => 'Absolute grail for JDM fans! The Boulevard series never misses.']);
 
         // 6. Orders and Order Items to back up the reviews
         $order1 = \App\Models\Order::create([
