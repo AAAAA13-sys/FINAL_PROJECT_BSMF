@@ -236,27 +236,29 @@ h1 span, h2 span, h3 span {
 }
 
 .badge-brand-grid {
-    font-size: 0.6rem;
-    color: #ffffff; /* Contrast fix */
-    font-weight: 800;
+    font-size: 0.65rem;
+    color: #ffffff !important;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: rgba(230, 57, 70, 0.2); /* Red tint */
+    background: rgba(230, 57, 70, 0.4);
     padding: 4px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(230, 57, 70, 0.3);
+    border: 1px solid rgba(230, 57, 70, 0.5);
+    display: inline-block;
 }
 
 .badge-scale-grid {
-    font-size: 0.6rem;
-    color: #ffffff; /* Contrast fix */
-    font-weight: 800;
+    font-size: 0.65rem;
+    color: #ffffff !important;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     padding: 4px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-block;
 }
 
 .product-description-grid {
