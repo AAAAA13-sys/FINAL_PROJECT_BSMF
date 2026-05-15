@@ -14,11 +14,11 @@
                 <input type="text" name="search" id="searchInput" autocomplete="off" placeholder="Search the garage..." class="hero-search-input">
                 <button type="submit" class="btn btn-primary hero-search-btn px-4">Garage Search</button>
             </form>
-            <div id="searchSuggestions" class="glass search-suggestions-dropdown"></div>
+            <div id="searchSuggestions" class="search-suggestions-dropdown"></div>
         </div>
 
         <div class="hero-badges-container fade-in delay-3">
-            <span class="garage-badge"><i class="fas fa-gem"></i> Curated Grails</span>
+            <span class="garage-badge"><i class="fas fa-gem"></i> Curated Collectibles</span>
             <span class="garage-badge"><i class="fas fa-shipping-fast"></i> Secure Shipping</span>
             <span class="garage-badge"><i class="fas fa-shield-alt"></i> Authentic only</span>
         </div>
@@ -42,9 +42,7 @@
             <div class="col-lg-6 ps-lg-5">
                 <span class="text-accent-caps mb-4">ESTABLISHED 2010</span>
                 <h2 class="section-title-large mb-4">Built by <span>Collectors</span>, For Collectors</h2>
-                <p class="section-description-lead mb-5">
-                    BSMF Garage isn't just a store—it's a sanctuary for die-cast enthusiasts. We started with a passion for 1:64 scale precision and have grown into a global destination for finding the rarest "Grails" and latest releases.
-                </p>
+                    BSMF Garage isn't just a store—it's a sanctuary for die-cast enthusiasts. We started with a passion for 1:64 scale precision and have grown into a global destination for finding the rarest "Collectibles" and latest releases.
                 <div class="row g-4">
                     <div class="col-sm-6">
                         <h4 class="mission-sub-title"><i class="fas fa-check-circle me-2"></i> Our Mission</h4>

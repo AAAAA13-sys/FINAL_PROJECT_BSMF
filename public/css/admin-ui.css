@@ -296,3 +296,16 @@
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
 }
+
+/* --- Layout Utilities --- */
+.min-h-180px {
+    min-height: 180px !important;
+}
+
+.min-h-300px {
+    min-height: 300px !important;
+}
+
+.min-h-400px {
+    min-height: 400px !important;
+}

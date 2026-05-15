@@ -13,7 +13,7 @@
 
     <div class="glass-panel overflow-hidden mx-auto" style="max-width: 900px; border: 2px solid {{ $isRefill ? 'var(--primary)' : 'var(--secondary-blue)' }};">
         <div class="p-4 px-5 border-bottom border-secondary border-opacity-25 bg-darker d-flex justify-content-between align-items-center">
-            <h2 class="h5 text-white text-uppercase italic mb-0 fw-black">{{ $isRefill ? 'REFILL' : 'MODIFY' }} <span>{{ $isRefill ? 'STOCK INVENTORY' : 'GRAIL DETAILS' }}</span></h2>
+            <h2 class="h5 text-white text-uppercase italic mb-0 fw-black">{{ $isRefill ? 'REFILL' : 'MODIFY' }} <span>{{ $isRefill ? 'STOCK INVENTORY' : 'COLLECTIBLES DETAILS' }}</span></h2>
             @if($isRefill)
                 <span class="badge bg-danger px-3 py-2 rounded-pill tracking-wider italic fw-black">REFILL MODE ACTIVE</span>
             @endif

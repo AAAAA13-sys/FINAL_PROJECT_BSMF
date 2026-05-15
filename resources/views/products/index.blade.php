@@ -18,7 +18,7 @@
                             <input type="text" name="search" id="sidebarSearchInput" autocomplete="off"
                                 class="filter-input"
                                 placeholder="Search models..." value="{{ request('search') }}">
-                            <div id="sidebarSearchSuggestions" class="glass search-suggestions-dropdown">
+                            <div id="sidebarSearchSuggestions" class="search-suggestions-dropdown">
                             </div>
                         </div>
 

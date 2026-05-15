@@ -42,8 +42,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $collector3 = User::create([
-            'name' => 'Mike Racer',
-            'username' => 'mike_racer99',
+            'name' => 'Mike Collector',
+            'username' => 'mike_collector99',
             'email' => 'mike@example.com',
             'password' => Hash::make('password'),
             'role' => 'customer',
@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
             'is_super_treasure_hunt' => true,
             'is_featured' => true,
             'price' => 1999.00,
-            'stock_quantity' => 5,
+            'stock_quantity' => 10,
             'is_carded' => false,
             'is_loose' => true,
             'card_condition' => 'Loose Pack',
@@ -122,7 +122,7 @@ class DatabaseSeeder extends Seeder
             'is_super_treasure_hunt' => true,
             'is_featured' => true,
             'price' => 999.00,
-            'stock_quantity' => 5,
+            'stock_quantity' => 10,
             'is_carded' => false,
             'is_loose' => true,
             'card_condition' => 'Loose Pack',
@@ -152,7 +152,7 @@ class DatabaseSeeder extends Seeder
             'is_super_treasure_hunt' => true,
             'is_featured' => true,
             'price' => 1499.00,
-            'stock_quantity' => 5,
+            'stock_quantity' => 10,
             'is_carded' => false,
             'is_loose' => true,
             'card_condition' => 'Loose Pack',
@@ -296,7 +296,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '2999.00',
-            'stock_quantity' => 2,
+            'stock_quantity' => 0,
             'main_image' => 'images/products/hotwheels-premium-rwb-porsche-930/main.jpg',
             'description' => 'First released in 2018, this specific RWB Model is the 2nd most expensive "Premium" carded of RWB. The value of this specific model has already reached 10x its value when it was first released. It is a porsche 930 in a RWB kit, which makes it sought after.' . "\n\nCondition: Mint",
         ]);
@@ -319,7 +319,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1499.00',
-            'stock_quantity' => 3,
+            'stock_quantity' => 0,
             'main_image' => 'images/products/fast-and-furious-wof-honda-s2000-suki/main.jpg',
             'description' => 'Pink is the new meta. Suki is one of the hottest things right now in the market because of its color and origin. This car was originally from the Fast and Furious movie, making the demand from the collectors high. This is just a silver series but the price is very high for a normal Silver series.' . "\n\nCondition: Mint",
         ]);
@@ -338,7 +338,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1999.00',
-            'stock_quantity' => 5,
+            'stock_quantity' => 0,
             'main_image' => 'images/products/porsche-911-gt3-rs-id/main.jpg',
             'description' => 'This was already discounted Years ago. Hotwheels ID are a unique set of collectible series of hotwheels, wherein you can use the actual vehicle on the hotwheels app (Already discontinued). You can only acquire this years ago, making it expensive and hard to find. It is covered in spectraflame Gold with a unique set of tires.' . "\n\nCondition: Mint",
         ]);
@@ -361,7 +361,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '2999.00',
-            'stock_quantity' => 3,
+            'stock_quantity' => 0,
             'main_image' => 'images/products/rwb-porsche-930/main.jpg',
             'description' => 'First released in 2018, this specific RWB Model is the 2nd most expensive "Premium" carded of RWB. The value of this specific model has already reached 10x its value when it was first released. It is a porsche 930 in a RWB kit, which makes it sought after.' . "\n\nCondition: Mint",
         ]);
@@ -384,7 +384,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1299.00',
-            'stock_quantity' => 5,
+            'stock_quantity' => 0,
             'main_image' => 'images/products/legends-tour-honda-s2000/main.jpg',
             'description' => 'The vintage AEM Livery from the STH honda S2000 is now available for the legends tour release. This variant features A rubber tires and a spectraflame violet finish similar to it\'s STH variant (A blue one)' . "\n\nCondition: Mint",
         ]);
@@ -403,7 +403,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '5000.00',
-            'stock_quantity' => 3,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/mschf-x-hotwheels-collaboration-not-wheels/main.jpg',
             'description' => 'A collaboration with mschf is something collectors are dying for. Not wheels is an hotwheels model that seems unfinished, but it is as is. This is a very rare piece and you can only acquire one of this through Mattel\'s official website.' . "\n\nCondition: Mint/Complete",
         ]);
@@ -422,7 +422,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '3499.00',
-            'stock_quantity' => 4,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/90-acura-nsx/main.jpg',
             'description' => 'one of the oldest JDM STH ever released. Iconic spectraflame blue with the 5 spoke chrome wheels. NSX isn\'t just a normal JDM. It was the Supercar killer of the 90\'s.' . "\n\nCondition: Mint",
         ]);
@@ -441,7 +441,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1999.00',
-            'stock_quantity' => 5,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/1975-datsun-sunny-truck-b120/main.jpg',
             'description' => 'Sunnyyyyyyy... This STH was released on the D case of 2025. Spectraflame blue and Golden wheels is what makes this STH Special. It is really hard to find nowadays.' . "\n\nCondition: Mint",
         ]);
@@ -460,7 +460,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '2999.00',
-            'stock_quantity' => 3,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/20-dodge-charger-hellcat/main.jpg',
             'description' => 'Spectraflame pink Hellcat is the dream collection of many collectors nowadays. The iconic hellcat in a pink color is something else. This was released as The P case STH of 2025.' . "\n\nCondition: Mint",
         ]);
@@ -479,7 +479,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1499.00',
-            'stock_quantity' => 3,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/ford-rs200-gulf/main.jpg',
             'description' => 'This was released as the last STH of the year 2025. It is a super treasure hunt covered in the iconic Gulf livery with orange wheels. One of the most sought after livery in any die-cast models' . "\n\nCondition: Mint",
         ]);
@@ -502,7 +502,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '999.00',
-            'stock_quantity' => 2,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/glory-chaser-gulf/main.jpg',
             'description' => 'This Super Treasure Hunt was released years ago. It is the iconic Glory chaser in a gulf livery, making it one of the most sought after sth of it\'s year.' . "\n\nCondition: Mint",
         ]);
@@ -525,7 +525,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '2499.00',
-            'stock_quantity' => 4,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/mazda-787b/main.jpg',
             'description' => 'One of the most iconic le mans car ever. The 787B isn\'t just an ordinary car. It is the standard for dominance. This sth was featured on the 2024 Set with the renown livery.' . "\n\nCondition: Mint",
         ]);
@@ -544,7 +544,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1499.00',
-            'stock_quantity' => 5,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/71-mustang-funny-car/main.jpg',
             'description' => 'Spectraflame red, Goodyear wheels, Dragster stance? This car is for you. The mustang funny car was a part of the 2025 STH set which makes it a recent release.' . "\n\nCondition: Mint",
         ]);
@@ -563,7 +563,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '4999.00',
-            'stock_quantity' => 4,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/hotwheels-eggclusive-honda-civic-si/main.jpg',
             'description' => 'One of the grails for every Civic SI collector. This isn\'t just a normal grail, this is a hard to find grail. Eggclusive was a very exclusive release by hotwheels below 2010\'s which makes this civic si model one of the hardest to find. You can\'t just buy these nowadays. The supply is very limited and most likely, all quantities are already in the collectors hand.' . "\n\nCondition: Mint",
         ]);
@@ -582,7 +582,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '1999.00',
-            'stock_quantity' => 4,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/zamac-walmart-exclusive-porsche-911-gt3-rs/main.jpg',
             'description' => 'GT3 rs is one of the most in demand casting of hotwheels. This being a zamac release is something special. You can only acquire this nowadays through collectors/reseller. Back when it was released, this was only exclusive at the US Walmart store. You cannot find this in the Philippines.' . "\n\nCondition: Mint",
         ]);
@@ -601,7 +601,7 @@ class DatabaseSeeder extends Seeder
             'is_carded' => true,
             'is_loose' => false,
             'price' => '999.00',
-            'stock_quantity' => 1,
+            'stock_quantity' => 10,
             'main_image' => 'images/products/zamac-target-exclusive-porsche-9345/main.jpg',
             'description' => 'It is a "Target Store" Exclusive only Variant of Porsche 934.5. Zamac is one of the most sought after by collectors of hotwheels. It has "No paint livery, other than its base painting". You can only acquire this through After market stores or on the USA Target Stores.' . "\n\nCondition: Mint",
         ]);

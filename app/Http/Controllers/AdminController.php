@@ -44,12 +44,11 @@ final class AdminController extends Controller
         $query = Order::where('status', '!=', Order::STATUS_CANCELLED);
 
         if ($filter === 'week') {
-            // Start from Monday of the current week
             $startOfWeek = now()->startOfWeek();
-            $data = $query->where('created_at', '>=', $startOfWeek)
+            $data = Order::where('status', '!=', Order::STATUS_CANCELLED)
+                ->where('created_at', '>=', $startOfWeek)
                 ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%a') as label"))
                 ->groupBy('label')
-                ->get()
                 ->pluck('total', 'label');
 
             $salesData = collect();
@@ -57,14 +56,14 @@ final class AdminController extends Controller
             foreach ($days as $day) {
                 $salesData->push((object)[
                     'label' => $day,
-                    'total' => $data[$day] ?? 0
+                    'total' => (float)($data[$day] ?? 0)
                 ]);
             }
         } else {
-            $data = $query->where('created_at', '>=', now()->subMonths(5))
+            $data = Order::where('status', '!=', Order::STATUS_CANCELLED)
+                ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
                 ->select(DB::raw('SUM(total_amount) as total'), DB::raw("DATE_FORMAT(created_at, '%m') as month_num"))
                 ->groupBy('month_num')
-                ->get()
                 ->pluck('total', 'month_num');
 
             $salesData = collect();
@@ -73,7 +72,7 @@ final class AdminController extends Controller
                 $monthNum = $month->format('m');
                 $salesData->push((object)[
                     'label' => $month->format('M'),
-                    'total' => $data[$monthNum] ?? 0
+                    'total' => (float)($data[$monthNum] ?? 0)
                 ]);
             }
         }
@@ -93,9 +92,35 @@ final class AdminController extends Controller
     /**
      * Display product list for management.
      */
-    public function products()
+    public function products(Request $request)
     {
-        $products = Product::with(['brand', 'scale', 'series', 'gallery'])->latest()->paginate(10);
+        $query = Product::with(['brand', 'scale', 'series', 'gallery']);
+
+        // 1. Search Filter
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('casting_name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // 2. Series Filter
+        if ($request->filled('series_id')) {
+            $query->where('series_id', $request->series_id);
+        }
+
+        // 3. Stock Status Filter
+        if ($request->filled('stock_status')) {
+            if ($request->stock_status === 'low') {
+                $query->whereColumn('stock_quantity', '<=', 'low_stock_threshold')->where('stock_quantity', '>', 0);
+            } elseif ($request->stock_status === 'out') {
+                $query->where('stock_quantity', 0);
+            } elseif ($request->stock_status === 'in') {
+                $query->where('stock_quantity', '>', 0);
+            }
+        }
+
+        $products = $query->latest()->paginate(10)->appends($request->all());
         $brands = Brand::all();
         $scales = Scale::all();
         $series = Series::all();
@@ -432,6 +457,10 @@ final class AdminController extends Controller
 
         $user = User::findOrFail($id);
 
+        if (!$user->hasVerifiedEmail()) {
+            return back()->with('error', 'Security Alert! You cannot promote a collector who has not verified their email via OTP yet.');
+        }
+
         if ($user->role === 'customer') {
             $user->role = 'staff';
         } elseif ($user->role === 'staff') {
@@ -441,8 +470,8 @@ final class AdminController extends Controller
         }
 
         $user->save();
-
-        return back()->with('success', "Collector promoted to " . strtoupper($user->role) . ".");
+        $roleName = $user->role === 'customer' ? 'Collector' : strtoupper($user->role);
+        return back()->with('success', "User promoted to {$roleName}.");
     }
 
     /**

@@ -19,6 +19,32 @@
 
 <body class="{{ Route::is('login') || Route::is('register') ? 'auth-page' : '' }}">
     <style>
+        /* BRUTE FORCE FIX FOR SEARCH SUGGESTIONS */
+        .search-suggestions-dropdown {
+            background: #000000 !important;
+            background-color: #000000 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            z-index: 999999 !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            display: none; /* Controlled by JS */
+            max-height: 450px !important;
+            overflow-y: auto !important;
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-brand-red) #000;
+        }
+        .search-suggestions-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .search-suggestions-dropdown::-webkit-scrollbar-thumb {
+            background: var(--color-brand-red);
+            border-radius: 10px;
+        }
+        .hero-badges-container {
+            transition: opacity 0.3s ease, visibility 0.3s ease !important;
+        }
         /* Minimal Header Styling */
         nav.minimal-header {
             position: fixed;
@@ -327,7 +353,7 @@
                     <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                     <div class="contact-text">
                         <label>EMAIL US @</label>
-                        <a href="mailto:bsmfgarage@gmail.com">bsmfgarage@gmail.com</a>
+                        <a href="mailto:bsmfsupport@gmail.com">bsmfsupport@gmail.com</a>
                     </div>
                 </div>
                 
@@ -422,7 +448,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ time() }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

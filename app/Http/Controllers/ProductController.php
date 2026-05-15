@@ -155,11 +155,23 @@ final class ProductController extends Controller
             return response()->json([]);
         }
 
-        $products = Product::where('name', 'like', "%{$query}%")
+        $products = Product::with(['brand', 'scale'])
+            ->where('name', 'like', "%{$query}%")
             ->active()
-            ->limit(5)
-            ->get(['id', 'name', 'main_image', 'price']);
+            ->limit(10)
+            ->get();
 
-        return response()->json($products);
+        $results = $products->map(function($p) {
+            return [
+                'id' => $p->id,
+                'name' => $p->name,
+                'main_image' => $p->main_image,
+                'price' => $p->price,
+                'brand' => $p->brand->name,
+                'scale' => $p->scale->name
+            ];
+        });
+
+        return response()->json($results);
     }
 }

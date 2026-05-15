@@ -68,7 +68,7 @@
                 </select>
             </form>
         </div>
-        <div class="position-relative flex-grow-1 min-h-180px">
+        <div class="position-relative flex-grow-1 min-h-300px">
             <canvas id="revenueChart" class="position-absolute w-100 h-100"></canvas>
         </div>
     </div>

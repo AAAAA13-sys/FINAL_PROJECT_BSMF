@@ -11,6 +11,7 @@
 
 .filter-group {
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
 .price-filter-group {
@@ -69,14 +70,102 @@ h1 span, h2 span, h3 span {
 .search-suggestions-dropdown {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 5px);
     left: 0;
     right: 0;
-    z-index: 1000;
-    border-radius: 12px;
+    z-index: 9999 !important; /* Absolute top priority */
+    border-radius: 16px;
     overflow: hidden;
-    border: 1px solid var(--glass-border);
-    background: var(--bg-darker);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: #000000 !important; /* Pure black solid */
+    background-image: none !important; /* Remove any gradients */
+    opacity: 1 !important; /* Force full opacity */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 1) !important;
+    text-align: left;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar-thumb {
+    background: var(--color-brand-red);
+    border-radius: 10px;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.suggestion-item img {
+    width: 60px;
+    height: 45px;
+    object-fit: contain;
+    background: #000;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.suggestion-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Force left align for flex children */
+}
+
+.suggestion-name {
+    color: white;
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-style: italic;
+    display: block;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.suggestion-meta {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 4px;
+    justify-content: flex-start;
+}
+
+.suggestion-badge {
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-text-muted);
+    text-align: left;
+}
+
+.suggestion-price {
+    color: var(--color-brand-red);
+    font-weight: 900;
+    font-size: 0.9rem;
+    text-align: left;
 }
 
 .filter-input-price {

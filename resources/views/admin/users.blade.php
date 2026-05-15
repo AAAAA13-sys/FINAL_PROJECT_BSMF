@@ -44,8 +44,11 @@
                             <!-- PROMOTE BUTTON -->
                             @if($user->role === 'admin')
                                 <button class="btn btn-admin-disabled me-1" disabled>PROMOTE</button>
+                            @elseif(!$user->hasVerifiedEmail())
+                                <button class="btn btn-admin-disabled me-1" disabled title="Collector must verify email first">PROMOTE</button>
                             @else
-                                <form action="{{ route('admin.users.promote', $user->id) }}" method="POST" class="d-inline me-1" onsubmit="return confirm('Promote this collector to Staff?')">
+                                <form action="{{ route('admin.users.promote', $user->id) }}" method="POST" class="d-inline me-1" 
+                                    onsubmit="return confirm('Promote this {{ $user->role === 'customer' ? 'Collector' : 'Staff Member' }} to {{ $user->role === 'customer' ? 'Staff' : 'Admin' }}?')">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-admin-promote">PROMOTE</button>
@@ -56,7 +59,8 @@
                             @if($user->role === 'customer' || $user->role === 'admin')
                                 <button class="btn btn-admin-disabled me-1" disabled>DEMOTE</button>
                             @else
-                                <form action="{{ route('admin.users.demote', $user->id) }}" method="POST" class="d-inline me-1" onsubmit="return confirm('Demote this staff member to Collector?')">
+                                <form action="{{ route('admin.users.demote', $user->id) }}" method="POST" class="d-inline me-1" 
+                                    onsubmit="return confirm('Demote this {{ strtoupper($user->role) }} back to {{ $user->role === 'staff' ? 'Collector' : 'Staff' }}?')">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-admin-demote">DEMOTE</button>

@@ -77,7 +77,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/products', [AdminController::class, 'products'])->name('products');
         Route::post('/products', [AdminController::class, 'productStore'])->name('products.store');
         Route::get('/products/{id}/edit', [AdminController::class, 'productEdit'])->name('products.edit');
-        Route::post('/products/{id}', [AdminController::class, 'productUpdate'])->name('products.update');
+        Route::put('/products/{id}', [AdminController::class, 'productUpdate'])->name('products.update');
         Route::delete('/products/{id}', [AdminController::class, 'productDestroy'])->name('products.destroy');
         Route::delete('/products/images/{id}', [AdminController::class, 'productImageDestroy'])->name('products.images.destroy');
         Route::delete('/products/{id}/main-image', [AdminController::class, 'productMainImageDestroy'])->name('products.mainImage.destroy');

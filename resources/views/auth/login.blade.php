@@ -11,7 +11,7 @@
         <div class="auth-card-simple fade-in">
             <div class="text-center mb-4">
                 <div class="auth-logo-spectrum">BSMF GARAGE</div>
-                <p class="auth-subtitle-spaced mt-2">WELCOME BACK RACER</p>
+                <p class="auth-subtitle-spaced mt-2">WELCOME BACK COLLECTOR</p>
             </div>
 
             @if($errors->any())
@@ -30,7 +30,7 @@
                         type="text" 
                         name="email" 
                         class="input-auth-rounded" 
-                        placeholder="Racer Name" 
+                        placeholder="Collector Name" 
                         value="{{ old('email') }}" 
                         required
                     >

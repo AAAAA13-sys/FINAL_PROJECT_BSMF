@@ -166,42 +166,74 @@ document.addEventListener('DOMContentLoaded', () => {
 async function handleSearchInput(inputId, suggestionsId) {
     const input = document.getElementById(inputId);
     const suggestionsBox = document.getElementById(suggestionsId);
+    const heroBadges = document.querySelector('.hero-badges-container');
 
     if (!input || !suggestionsBox) return;
 
-    input.addEventListener('input', async (e) => {
+    let debounceTimer;
+    input.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
         const query = e.target.value;
+        
         if (query.length < 2) {
             suggestionsBox.style.display = 'none';
+            if (heroBadges) {
+                heroBadges.style.opacity = '1';
+                heroBadges.style.visibility = 'visible';
+                heroBadges.style.pointerEvents = 'auto';
+            }
             return;
         }
 
-        try {
-            const response = await fetch(`/api/search-suggestions?query=${encodeURIComponent(query)}`);
-            const products = await response.json();
+        debounceTimer = setTimeout(async () => {
+            try {
+                const response = await fetch(`/api/search-suggestions?query=${encodeURIComponent(query)}`);
+                const products = await response.json();
 
-            if (products.length > 0) {
-                suggestionsBox.innerHTML = products.map(p => `
-                    <a href="/products/${p.id}" class="suggestion-item">
-                        <img src="${p.main_image || '/images/placeholder-car.webp'}" alt="${p.name}">
-                        <div>
-                            <div class="suggestion-name">${p.name}</div>
-                            <div class="suggestion-price">$${parseFloat(p.price).toFixed(2)}</div>
-                        </div>
-                    </a>
-                `).join('');
-                suggestionsBox.style.display = 'block';
-            } else {
-                suggestionsBox.style.display = 'none';
+                if (products.length > 0) {
+                    suggestionsBox.innerHTML = products.map(p => {
+                        const imgPath = p.main_image ? (p.main_image.startsWith('http') ? p.main_image : '/' + p.main_image) : '/images/placeholder-car.webp';
+                        return `
+                        <a href="/products/${p.id}" class="suggestion-item">
+                            <img src="${imgPath}" alt="${p.name}">
+                            <div class="suggestion-info">
+                                <span class="suggestion-name">${p.name}</span>
+                                <div class="suggestion-meta">
+                                    <span class="suggestion-badge">${p.brand}</span>
+                                    <span class="suggestion-badge">${p.scale}</span>
+                                </div>
+                                <div class="suggestion-price">₱${parseFloat(p.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            </div>
+                        </a>
+                    `;}).join('');
+                    suggestionsBox.style.display = 'block';
+                    if (heroBadges) {
+                        heroBadges.style.opacity = '0';
+                        heroBadges.style.visibility = 'hidden';
+                        heroBadges.style.pointerEvents = 'none';
+                    }
+                } else {
+                    suggestionsBox.style.display = 'none';
+                    if (heroBadges) {
+                        heroBadges.style.opacity = '1';
+                        heroBadges.style.visibility = 'visible';
+                        heroBadges.style.pointerEvents = 'auto';
+                    }
+                }
+            } catch (err) {
+                console.error('Search error:', err);
             }
-        } catch (err) {
-            console.error('Search error:', err);
-        }
+        }, 300);
     });
 
     document.addEventListener('click', (e) => {
         if (!input.contains(e.target) && !suggestionsBox.contains(e.target)) {
             suggestionsBox.style.display = 'none';
+            if (heroBadges) {
+                heroBadges.style.opacity = '1';
+                heroBadges.style.visibility = 'visible';
+                heroBadges.style.pointerEvents = 'auto';
+            }
         }
     });
 }

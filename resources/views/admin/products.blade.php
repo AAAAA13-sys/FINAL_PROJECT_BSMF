@@ -9,6 +9,36 @@
         @endif
     </div>
 
+    <div class="admin-card p-3 mb-4 border-secondary border-opacity-10 bg-darker">
+        <form action="{{ route('admin.products') }}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="text-muted smaller text-uppercase ls-1 mb-2 d-block">Search</label>
+                <input type="text" name="search" class="form-control garage-input py-2" placeholder="Name or casting..." value="{{ request('search') }}">
+            </div>
+            <div class="col-md-3">
+                <label class="text-muted smaller text-uppercase ls-1 mb-2 d-block">Series</label>
+                <select name="series_id" class="form-select garage-select py-2" onchange="this.form.submit()">
+                    <option value="">ALL SERIES</option>
+                    @foreach($series as $s)
+                        <option value="{{ $s->id }}" {{ request('series_id') == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="text-muted smaller text-uppercase ls-1 mb-2 d-block">Stock</label>
+                <select name="stock_status" class="form-select garage-select py-2" onchange="this.form.submit()">
+                    <option value="">ALL</option>
+                    <option value="low" {{ request('stock_status') == 'low' ? 'selected' : '' }}>Low Stock</option>
+                    <option value="out" {{ request('stock_status') == 'out' ? 'selected' : '' }}>Out of Stock</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-bsmf-outline py-2 flex-grow-1">FILTER</button>
+                <a href="{{ route('admin.products') }}" class="btn btn-outline-secondary py-2 px-3 border-opacity-25"><i class="fas fa-undo"></i></a>
+            </div>
+        </form>
+    </div>
+
     <div class="admin-table-container">
         {{-- Top pagination removed for cleaner look --}}
         <table class="admin-table">
@@ -48,7 +78,7 @@
                             <button type="button" class="btn-bsmf-outline edit-product-btn" 
                                 data-bs-toggle="modal" data-bs-target="#productModal" 
                                 data-product='@json($product)'>EDIT</button>
-                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this grail from the garage?')" class="d-inline">
+                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this collectible from the garage?')" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn-bsmf-outline border-danger text-danger">DELETE</button>

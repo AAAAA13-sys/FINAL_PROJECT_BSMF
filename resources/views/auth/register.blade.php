@@ -26,17 +26,17 @@
                 
                 <div class="mb-2">
                     <label class="label-auth-sm mb-1">FULL NAME</label>
-                    <input type="text" name="name" class="input-auth-rounded" placeholder="Racer Name" value="{{ old('name') }}" required autocomplete="off">
+                    <input type="text" name="name" class="input-auth-rounded" placeholder="Collector Name" value="{{ old('name') }}" required autocomplete="off">
                 </div>
 
                 <div class="mb-2">
                     <label class="label-auth-sm mb-1">USERNAME</label>
-                    <input type="text" name="username" class="input-auth-rounded" placeholder="racer_one" value="{{ old('username') }}" required autocomplete="off">
+                    <input type="text" name="username" class="input-auth-rounded" placeholder="collector_one" value="{{ old('username') }}" required autocomplete="off">
                 </div>
 
                 <div class="mb-2">
                     <label class="label-auth-sm mb-2">EMAIL ADDRESS</label>
-                    <input type="email" name="email" class="input-auth-rounded" placeholder="racer@example.com" value="{{ old('email') }}" required autocomplete="off">
+                    <input type="email" name="email" class="input-auth-rounded" placeholder="collector@example.com" value="{{ old('email') }}" required autocomplete="off">
                 </div>
 
                 <div class="row g-2 mb-3">

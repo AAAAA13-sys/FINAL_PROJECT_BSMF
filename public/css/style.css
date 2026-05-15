@@ -2312,6 +2312,7 @@ html {
     margin-top: 3rem;
     flex-wrap: wrap;
     justify-content: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .garage-badge {

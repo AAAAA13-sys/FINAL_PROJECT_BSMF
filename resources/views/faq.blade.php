@@ -5,6 +5,11 @@
 @section('content')
 <div class="faq-container py-5 mt-5">
     <div class="container">
+        <div class="mb-4 fade-in">
+            <a href="{{ route('home') }}" class="btn btn-outline-light btn-sm rounded-pill px-4" style="font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; border-color: rgba(255,255,255,0.2);">
+                <i class="fas fa-arrow-left me-2"></i> BACK TO GARAGE
+            </a>
+        </div>
         <div class="text-center mb-5 fade-in">
             <h1 class="display-4 fw-black text-white italic text-uppercase">FREQUENTLY ASKED <span style="color: var(--color-brand-red);">QUESTIONS</span></h1>
             <p class="text-white-50 ls-2 text-uppercase smaller">Everything you need to know about the BSMF Collector Experience</p>
@@ -114,8 +119,14 @@
 <style>
 .faq-container {
     background: #050608; /* DEEPER DARK */
-    min-height: 100vh;
+    min-height: 80vh;
     position: relative;
+    border-radius: 50px;
+    margin: 2rem auto; /* Centered with auto margins */
+    width: calc(100% - 4rem); /* Takes full width minus margins */
+    max-width: 1400px; /* Prevents it from getting too wide on ultrawide monitors */
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .faq-container::before {
     content: '';
@@ -123,6 +134,14 @@
     top: 0; left: 0; right: 0; bottom: 0;
     background: radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.05) 0%, transparent 70%);
     pointer-events: none;
+}
+.faq-grid {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 40px;
+    padding: 4rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
 }
 .faq-category-title {
     color: var(--color-brand-red);
@@ -156,5 +175,12 @@
 .fw-black { font-weight: 900; }
 .ls-2 { letter-spacing: 2px; }
 .italic { font-style: italic; }
+
+@media (max-width: 768px) {
+    .faq-grid {
+        padding: 2rem 1.5rem;
+        border-radius: 24px;
+    }
+}
 </style>
 @endsection
