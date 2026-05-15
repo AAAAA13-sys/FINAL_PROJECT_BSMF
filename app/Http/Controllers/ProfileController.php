@@ -21,13 +21,15 @@ class ProfileController extends Controller
         $user = Auth::user();
         
         $request->validate([
-            'name' => 'nullable|string|max:255',
+            'name' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:11|regex:/^[0-9]+$/',
             'region' => 'nullable|string',
             'city' => 'nullable|string',
             'default_shipping_address' => 'nullable|string',
             'password' => 'nullable|min:8|confirmed',
+        ], [
+            'name.regex' => 'The name field should only contain letters and spaces.',
         ]);
 
         if ($request->filled('name')) {

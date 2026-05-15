@@ -2,7 +2,7 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "bsmf/final-project-bsmf",
     "type": "project",
-    "description": "FINAL_PROJECT_BSMF - Premium Die-Cast Collector Platform.",
+    "description": "BSMF Garage - Premium Die-Cast Collector Platform.",
     "keywords": ["die-cast", "bsmf", "ecommerce"],
     "license": "MIT",
     "require": {

@@ -986,8 +986,16 @@ nav.scrolled {
 }
 
 /* Auth Containers */
+/* Auth Containers */
 .auth-page {
-    background: var(--bg-darker);
+    background-color: rgba(10, 11, 14, 0.98);
+    background-image: conic-gradient(
+        rgba(18, 20, 25, 0.98) 90deg, 
+        transparent 90deg 180deg, 
+        rgba(18, 20, 25, 0.98) 180deg 270deg, 
+        transparent 270deg
+    );
+    background-size: 40px 40px;
     min-height: 100vh;
 }
 

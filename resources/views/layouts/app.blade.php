@@ -17,7 +17,7 @@
     @stack('styles')
 </head>
 
-<body class="{{ Route::is('login') || Route::is('register') ? 'auth-page' : '' }}">
+<body class="{{ Route::is('login') || Route::is('register') || Route::is('verification.*') ? 'auth-page' : '' }}">
     <style>
         /* BRUTE FORCE FIX FOR SEARCH SUGGESTIONS */
         .search-suggestions-dropdown {

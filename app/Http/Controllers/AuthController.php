@@ -41,19 +41,10 @@ final class AuthController extends Controller
 
         if (Auth::attempt($authData)) {
             $user = Auth::user();
-            
-            if ($request->wantsJson() || $request->is('api/*')) {
-                $token = $user->createToken('auth_token')->plainTextToken;
-                return response()->json([
-                    'message' => 'Logged in successfully',
-                    'user' => new \App\Http\Resources\UserResource($user),
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
-                ]);
-            }
+
 
             $request->session()->regenerate();
-            
+
             if ($user->isAdministrative()) {
                 $this->logAction('LOGIN', "User logged in: {$user->username}");
                 return redirect()->route('admin.dashboard')->with('success', "Welcome back, {$user->name}!");
@@ -62,19 +53,13 @@ final class AuthController extends Controller
             if (!$user->hasVerifiedEmail()) {
                 return redirect()->route('verification.notice')->with('success', 'Please verify your account to continue.');
             }
-            
+
             return redirect()->intended(route('home'))->with('success', "Welcome back, {$user->name}!");
         }
 
-        if ($request->wantsJson() || $request->is('api/*')) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
         return back()->withErrors([
-            'email' => 'Invalid credentials',
-        ]);
+            'email' => 'Incorrect username/password',
+        ])->withInput($request->only('email'));
     }
 
     /**
@@ -91,10 +76,12 @@ final class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'username' => 'required|string|max:50|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'name.regex' => 'The name field should only contain letters and spaces.',
         ]);
 
         $user = User::create([
@@ -102,11 +89,10 @@ final class AuthController extends Controller
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'customer', // HARD SECURITY: Never allow role injection from request
+            'role' => 'customer',
         ]);
 
         $mailStatus = '';
-        // BYPASS: Admin and Staff don't need OTP during development
         if ($user->isAdministrative()) {
             $user->email_verified_at = now();
             $user->save();
@@ -121,38 +107,18 @@ final class AuthController extends Controller
             }
         }
 
-        if ($request->wantsJson() || $request->is('api/*')) {
-            $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json([
-                'message' => 'User registered successfully. ' . $mailStatus,
-                'user' => new \App\Http\Resources\UserResource($user),
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ], 201);
-        }
 
         Auth::login($user);
 
         return redirect()->route('verification.notice')->with('success', $mailStatus);
     }
 
-    /**
-     * Get authenticated user profile.
-     */
-    public function profile(Request $request)
-    {
-        return new \App\Http\Resources\UserResource($request->user());
-    }
 
     /**
      * Handle logout.
      */
     public function logout(Request $request)
     {
-        if ($request->wantsJson() || $request->is('api/*')) {
-            $request->user()->currentAccessToken()->delete();
-            return response()->json(['message' => 'Logged out successfully']);
-        }
 
         if (auth()->check() && auth()->user()->isAdministrative()) {
             $this->logAction('LOGOUT', "User logged out: " . auth()->user()->username);

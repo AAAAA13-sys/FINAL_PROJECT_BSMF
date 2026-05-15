@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'FINAL_PROJECT_BSMF'),
+    'name' => env('APP_NAME', 'BSMF Garage'),
 
     /*
     |--------------------------------------------------------------------------
