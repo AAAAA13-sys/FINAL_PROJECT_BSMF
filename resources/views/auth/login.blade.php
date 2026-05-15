@@ -61,7 +61,7 @@
             
             <div class="text-center mt-4">
                 <p class="auth-footer-text">Not a member yet? 
-                    <a href="{{ route('register') }}" class="forgot-link-muted ms-2">JOIN CREW</a>
+                    <a href="{{ route('register') }}" class="forgot-link-muted ms-2">Register Here</a>
                 </p>
             </div>
         </div>
