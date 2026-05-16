@@ -23,23 +23,23 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="input-label-sm">Full Name</label>
-                            <input type="text" name="customer_name" class="form-control garage-input" value="{{ Auth::user()->name }}" required>
+                            <input type="text" name="customer_name" class="form-control garage-input" value="{{ old('customer_name', Auth::user()->name) }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="input-label-sm">Email Address</label>
-                            <input type="email" name="customer_email" class="form-control garage-input" value="{{ Auth::user()->email }}" required>
+                            <input type="email" name="customer_email" class="form-control garage-input" value="{{ old('customer_email', Auth::user()->email) }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="input-label-sm">Phone (For Carrier)</label>
-                            <input type="text" name="customer_phone" class="form-control garage-input" value="{{ Auth::user()->phone }}" required>
+                            <input type="text" name="customer_phone" class="form-control garage-input" value="{{ old('customer_phone', Auth::user()->phone) }}" required>
                         </div>
                         
                         <div class="col-md-6">
                             <label class="input-label-sm">Region</label>
                             <select name="shipping_region" id="shipping_region" class="form-select garage-select" required onchange="handleRegionChange()">
-                                <option value="" disabled {{ !Auth::user()->region ? 'selected' : '' }}>Select Region</option>
+                                <option value="" disabled {{ !old('shipping_region', Auth::user()->region) ? 'selected' : '' }}>Select Region</option>
                                 @foreach($regions as $code => $name)
-                                    <option value="{{ $code }}" {{ Auth::user()->region == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                    <option value="{{ $code }}" {{ old('shipping_region', Auth::user()->region) == $code ? 'selected' : '' }}>{{ $name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,18 +47,18 @@
                         <div class="col-md-6">
                             <label class="input-label-sm">City / Municipality</label>
                             <select name="shipping_city" id="shipping_city" class="form-select garage-select" required onchange="updateShipping()">
-                                <option value="" disabled {{ !Auth::user()->city ? 'selected' : '' }}>{{ Auth::user()->region ? 'Select City' : 'Select Region First' }}</option>
-                                @if(Auth::user()->region && isset($regionalCities[Auth::user()->region]))
-                                    @foreach($regionalCities[Auth::user()->region] as $cityName => $km)
-                                        <option value="{{ $cityName }}" {{ Auth::user()->city == $cityName ? 'selected' : '' }} data-km="{{ $km }}">{{ $cityName }}{{ $km > 0 ? " (~{$km}km)" : '' }}</option>
+                                <option value="" disabled {{ !old('shipping_city', Auth::user()->city) ? 'selected' : '' }}>{{ old('shipping_region', Auth::user()->region) ? 'Select City' : 'Select Region First' }}</option>
+                                @if(old('shipping_region', Auth::user()->region) && isset($regionalCities[old('shipping_region', Auth::user()->region)]))
+                                    @foreach($regionalCities[old('shipping_region', Auth::user()->region)] as $cityName => $km)
+                                        <option value="{{ $cityName }}" {{ old('shipping_city', Auth::user()->city) == $cityName ? 'selected' : '' }} data-km="{{ $km }}">{{ $cityName }}{{ $km > 0 ? " (~{$km}km)" : '' }}</option>
                                     @endforeach
                                 @endif
                             </select>
                         </div>
-
+                        
                         <div class="col-12">
                             <label class="input-label-sm">Unit / Street / House No. / Barangay</label>
-                            <input type="text" name="shipping_address" class="form-control garage-input" value="{{ Auth::user()->default_shipping_address }}" placeholder="e.g. Unit 201, 123 Speed Way St., Brgy. San Antonio" required>
+                            <input type="text" name="shipping_address" class="form-control garage-input" value="{{ old('shipping_address', Auth::user()->default_shipping_address) }}" placeholder="e.g. Unit 201, 123 Speed Way St., Brgy. San Antonio" required>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                     </div>
                     <div>
                         <label class="input-label-sm">Special Instructions</label>
-                        <textarea name="notes" class="form-control garage-textarea" rows="1" placeholder="e.g. Please pick the best card possible..."></textarea>
+                        <textarea name="notes" class="form-control garage-textarea" rows="1" placeholder="e.g. Please pick the best card possible...">{{ old('notes') }}</textarea>
                     </div>
                 </div>
 
@@ -105,11 +105,11 @@
             <!-- Independent Coupon Section -->
             <div class="card bg-dark border-secondary rounded-4 p-4 mb-4 shadow-lg">
                 <label class="input-label-sm mb-3">COUPON CODE</label>
-                <form action="{{ route('coupon.apply') }}" method="POST" class="d-flex gap-2">
-                    @csrf
-                    <input type="text" name="code" class="form-control garage-input" placeholder="ENTER CODE" value="{{ $couponCode }}">
-                    <button type="submit" class="btn btn-outline-danger fw-bold px-4 coupon-btn-apply">APPLY</button>
+                <form id="coupon-form" class="d-flex gap-2">
+                    <input type="text" id="coupon_code_input" name="code" class="form-control garage-input" placeholder="ENTER CODE" value="{{ $couponCode }}">
+                    <button type="button" onclick="applyCoupon()" class="btn btn-outline-danger fw-bold px-4 coupon-btn-apply">APPLY</button>
                 </form>
+                <div id="coupon-message" class="small mt-2 d-none"></div>
             </div>
 
             <div class="card bg-dark border-secondary rounded-4 shadow-lg sticky-top checkout-sticky">
@@ -135,19 +135,15 @@
                         <span>₱{{ number_format($subtotal, 2) }}</span>
                     </div>
                     
-                    @if($discount > 0)
+                    <div id="discount-container" class="{{ $discount > 0 ? 'd-block' : 'd-none' }}">
                         <div class="d-flex justify-content-between mb-2 text-success small">
                             <div class="d-flex align-items-center gap-2">
-                                <span>Discount ({{ $couponCode }})</span>
-                                <form action="{{ route('coupon.remove') }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="remove-coupon-link">Remove</button>
-                                </form>
+                                <span>Discount (<span id="display_coupon_code">{{ $couponCode }}</span>)</span>
+                                <button type="button" onclick="removeCoupon()" class="remove-coupon-link bg-transparent border-0 p-0 text-decoration-underline">Remove</button>
                             </div>
-                            <span>- ₱{{ number_format($discount, 2) }}</span>
+                            <span>- ₱<span id="display_discount">{{ number_format($discount, 2) }}</span></span>
                         </div>
-                    @endif
+                    </div>
 
                     <div class="d-flex justify-content-between mb-2 text-white opacity-75 small">
                         <span>Courier: <span id="carrier_name">LBC Express</span></span>
@@ -164,7 +160,7 @@
                         <span class="fw-black text-white" id="display_total">₱{{ number_format($subtotal - $discount, 2) }}</span>
                     </div>
 
-                    <button type="submit" form="checkout-form" class="btn btn-danger w-100 py-3 fw-black text-uppercase ls-2 shadow-lg rounded-3">COMPLETE ACQUISITION</button>
+                    <button type="submit" form="checkout-form" class="btn btn-danger w-100 py-3 fw-black text-uppercase ls-2 shadow-lg rounded-3" onclick="if(this.form.checkValidity()) { this.disabled=true; this.innerHTML='PROCESSING...'; this.form.submit(); }">COMPLETE ACQUISITION</button>
                 </div>
             </div>
         </div>
@@ -173,7 +169,7 @@
 
 <script>
     const subtotal = {{ $subtotal }};
-    const discount = {{ $discount }};
+    let discount = {{ $discount }};
     const regionalCities = @json($regionalCities);
 
     function handleRegionChange() {
@@ -207,7 +203,6 @@
         let carrier = "Freight";
 
         if (region) {
-            // JS implementation of ShippingService logic
             if (region === 'NCR') {
                 carrier = "Lalamove";
                 const base = 49.00;
@@ -238,8 +233,78 @@
         const total = subtotal - discount + fee + packagingFee;
         document.getElementById('display_total').innerText = '₱' + total.toLocaleString(undefined, {minimumFractionDigits: 2});
     }
+
+    async function applyCoupon() {
+        const code = document.getElementById('coupon_code_input').value;
+        const messageDiv = document.getElementById('coupon-message');
+        
+        if (!code) return;
+
+        try {
+            const response = await fetch("{{ route('coupon.apply') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ code: code, subtotal: subtotal })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                discount = data.discount;
+                document.getElementById('display_discount').innerText = discount.toLocaleString(undefined, {minimumFractionDigits: 2});
+                document.getElementById('display_coupon_code').innerText = data.code;
+                document.getElementById('discount-container').classList.remove('d-none');
+                document.getElementById('discount-container').classList.add('d-block');
+                
+                messageDiv.innerText = data.message;
+                messageDiv.className = 'small mt-2 text-success';
+                messageDiv.classList.remove('d-none');
+                
+                updateShipping();
+            } else {
+                messageDiv.innerText = data.message || 'Invalid coupon';
+                messageDiv.className = 'small mt-2 text-danger';
+                messageDiv.classList.remove('d-none');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function removeCoupon() {
+        try {
+            const response = await fetch("{{ route('coupon.remove') }}", {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                discount = 0;
+                document.getElementById('discount-container').classList.remove('d-block');
+                document.getElementById('discount-container').classList.add('d-none');
+                document.getElementById('coupon_code_input').value = '';
+                
+                const messageDiv = document.getElementById('coupon-message');
+                messageDiv.innerText = data.message;
+                messageDiv.className = 'small mt-2 text-info';
+                messageDiv.classList.remove('d-none');
+                
+                updateShipping();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
     
-    // Calculate initial shipping if address is pre-filled
     window.onload = updateShipping;
 </script>
 @endsection

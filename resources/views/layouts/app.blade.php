@@ -19,7 +19,6 @@
 
 <body class="{{ Route::is('login') || Route::is('register') || Route::is('verification.*') ? 'auth-page' : '' }}">
     <style>
-        /* BRUTE FORCE FIX FOR SEARCH SUGGESTIONS */
         .search-suggestions-dropdown {
             background: #000000 !important;
             background-color: #000000 !important;
@@ -29,7 +28,7 @@
             -webkit-backdrop-filter: none !important;
             z-index: 999999 !important;
             border: 1px solid rgba(255,255,255,0.2) !important;
-            display: none; /* Controlled by JS */
+            display: none; 
             max-height: 450px !important;
             overflow-y: auto !important;
             scrollbar-width: thin;

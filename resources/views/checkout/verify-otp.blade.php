@@ -32,7 +32,7 @@
             </div>
         @endif
 
-        <form action="{{ route('checkout.verify.process') }}" method="POST">
+        <form action="{{ route('checkout.verify.process') }}" method="POST" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerHTML='PROCESSING...'; return true;">
             @csrf
             
             <div class="mb-4">

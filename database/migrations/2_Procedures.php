@@ -33,6 +33,8 @@ return new class extends Migration
                 DECLARE variable_total DECIMAL(12,2);
                 DECLARE variable_order_number VARCHAR(50);
                 
+                DECLARE variable_item_count INT;
+                
                 DECLARE EXIT HANDLER FOR SQLEXCEPTION
                 BEGIN
                     ROLLBACK;
@@ -45,6 +47,12 @@ return new class extends Migration
                 
                 IF variable_cart_id IS NULL THEN
                     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cart not found';
+                END IF;
+
+                SELECT COUNT(*) INTO variable_item_count FROM cart_items WHERE cart_id = variable_cart_id;
+
+                IF variable_item_count = 0 THEN
+                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cart is empty';
                 END IF;
 
                 SELECT IFNULL(SUM(products.price * cart_items.quantity), 0) INTO variable_subtotal

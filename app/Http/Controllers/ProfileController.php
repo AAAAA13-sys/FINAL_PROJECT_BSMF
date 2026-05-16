@@ -27,7 +27,7 @@ class ProfileController extends Controller
             'region' => 'nullable|string',
             'city' => 'nullable|string',
             'default_shipping_address' => 'nullable|string',
-            'password' => 'nullable|min:8|confirmed',
+            'password' => ['nullable', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ], [
             'name.regex' => 'The name field should only contain letters and spaces.',
         ]);

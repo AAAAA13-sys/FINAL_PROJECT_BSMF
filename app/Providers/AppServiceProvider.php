@@ -21,9 +21,12 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Pagination\Paginator::defaultView('vendor.pagination.bsmf-custom');
 
-        // Enforce basic password security (Relaxed for Dev)
+        // Enforce strong password security
         \Illuminate\Validation\Rules\Password::defaults(function () {
-            return \Illuminate\Validation\Rules\Password::min(8);
+            return \Illuminate\Validation\Rules\Password::min(8)
+                ->mixedCase()
+                ->numbers()
+                ->symbols();
         });
     }
 }

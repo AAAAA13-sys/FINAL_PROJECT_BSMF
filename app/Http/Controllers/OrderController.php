@@ -138,6 +138,13 @@ final class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        // Prevent rapid re-processing / double OTP sending
+        if (session()->has('pending_order') && $user->otp && $user->otp_expires_at && $user->otp_expires_at->isFuture()) {
+            return redirect()->route('checkout.verify')->with('info', 'A verification code is already active for your acquisition.');
+        }
+
         $request->validate([
             'shipping_address' => 'required|string',
             'payment_method' => 'required|in:Cash on Delivery',
@@ -147,8 +154,6 @@ final class OrderController extends Controller
             'customer_email' => 'required|email',
             'customer_phone' => 'required|string',
         ]);
-
-        $user = Auth::user();
         $cart = \App\Models\Cart::with('items.product')->where('user_id', $user->id)->first();
         
         if (!$cart || $cart->items->isEmpty()) {
@@ -180,12 +185,24 @@ final class OrderController extends Controller
      */
     public function verifyOtp(Request $request)
     {
+        $user = Auth::user();
+        
+        // 1. Handle double-submissions / race conditions FIRST
+        // If an order was JUST created (within 30s), they likely double-clicked and the first one succeeded.
+        $recentOrder = \App\Models\Order::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->subSeconds(30))
+            ->latest()
+            ->first();
+            
+        if ($recentOrder) {
+            return redirect()->route('orders.confirmation', $recentOrder->id)
+                ->with('success', 'FINISH LINE! Your acquisition was already processed successfully.');
+        }
+
         $request->validate([
             'otp' => 'required|string|size:6',
         ]);
 
-        $user = Auth::user();
-        
         if (!$user->otp || $user->otp !== $request->otp || now()->gt($user->otp_expires_at)) {
             return back()->withErrors(['otp' => 'The provided code is invalid or has expired. The finish line is waiting.']);
         }
@@ -196,6 +213,10 @@ final class OrderController extends Controller
         }
 
         $cart = \App\Models\Cart::with('items.product')->where('user_id', $user->id)->first();
+        
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('products.index')->with('error', 'Your cart is empty. Start your engines again.');
+        }
         
         try {
             DB::beginTransaction();
@@ -318,6 +339,25 @@ final class OrderController extends Controller
         }
 
         session(['coupon_code' => $coupon->coupon_code]);
+        
+        $subtotal = $request->input('subtotal', 0); // Optional: if passed from frontend
+        $discount = 0;
+        if ($coupon->discount_type === Coupon::TYPE_PERCENTAGE) {
+            $discount = $subtotal * ($coupon->discount_value / 100);
+        } else {
+            $discount = $coupon->discount_value;
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Promo code applied to your order!',
+                'code' => $coupon->coupon_code,
+                'discount' => $discount,
+                'discount_value' => $coupon->discount_value,
+                'discount_type' => $coupon->discount_type
+            ]);
+        }
 
         return back()->with('success', 'Promo code applied to your order!');
     }
@@ -325,9 +365,17 @@ final class OrderController extends Controller
     /**
      * Remove the promotional code from the session.
      */
-    public function removeCoupon()
+    public function removeCoupon(Request $request)
     {
         session()->forget('coupon_code');
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Promo code removed.'
+            ]);
+        }
+
         return back()->with('success', 'Promo code removed.');
     }
 
